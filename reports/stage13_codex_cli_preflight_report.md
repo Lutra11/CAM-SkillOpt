@@ -113,3 +113,65 @@ $env:CODEX_CLI_BIN="实际可执行的 codex 路径"
 
 Stage 13 代码接入和配置 dry-run 已完成；正式 smoke run 尚未启动。  
 当前必须先解决 `codex.exe` 权限问题，否则计划中的 `codex_cli + codex_exec` 实验链路无法执行。
+
+## 解决记录
+
+已绕过 WindowsApps 受保护目录，改为在项目工具目录安装用户级 Codex CLI：
+
+```text
+C:\CAM-SkillOpt\codex-cli\node_modules\.bin\codex.cmd
+```
+
+并创建项目内 Codex HOME：
+
+```text
+C:\CAM-SkillOpt\codex-home
+```
+
+其中 `codex-home` 只用于当前机器的本地登录态和运行缓存，不上传 GitHub。
+
+验证结果：
+
+```powershell
+codex-cli 0.147.0
+codex-cli-exec 0.147.0
+```
+
+最小 `codex exec` ping 成功：
+
+```text
+CAM_CODEX_OK
+```
+
+SkillOpt optimizer 入口验证成功：
+
+```text
+text= CAM_OPTIMIZER_OK
+usage= {'prompt_tokens': 12492, 'completion_tokens': 9, 'total_tokens': 12501}
+```
+
+代码层修正：
+
+- `skillopt/model/backend_config.py`：当配置值为 `codex` 时，自动优先解析到本地安装的 `codex.cmd`。
+- `skillopt/model/codex_backend.py`：`optimizer_backend=codex_cli` 自动优先使用本地安装的 `codex.cmd`。
+- `.gitignore`：排除 `codex-cli/`、`codex-home/`、`npm-cache/` 和 `codex_probe_last_message.txt`。
+
+更新后，即使实验配置仍写：
+
+```yaml
+model:
+  optimizer_backend: codex_cli
+  target_backend: codex_exec
+  codex_exec_path: codex
+```
+
+代码也会自动使用：
+
+```text
+C:\CAM-SkillOpt\codex-cli\node_modules\.bin\codex.cmd
+```
+
+## 更新后结论
+
+`codex.exe Access is denied` 问题已解决。  
+当前可以进入下一步：SpreadsheetBench `codex_cli + codex_exec` smoke run。

@@ -1,50 +1,67 @@
-# Python
 __pycache__/
-*.py[cod]
-*.pyo
-*.pyd
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
-.coverage
-htmlcov/
+*.pyc
+*.egg-info/
+build/
+dist/
+site/
 
-# Virtual environments
-.venv/
-venv/
-env/
-
-# Local secrets
-.env
-.env.*
-!.env.example
-!.env.deepseek_glm.example
-
-# Experiment outputs and checkpoints
+data/*
+!data/README.md
+!data/searchqa_id_split/
+!data/searchqa_id_split/**
+!data/livemathematicianbench_id_split/
+!data/livemathematicianbench_id_split/**
+!data/docvqa_id_split/
+!data/docvqa_id_split/**
+!data/officeqa_id_split/
+!data/officeqa_id_split/**
+!data/spreadsheetbench_id_split/
+!data/spreadsheetbench_id_split/**
+!data/alfworld_path_split/
+!data/alfworld_path_split/**
 outputs/
-ckpt/
-runs/
-wandb/
-mlruns/
-*.log
+logs/
+external/
+# SkillOpt-Sleep runtime state (staging proposals, config, diagnostics, cron logs)
+.skillopt-sleep/
 
-# Raw / materialized datasets
-data/spreadsheetbench_verified_400/
-data/spreadsheetbench_verified_400.tar
-data/spreadsheetbench_verified_400.tar.gz
-data/spreadsheetbench_split/
-data/stage*_spreadsheetbench*_split/
-data/**/*_init.xlsx
-data/**/*_golden.xlsx
+/BabyVision/
+/MMRB/
+/SpreadsheetBench/
+/dl4ir-searchQA/
 
-# Generated reports / local artifacts
-*.docx
-*.pdf
-*.tmp
-~$*
+configs/local/
+configs/**/*.local.yaml
+*.local.md
+*.secret.md
+*.bak
 
-# OS / IDE
-.DS_Store
-Thumbs.db
-.idea/
-.vscode/
+.env
+.secrets/
+.codex_azure*/
+
+# Internal docs (not for open-source release)
+docs/ablation_plan.md
+docs/ablation_paper_tables.md
+docs/ablation_paper_tables.html
+docs/experiment_commands.md
+docs/slow_update_flowchart.md
+docs/session_memory.md
+docs/harness_fresh_machine_handoff.md
+docs/harness_monitoring_memory.md
+docs/harness_reproduction_secrets.secret.md
+docs/reflact_conda_env_export.yml
+docs/reflact_overview.html
+docs/render_ablation_paper_tables.py
+docs/让*
+.gradio/
+.venv
+codex-cli/
+codex-home/
+npm-cache/
+codex_probe_last_message.txt
+
+# Local experiment launchers — contain machine-specific endpoints/identities, never commit
+tests/run_*.sh
+tests/launch_*.py
+*.launch.log

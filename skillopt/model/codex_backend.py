@@ -9,6 +9,7 @@ import subprocess
 import tempfile
 import time
 import uuid
+from pathlib import Path
 from typing import Any
 from urllib.parse import unquote, urlparse
 
@@ -20,7 +21,44 @@ from skillopt.model.common import (
 )
 
 
-CODEX_BIN = os.environ.get("CODEX_CLI_BIN", "codex")
+def _repo_tool_root() -> Path | None:
+    try:
+        return Path(__file__).resolve().parents[3]
+    except IndexError:
+        return None
+
+
+def _local_codex_bin() -> str | None:
+    root = _repo_tool_root()
+    if root is None:
+        return None
+    exe = "codex.cmd" if os.name == "nt" else "codex"
+    candidate = root / "codex-cli" / "node_modules" / ".bin" / exe
+    return str(candidate) if candidate.exists() else None
+
+
+def _resolve_codex_bin(path: str | None) -> str:
+    requested = str(path or "").strip()
+    if requested and requested.lower() not in {"codex", "codex.exe"}:
+        return requested
+    return _local_codex_bin() or requested or "codex"
+
+
+def _ensure_local_codex_home() -> None:
+    if os.environ.get("CODEX_HOME"):
+        return
+    root = _repo_tool_root()
+    if root is None:
+        return
+    candidate = root / "codex-home"
+    if candidate.exists():
+        os.environ["CODEX_HOME"] = str(candidate)
+
+
+_ensure_local_codex_home()
+
+
+CODEX_BIN = _resolve_codex_bin(os.environ.get("CODEX_CLI_BIN", "codex"))
 CODEX_PROFILE = os.environ.get("CODEX_PROFILE", "review")
 CODEX_SANDBOX_MODE = os.environ.get("CODEX_SANDBOX_MODE", "read-only")
 
