@@ -6,6 +6,7 @@ from typing import Any
 
 from skillopt.model import azure_openai as _openai
 from skillopt.model import claude_backend as _claude
+from skillopt.model import codex_backend as _codex
 from skillopt.model import minimax_backend as _minimax
 from skillopt.model import qwen_backend as _qwen
 from skillopt.model.backend_config import (  # noqa: F401
@@ -43,6 +44,10 @@ def set_backend(name: str | None) -> str:
         set_optimizer_backend("openai_chat")
         set_target_backend("codex_exec")
         return "codex"
+    if normalized == "codex_cli":
+        set_optimizer_backend("codex_cli")
+        set_target_backend("openai_chat")
+        return "codex_cli"
     if normalized in {"codex_exec", "claude_code_exec"}:
         set_optimizer_backend("openai_chat")
         set_target_backend(normalized)
@@ -70,6 +75,8 @@ def get_backend_name() -> str:
         return "azure_openai"
     if optimizer == "openai_chat" and target == "codex_exec":
         return "codex"
+    if optimizer == "codex_cli":
+        return f"codex_cli+{target}"
     if optimizer == "openai_chat" and target == "qwen_chat":
         return "qwen_chat"
     if optimizer == "openai_chat" and target == "minimax_chat":
@@ -103,6 +110,15 @@ def chat_optimizer(
             retries=retries,
             stage=stage,
             reasoning_effort=reasoning_effort,
+            timeout=timeout,
+        )
+    if get_optimizer_backend() == "codex_cli":
+        return _codex.chat_optimizer(
+            system=system,
+            user=user,
+            max_completion_tokens=max_completion_tokens,
+            retries=retries,
+            stage=stage,
             timeout=timeout,
         )
     return _openai.chat_optimizer(
@@ -199,6 +215,17 @@ def chat_optimizer_messages(
             retries=retries,
             stage=stage,
             reasoning_effort=reasoning_effort,
+            tools=tools,
+            tool_choice=tool_choice,
+            return_message=return_message,
+            timeout=timeout,
+        )
+    if get_optimizer_backend() == "codex_cli":
+        return _codex.chat_optimizer_messages(
+            messages=messages,
+            max_completion_tokens=max_completion_tokens,
+            retries=retries,
+            stage=stage,
             tools=tools,
             tool_choice=tool_choice,
             return_message=return_message,
@@ -332,6 +359,17 @@ def chat_with_deployment(
 
 def get_token_summary() -> dict:
     summary = _openai.get_token_summary()
+    codex_summary = _codex.get_token_summary()
+    for stage, values in codex_summary.items():
+        if stage == "_total":
+            continue
+        if stage not in summary:
+            summary[stage] = values
+            continue
+        summary[stage]["calls"] += values["calls"]
+        summary[stage]["prompt_tokens"] += values["prompt_tokens"]
+        summary[stage]["completion_tokens"] += values["completion_tokens"]
+        summary[stage]["total_tokens"] += values["total_tokens"]
     claude_summary = _claude.get_token_summary()
     for stage, values in claude_summary.items():
         if stage == "_total":
@@ -384,6 +422,7 @@ def get_token_summary() -> dict:
 
 def reset_token_tracker() -> None:
     _openai.reset_token_tracker()
+    _codex.reset_token_tracker()
     _claude.reset_token_tracker()
     _qwen.reset_token_tracker()
     _minimax.reset_token_tracker()
@@ -496,6 +535,7 @@ def configure_minimax_chat(
 
 def set_reasoning_effort(effort: str | None) -> None:
     _openai.set_reasoning_effort(effort)
+    _codex.set_reasoning_effort(effort)
     _claude.set_reasoning_effort(effort)
     _qwen.set_reasoning_effort(effort)
     _minimax.set_reasoning_effort(effort)
@@ -503,6 +543,7 @@ def set_reasoning_effort(effort: str | None) -> None:
 
 def set_target_deployment(deployment: str) -> None:
     _openai.set_target_deployment(deployment)
+    _codex.set_target_deployment(deployment)
     _claude.set_target_deployment(deployment)
     _qwen.set_target_deployment(deployment)
     _minimax.set_target_deployment(deployment)
@@ -510,5 +551,6 @@ def set_target_deployment(deployment: str) -> None:
 
 def set_optimizer_deployment(deployment: str) -> None:
     _openai.set_optimizer_deployment(deployment)
+    _codex.set_optimizer_deployment(deployment)
     _claude.set_optimizer_deployment(deployment)
     _qwen.set_optimizer_deployment(deployment)

@@ -177,7 +177,7 @@ def parse_args() -> argparse.Namespace:
     # Legacy flat CLI overrides (still work, prefer --cfg-options for new usage)
     p.add_argument("--env", type=str)
     p.add_argument("--backend", type=str,
-                   choices=["azure_openai", "codex", "codex_exec", "claude", "claude_chat", "claude_code_exec", "qwen", "qwen_chat", "minimax", "minimax_chat"])
+                   choices=["azure_openai", "codex", "codex_cli", "codex_exec", "claude", "claude_chat", "claude_code_exec", "qwen", "qwen_chat", "minimax", "minimax_chat"])
     p.add_argument("--optimizer_model", type=str)
     p.add_argument("--target_model", type=str)
     p.add_argument("--optimizer_backend", type=str)
@@ -480,6 +480,9 @@ def load_config(args: argparse.Namespace) -> dict:
         elif backend in {"codex", "codex_exec"}:
             flat.setdefault("optimizer_backend", "openai_chat")
             flat.setdefault("target_backend", "codex_exec")
+        elif backend == "codex_cli":
+            flat.setdefault("optimizer_backend", "codex_cli")
+            flat.setdefault("target_backend", "openai_chat")
         elif backend == "claude_code_exec":
             flat.setdefault("optimizer_backend", "openai_chat")
             flat.setdefault("target_backend", "claude_code_exec")
@@ -508,6 +511,12 @@ def load_config(args: argparse.Namespace) -> dict:
             and not _has_model_override("model.optimizer", "optimizer_model")
         ):
             flat["optimizer_model"] = default_model_for_backend("qwen_chat")
+    if flat.get("optimizer_backend") == "codex_cli":
+        if (
+            str(flat.get("optimizer_model", "") or "").strip() in _OPENAI_DEFAULT_MODEL_SENTINELS
+            and not _has_model_override("model.optimizer", "optimizer_model")
+        ):
+            flat["optimizer_model"] = default_model_for_backend("codex_cli")
     if flat.get("target_backend") == "claude_chat":
         if (
             str(flat.get("target_model", "") or "").strip() in _OPENAI_DEFAULT_MODEL_SENTINELS

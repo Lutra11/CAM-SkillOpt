@@ -139,7 +139,7 @@ def parse_args() -> argparse.Namespace:
     # Legacy flat overrides
     p.add_argument("--env", type=str)
     p.add_argument("--backend", type=str,
-                   choices=["azure_openai", "codex", "codex_exec", "claude", "claude_chat", "claude_code_exec", "minimax", "minimax_chat"])
+                   choices=["azure_openai", "codex", "codex_cli", "codex_exec", "claude", "claude_chat", "claude_code_exec", "minimax", "minimax_chat"])
     p.add_argument("--optimizer_model", type=str)
     p.add_argument("--target_model", type=str)
     p.add_argument("--optimizer_backend", type=str)
@@ -322,6 +322,9 @@ def main() -> None:
         elif backend in {"codex", "codex_exec"}:
             cfg.setdefault("optimizer_backend", "openai_chat")
             cfg.setdefault("target_backend", "codex_exec")
+        elif backend == "codex_cli":
+            cfg.setdefault("optimizer_backend", "codex_cli")
+            cfg.setdefault("target_backend", "openai_chat")
         elif backend == "claude_code_exec":
             cfg.setdefault("optimizer_backend", "openai_chat")
             cfg.setdefault("target_backend", "claude_code_exec")
@@ -341,6 +344,12 @@ def main() -> None:
             and not _has_model_override("model.optimizer", "optimizer_model")
         ):
             cfg["optimizer_model"] = default_model_for_backend("claude_chat")
+    if cfg.get("optimizer_backend") == "codex_cli":
+        if (
+            str(cfg.get("optimizer_model", "") or "").strip() in _OPENAI_DEFAULT_MODEL_SENTINELS
+            and not _has_model_override("model.optimizer", "optimizer_model")
+        ):
+            cfg["optimizer_model"] = default_model_for_backend("codex_cli")
     if cfg.get("target_backend") == "claude_chat":
         if (
             str(cfg.get("target_model", "") or "").strip() in _OPENAI_DEFAULT_MODEL_SENTINELS
