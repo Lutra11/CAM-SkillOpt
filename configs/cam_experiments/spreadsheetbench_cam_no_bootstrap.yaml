@@ -1,0 +1,13 @@
+_base_: ../spreadsheetbench/default.yaml
+
+cam:
+  enabled: true
+  bootstrap_gate: false
+  adaptive_budget: true
+  min_budget: 2
+  max_budget: 8
+  memory_enabled: true
+  memory_top_k: 3
+
+env:
+  out_root: outputs/cam_experiments/spreadsheetbench_cam_no_bootstrap

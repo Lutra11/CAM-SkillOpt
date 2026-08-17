@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Local secrets
+.env
+.env.*
+!.env.example
+!.env.deepseek_glm.example
+
+# Experiment outputs and checkpoints
+outputs/
+ckpt/
+runs/
+wandb/
+mlruns/
+*.log
+
+# Raw / materialized datasets
+data/spreadsheetbench_verified_400/
+data/spreadsheetbench_verified_400.tar
+data/spreadsheetbench_verified_400.tar.gz
+data/spreadsheetbench_split/
+data/stage*_spreadsheetbench*_split/
+data/**/*_init.xlsx
+data/**/*_golden.xlsx
+
+# Generated reports / local artifacts
+*.docx
+*.pdf
+*.tmp
+~$*
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

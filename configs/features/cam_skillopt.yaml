@@ -1,0 +1,12 @@
+cam:
+  enabled: true
+  bootstrap_gate: true
+  confidence_level: 0.95
+  meaningful_improvement: 0.0
+  bootstrap_samples: 10000
+  seed: 42
+  adaptive_budget: true
+  min_budget: 2
+  max_budget: 8
+  memory_enabled: true
+  memory_top_k: 3

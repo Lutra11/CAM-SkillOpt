@@ -1,0 +1,14 @@
+_base_: spreadsheetbench_cam_full.yaml
+
+model:
+  optimizer: deepseek-chat
+  target: glm-4.5
+  optimizer_backend: openai_chat
+  target_backend: openai_chat
+  optimizer_azure_openai_endpoint: "https://api.deepseek.com/v1"
+  optimizer_azure_openai_auth_mode: openai_compatible
+  target_azure_openai_endpoint: "https://open.bigmodel.cn/api/paas/v4"
+  target_azure_openai_auth_mode: openai_compatible
+
+env:
+  out_root: outputs/cam_experiments/spreadsheetbench_cam_full_deepseek_glm

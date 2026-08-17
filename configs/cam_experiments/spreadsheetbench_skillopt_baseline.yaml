@@ -1,0 +1,7 @@
+_base_: ../spreadsheetbench/default.yaml
+
+cam:
+  enabled: false
+
+env:
+  out_root: outputs/cam_experiments/spreadsheetbench_skillopt_baseline
