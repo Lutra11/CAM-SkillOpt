@@ -1,0 +1,80 @@
+{
+  "step": 4,
+  "epoch": 1,
+  "step_in_epoch": 3,
+  "timing": {
+    "rollout_s": 358.0,
+    "reflect_s": 79.5,
+    "aggregate_s": 0.0,
+    "select_s": 0.0,
+    "update_s": 0.0,
+    "evaluate_s": 856.2
+  },
+  "tokens": {
+    "rollout": {
+      "calls": 12,
+      "prompt_tokens": 0,
+      "completion_tokens": 0
+    },
+    "analyst": {
+      "calls": 4,
+      "prompt_tokens": 85576,
+      "completion_tokens": 2414
+    },
+    "merge": {
+      "calls": 0,
+      "prompt_tokens": 0,
+      "completion_tokens": 0
+    },
+    "ranking": {
+      "calls": 0,
+      "prompt_tokens": 0,
+      "completion_tokens": 0
+    }
+  },
+  "rollout_hard": 0.5,
+  "rollout_soft": 0.5,
+  "rollout_n": 4,
+  "accumulation_batches": [
+    {
+      "batch_idx": 0,
+      "batch_seed": 1046,
+      "n_envs": 4,
+      "hard": 0.5,
+      "soft": 0.5,
+      "n_failure_patches": 1,
+      "n_success_patches": 0
+    }
+  ],
+  "n_patches": 1,
+  "n_failure_patches": 1,
+  "n_success_patches": 0,
+  "n_edits_merged": 1,
+  "n_edits_ranked": 1,
+  "edit_budget": 2,
+  "lr_control_mode": "fixed",
+  "support_counts": [
+    2
+  ],
+  "candidate_hash": "cef1a95718a71761",
+  "candidate_skill_len": 3350,
+  "edit_apply_summary": {
+    "total": 1,
+    "applied": 1,
+    "skipped": 0,
+    "errors": 0
+  },
+  "selection_hard": 0.375,
+  "selection_soft": 0.375,
+  "cam_gate_used": false,
+  "gate_metric": "hard",
+  "candidate_gate_score": 0.375,
+  "action": "reject",
+  "current_score": 0.5,
+  "best_score": 0.5,
+  "best_step": 2,
+  "current_origin": "step_0002",
+  "best_origin": "step_0002",
+  "skill_len": 2760,
+  "wall_time_s": 1293.7
+}
