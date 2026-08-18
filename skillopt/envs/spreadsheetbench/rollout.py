@@ -38,13 +38,13 @@ from skillopt.envs.spreadsheetbench.executor import run_generated_code
 def load_items(path: str) -> list[dict]:
     """Load a benchmark file. Supports both .jsonl and .json (list of dicts)."""
     if path.endswith(".json"):
-        with open(path) as f:
+        with open(path, encoding="utf-8") as f:
             data = json.load(f)
         if isinstance(data, dict):
             data = data.get("data") or list(data.values())
         return list(data)
     items = []
-    with open(path) as f:
+    with open(path, encoding="utf-8") as f:
         for line in f:
             line = line.strip()
             if line:
@@ -252,6 +252,10 @@ def process_one(
 
     sp = item.get("spreadsheet_path", f"spreadsheet/{task_id}")
     task_dir = sp if os.path.isabs(sp) else os.path.join(data_root, sp)
+    if not os.path.exists(task_dir):
+        abs_task_dir = os.path.abspath(task_dir)
+        if os.path.exists(abs_task_dir):
+            task_dir = abs_task_dir
 
     result = {
         "id": task_id,
@@ -278,6 +282,11 @@ def process_one(
         result["n_cases"] = len(cases)
         if not cases:
             result["fail_reason"] = "no-test-cases"
+            result["error"] = (
+                f"task_dir={os.path.abspath(task_dir)} "
+                f"exists={os.path.exists(task_dir)} cwd={os.getcwd()} "
+                f"data_root_repr={data_root!r} spreadsheet_path_repr={sp!r} task_dir_repr={task_dir!r}"
+            )
             return result
 
         task_out_dir = os.path.join(out_root, "predictions", task_id)
@@ -310,10 +319,10 @@ def process_one(
         except Exception:
             target_system_prompt = ""
         if target_system_prompt:
-            with open(os.path.join(task_out_dir, "target_system_prompt.txt"), "w") as f:
+            with open(os.path.join(task_out_dir, "target_system_prompt.txt"), "w", encoding="utf-8") as f:
                 f.write(target_system_prompt)
             result["target_system_prompt"] = target_system_prompt
-        with open(os.path.join(task_out_dir, "target_user_prompt.txt"), "w") as f:
+        with open(os.path.join(task_out_dir, "target_user_prompt.txt"), "w", encoding="utf-8") as f:
             f.write(target_user_prompt)
         result["target_user_prompt"] = target_user_prompt
 
@@ -342,16 +351,16 @@ def process_one(
             )
             result["n_turns"] = agent_result.get("n_turns", 0)
             if agent_result.get("target_system_prompt"):
-                with open(os.path.join(task_out_dir, "target_system_prompt.txt"), "w") as f:
+                with open(os.path.join(task_out_dir, "target_system_prompt.txt"), "w", encoding="utf-8") as f:
                     f.write(agent_result["target_system_prompt"])
                 result["target_system_prompt"] = agent_result["target_system_prompt"]
             if agent_result.get("target_user_prompt"):
-                with open(os.path.join(task_out_dir, "target_user_prompt.txt"), "w") as f:
+                with open(os.path.join(task_out_dir, "target_user_prompt.txt"), "w", encoding="utf-8") as f:
                     f.write(agent_result["target_user_prompt"])
                 result["target_user_prompt"] = agent_result["target_user_prompt"]
 
             # Save conversation log
-            with open(os.path.join(task_out_dir, "conversation.json"), "w") as f:
+            with open(os.path.join(task_out_dir, "conversation.json"), "w", encoding="utf-8") as f:
                 json.dump(
                     agent_result.get("conversation", []),
                     f, ensure_ascii=False, indent=2,
@@ -391,7 +400,7 @@ def process_one(
                         result["fail_reason"] = "no-solution-py-for-other-cases"
                     continue
 
-                with open(solution_path) as f:
+                with open(solution_path, encoding="utf-8") as f:
                     code = f.read()
 
                 # Prepend new INPUT_PATH / OUTPUT_PATH
@@ -480,7 +489,7 @@ def run_spreadsheet_batch(
     done_ids: set[str] = set()
     existing: list[dict] = []
     if os.path.exists(results_path):
-        with open(results_path) as f:
+        with open(results_path, encoding="utf-8") as f:
             for line in f:
                 try:
                     r = json.loads(line)
@@ -631,6 +640,10 @@ def process_one_codegen(
 
     sp = item.get("spreadsheet_path", f"spreadsheet/{task_id}")
     task_dir = sp if os.path.isabs(sp) else os.path.join(data_root, sp)
+    if not os.path.exists(task_dir):
+        abs_task_dir = os.path.abspath(task_dir)
+        if os.path.exists(abs_task_dir):
+            task_dir = abs_task_dir
 
     result = {
         "id": task_id,
@@ -658,6 +671,11 @@ def process_one_codegen(
         result["n_cases"] = len(cases)
         if not cases:
             result["fail_reason"] = "no-test-cases"
+            result["error"] = (
+                f"task_dir={os.path.abspath(task_dir)} "
+                f"exists={os.path.exists(task_dir)} cwd={os.getcwd()} "
+                f"data_root_repr={data_root!r} spreadsheet_path_repr={sp!r} task_dir_repr={task_dir!r}"
+            )
             return result
 
         task_out_dir = os.path.join(out_root, "predictions", task_id)
@@ -683,11 +701,11 @@ def process_one_codegen(
             diagnostic_trace_context=diagnostic_trace_context,
         )
 
-        with open(os.path.join(task_out_dir, "spreadsheet_preview.txt"), "w") as f:
+        with open(os.path.join(task_out_dir, "spreadsheet_preview.txt"), "w", encoding="utf-8") as f:
             f.write(preview_text)
-        with open(os.path.join(task_out_dir, "target_system_prompt.txt"), "w") as f:
+        with open(os.path.join(task_out_dir, "target_system_prompt.txt"), "w", encoding="utf-8") as f:
             f.write(target_system)
-        with open(os.path.join(task_out_dir, "target_user_prompt.txt"), "w") as f:
+        with open(os.path.join(task_out_dir, "target_user_prompt.txt"), "w", encoding="utf-8") as f:
             f.write(target_user)
 
         result["spreadsheet_preview"] = preview_text
@@ -742,12 +760,12 @@ def process_one_codegen(
         raw = agent_result.get("raw", "")
 
         # Save artifacts
-        with open(os.path.join(task_out_dir, "code.py"), "w") as f:
+        with open(os.path.join(task_out_dir, "code.py"), "w", encoding="utf-8") as f:
             f.write(code)
-        with open(os.path.join(task_out_dir, "raw.txt"), "w") as f:
+        with open(os.path.join(task_out_dir, "raw.txt"), "w", encoding="utf-8") as f:
             f.write(raw)
         if agent_result.get("conversation"):
-            with open(os.path.join(task_out_dir, "conversation.json"), "w") as f:
+            with open(os.path.join(task_out_dir, "conversation.json"), "w", encoding="utf-8") as f:
                 json.dump(agent_result["conversation"], f, ensure_ascii=False, indent=2)
 
         if not code.strip():
@@ -824,7 +842,7 @@ def process_one_codegen(
                 "content": f"[POST-EXECUTION VERIFICATION]\n\n{enrichment_msg}",
             })
             # Re-save the enriched conversation
-            with open(os.path.join(task_out_dir, "conversation.json"), "w") as f:
+            with open(os.path.join(task_out_dir, "conversation.json"), "w", encoding="utf-8") as f:
                 json.dump(conversation, f, ensure_ascii=False, indent=2)
         n_cases = result["n_cases"]
         n_pass = result["n_pass"]
@@ -875,7 +893,7 @@ def run_spreadsheet_batch_codegen(
     done_ids: set[str] = set()
     existing: list[dict] = []
     if os.path.exists(results_path):
-        with open(results_path) as f:
+        with open(results_path, encoding="utf-8") as f:
             for line in f:
                 try:
                     r = json.loads(line)
@@ -901,30 +919,31 @@ def run_spreadsheet_batch_codegen(
     def _run_one(it: dict) -> dict:
         started_at[str(it["id"])] = time.time()
         return process_one_codegen(
-            it,
-            data_root,
-            out_root,
-            skill_content,
-            mode,
-            max_turns,
-            max_completion_tokens,
-            task_timeout,
-            use_eval_feedback,
-            diagnostic_mode,
-            diagnostic_instruction,
-            (diagnostic_trace_context_by_id or {}).get(str(it["id"]), ""),
+            item=it,
+            data_root=data_root,
+            out_root=out_root,
+            skill_content=skill_content,
+            mode=mode,
+            max_turns=max_turns,
+            max_completion_tokens=max_completion_tokens,
+            task_timeout=task_timeout,
+            use_eval_feedback=use_eval_feedback,
+            diagnostic_mode=diagnostic_mode,
+            diagnostic_instruction=diagnostic_instruction,
+            diagnostic_trace_context=(diagnostic_trace_context_by_id or {}).get(str(it["id"]), ""),
         )
 
-    def _timeout_result(item: dict) -> dict:
+    def _timeout_result(item: dict, reason: str | None = None) -> dict:
+        fail_reason = reason or f"task-timeout-{task_timeout}s"
         return {
             "id": str(item["id"]),
             "ok": False,
             "instruction_type": item.get("instruction_type", ""),
             "task_type": "other",
             "phase": "timeout",
-            "fail_reason": f"task-timeout-{task_timeout}s",
+            "fail_reason": fail_reason,
             "n_cases": 0, "n_pass": 0, "soft": 0.0, "hard": 0,
-            "n_turns": 0, "cases": [], "error": "timeout",
+            "n_turns": 0, "cases": [], "error": fail_reason,
         }
 
     def _error_result(item: dict, e: Exception) -> dict:
@@ -979,6 +998,25 @@ def run_spreadsheet_batch_codegen(
                 fut.cancel()
                 finished += 1
                 _record(_timeout_result(futs[fut]), finished)
+            if timed_out:
+                # ThreadPoolExecutor cannot forcibly stop a worker that is stuck
+                # inside a Codex/Claude CLI subprocess.  With workers=1 this can
+                # leave queued futures permanently pending because they never
+                # enter _run_one() and therefore never get a started_at timestamp.
+                # Treat the whole outstanding batch as timed out so the training
+                # loop can continue and record a reproducible failure instead of
+                # hanging forever.
+                for fut in list(pending_futs):
+                    pending_futs.remove(fut)
+                    fut.cancel()
+                    finished += 1
+                    _record(
+                        _timeout_result(
+                            futs[fut],
+                            reason=f"task-timeout-cancelled-after-worker-stall-{task_timeout}s",
+                        ),
+                        finished,
+                    )
     finally:
         ex.shutdown(wait=False, cancel_futures=True)
 

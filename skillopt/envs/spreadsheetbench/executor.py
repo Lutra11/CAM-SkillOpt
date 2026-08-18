@@ -43,7 +43,7 @@ def run_generated_code(code: str, input_path: str, output_path: str, timeout: in
         output_path=output_path,
         user_code_indented=indented,
     )
-    with tempfile.NamedTemporaryFile("w", suffix=".py", delete=False) as f:
+    with tempfile.NamedTemporaryFile("w", suffix=".py", delete=False, encoding="utf-8") as f:
         f.write(script)
         tmp = f.name
     try:
@@ -51,6 +51,8 @@ def run_generated_code(code: str, input_path: str, output_path: str, timeout: in
             [sys.executable, tmp],
             capture_output=True,
             text=True,
+            encoding="utf-8",
+            errors="replace",
             timeout=timeout if timeout and timeout > 0 else None,
         )
         if proc.returncode != 0:

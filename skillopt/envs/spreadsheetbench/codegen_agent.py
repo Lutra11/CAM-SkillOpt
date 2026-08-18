@@ -10,11 +10,13 @@ a Python code block, no function-calling / tool-use).
 """
 from __future__ import annotations
 
+import ast
 import json
 import os
 import random
 import signal
 import time
+import unicodedata
 
 import openpyxl
 
@@ -121,16 +123,85 @@ def _preview_workbook(path: str, max_rows: int = 5, max_cols: int = 20) -> str:
 
 # ── Code extraction (same as official prompt.py) ────────────────────────────
 
+_CODE_CHAR_REPLACEMENTS = {
+    "\ufeff": "",
+    "\u200b": "",
+    "\u200c": "",
+    "\u200d": "",
+    "\u2060": "",
+    "\u00a0": " ",
+    "\u2018": "'",
+    "\u2019": "'",
+    "\u201a": "'",
+    "\u201b": "'",
+    "\u2032": "'",
+    "\uff07": "'",
+    "\u201c": '"',
+    "\u201d": '"',
+    "\u201e": '"',
+    "\u201f": '"',
+    "\u2033": '"',
+    "\uff02": '"',
+}
+
+
+def _normalize_generated_code(code: str) -> str:
+    """Normalize LLM-generated Python text before saving/executing it.
+
+    SpreadsheetBench tasks often contain non-ASCII sheet names and cell values,
+    so this deliberately preserves Unicode content.  It only fixes typography
+    characters that are illegal as Python quotes/operators and strips invisible
+    format characters that can make otherwise-valid code fail on Windows.
+    """
+    code = unicodedata.normalize("NFKC", code)
+    for old, new in _CODE_CHAR_REPLACEMENTS.items():
+        code = code.replace(old, new)
+    # The mojibake string below is a common rendering of U+FFFD replacement
+    # bytes on Chinese Windows consoles.  If it leaks into code outside a
+    # string/comment, Python raises a confusing invalid-character SyntaxError.
+    code = code.replace("锟斤拷", "'").replace("\ufffd", "")
+    return code.strip()
+
+
+def _looks_like_python_code(code: str) -> bool:
+    stripped = code.strip()
+    if not stripped:
+        return False
+    try:
+        ast.parse(stripped)
+        return True
+    except SyntaxError:
+        pass
+    code_markers = (
+        "import ",
+        "from ",
+        "def ",
+        "class ",
+        "openpyxl",
+        "Workbook",
+        "load_workbook",
+        "INPUT_PATH",
+        "OUTPUT_PATH",
+        "wb.",
+        "ws.",
+        ".save(",
+    )
+    return any(marker in stripped for marker in code_markers)
+
+
 def extract_code(text: str) -> str:
-    """Extract the first ```python``` fenced code block from LLM output."""
+    """Extract a Python code block and reject plain-language final messages."""
     if "```" not in text:
-        return text.strip()
+        code = _normalize_generated_code(text)
+        return code if _looks_like_python_code(code) else ""
     start = text.find("```")
     nl = text.find("\n", start)
     end = text.find("```", nl + 1)
     if nl == -1 or end == -1:
-        return text.strip()
-    return text[nl + 1 : end].strip()
+        code = _normalize_generated_code(text)
+        return code if _looks_like_python_code(code) else ""
+    code = _normalize_generated_code(text[nl + 1 : end])
+    return code if _looks_like_python_code(code) else ""
 
 
 # ── Prompt construction (official SpreadsheetBench prompts) ─────────────────

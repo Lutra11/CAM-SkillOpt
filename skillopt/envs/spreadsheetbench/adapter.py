@@ -45,6 +45,7 @@ class SpreadsheetBenchAdapter(EnvAdapter):
         edit_budget: int = 4,
         seed: int = 42,
         max_completion_tokens: int = 16384,
+        limit: int = 0,
     ) -> None:
         self.data_root = data_root
         self.mode = mode  # "single", "multi", or "react"
@@ -65,6 +66,7 @@ class SpreadsheetBenchAdapter(EnvAdapter):
             split_output_dir=split_output_dir,
             data_root=data_root,
             seed=seed,
+            limit=limit,
         )
 
     def setup(self, cfg: dict) -> None:
@@ -109,7 +111,7 @@ class SpreadsheetBenchAdapter(EnvAdapter):
         # Resume support
         if os.path.exists(results_path):
             existing: list[dict] = []
-            with open(results_path) as f:
+            with open(results_path, encoding="utf-8") as f:
                 for line in f:
                     try:
                         existing.append(json.loads(line))
@@ -149,7 +151,7 @@ class SpreadsheetBenchAdapter(EnvAdapter):
                 diagnostic_trace_context_by_id=kwargs.get("diagnostic_trace_context_by_id"),
             )
 
-        with open(results_path, "w") as f:
+        with open(results_path, "w", encoding="utf-8") as f:
             for r in results:
                 f.write(json.dumps(r, ensure_ascii=False) + "\n")
 

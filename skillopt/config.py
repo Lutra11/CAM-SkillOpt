@@ -142,6 +142,18 @@ _FLATTEN_MAP: dict[str, str] = {
     "env.name": "env",
     "env.skill_init": "skill_init",
     "env.out_root": "out_root",
+    "env.data_path": "data_path",
+    "env.split_mode": "split_mode",
+    "env.split_ratio": "split_ratio",
+    "env.split_seed": "split_seed",
+    "env.split_dir": "split_dir",
+    "env.split_output_dir": "split_output_dir",
+    "env.data_root": "data_root",
+    "env.mode": "mode",
+    "env.max_turns": "max_turns",
+    "env.exec_timeout": "exec_timeout",
+    "env.workers": "workers",
+    "env.limit": "limit",
 }
 
 

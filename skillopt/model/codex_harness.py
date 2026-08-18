@@ -701,6 +701,8 @@ def _run_claude_code_cli_exec(
             cwd=work_dir,
             capture_output=True,
             text=True,
+            encoding="utf-8",
+            errors="replace",
             timeout=timeout,
         )
     except subprocess.TimeoutExpired as exc:
@@ -878,6 +880,7 @@ def _run_codex_cli_exec(
     full_auto: bool | None = None,
 ) -> tuple[str, str]:
     config = get_codex_exec_config()
+    work_dir = os.path.abspath(work_dir)
     last_message_path = os.path.join(work_dir, "codex_last_message.txt")
     cmd = [
         str(config["path"]),
@@ -906,14 +909,17 @@ def _run_codex_cli_exec(
     for image in images or []:
         _validate_exec_path(os.path.dirname(image) or work_dir)
         cmd.extend(["-i", image])
-    cmd.extend(["--output-last-message", last_message_path, prompt])
+    cmd.extend(["--output-last-message", last_message_path, "-"])
 
     try:
         proc = subprocess.run(
             cmd,
+            input=prompt,
             cwd=work_dir,
             capture_output=True,
             text=True,
+            encoding="utf-8",
+            errors="replace",
             timeout=timeout,
         )
     except subprocess.TimeoutExpired as exc:
@@ -935,7 +941,9 @@ def _run_codex_cli_exec(
     if os.path.exists(last_message_path):
         with open(last_message_path, encoding="utf-8") as f:
             last_message = f.read()
-    raw = stdout
+    raw = "COMMAND_JSON: " + json.dumps(cmd, ensure_ascii=False) + "\n"
+    raw += "CWD: " + str(work_dir) + "\n"
+    raw += stdout
     if stderr:
         raw = f"{raw}\n[stderr]\n{stderr}" if raw else stderr
     if proc.returncode != 0:
