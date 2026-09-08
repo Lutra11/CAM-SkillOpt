@@ -210,3 +210,162 @@ P0 fix1 = completed / stable enough to continue P1 fix1
 3. P1 稳定后再跑 P2；
 4. 选定并发配置后跑 4 个 CAM 方法对照；
 5. 最后整理论文结果表与 Word 初稿。
+
+## 6. 并发探针补充：P1 fix1 与 P2
+
+用户明确授权将 SpreadsheetBench 实验任务数据发送到外部模型 API 后，继续执行 P1/P2 并发探针。
+
+### 6.1 P1 fix1
+
+配置：
+
+```text
+method = CAM-Full
+probe = P1 fix1
+workers = 4
+analyst_workers = 1
+train_size = 4
+batch_size = 4
+epochs = 1
+selection_size = 4
+test_size = 4
+eval_test = true
+target = gpt-5.6-terra
+exec_timeout = 420
+seed = 42
+```
+
+输出目录：
+
+```text
+outputs/stage12_probe/spreadsheetbench_terra_cam_full_P1_w4_a1_fix2
+```
+
+结果：
+
+```text
+baseline_selection_hard = 0.0000
+final_selection_hard = 0.0000
+baseline_test_hard = 0.0000
+final_test_hard = 0.0000
+total_skips = 1
+wall_time = 173.9s
+total_calls = 24
+```
+
+观察：
+
+- P1 未观察到 worker stall、批量取消或 timeout 扩散；
+- 运行速度显著快于 P0 fix1；
+- 但本轮所有 selection/test 结果为 0，且训练 step 为 `skip_no_patches`，没有形成可用 skill 更新。
+
+### 6.2 P2
+
+配置：
+
+```text
+method = CAM-Full
+probe = P2
+workers = 4
+analyst_workers = 2
+train_size = 4
+batch_size = 4
+epochs = 1
+selection_size = 4
+test_size = 4
+eval_test = true
+target = gpt-5.6-terra
+exec_timeout = 420
+seed = 42
+```
+
+输出目录：
+
+```text
+outputs/stage12_probe/spreadsheetbench_terra_cam_full_P2_w4_a2_fix2
+```
+
+结果：
+
+```text
+baseline_selection_hard = 0.0000
+final_selection_hard = 0.0000
+baseline_test_hard = 0.0000
+final_test_hard = 0.0000
+total_skips = 1
+wall_time = 157.7s
+total_calls = 24
+```
+
+观察：
+
+- P2 同样未观察到 worker stall、批量取消或 timeout 扩散；
+- 速度略快于 P1；
+- 但质量同样坍塌为 0，且没有产生可用 patch。
+
+### 6.3 并发配置选择
+
+探针结果对比：
+
+```text
+P0 fix1: workers=1, analyst_workers=1, selection=0.5000, test=0.2500, wall=915.1s
+P1 fix1: workers=4, analyst_workers=1, selection=0.0000, test=0.0000, wall=173.9s
+P2:      workers=4, analyst_workers=2, selection=0.0000, test=0.0000, wall=157.7s
+```
+
+结论：
+
+```text
+selected_formal_concurrency = workers=1, analyst_workers=1
+```
+
+理由：P1/P2 虽然技术上稳定且更快，但本 seed 下完全没有有效成功样本或可用 patch；P0 fix1 较慢但产生非零 selection/test 信号，更适合作为正式对照实验的保守配置。
+
+## 7. 正式 CAM 方法对照：CAM-Full fix1 中断记录
+
+按选定并发配置启动 CAM-Full 正式对照：
+
+```text
+method = CAM-Full
+workers = 1
+analyst_workers = 1
+train_size = 16
+batch_size = 4
+epochs = 1
+selection_size = 8
+test_size = 8
+eval_test = true
+target = gpt-5.6-terra
+exec_timeout = 420
+seed = 42
+```
+
+输出目录：
+
+```text
+outputs/formal_cam/spreadsheetbench_terra_cam_full_seed42_w1_a1_fix1
+```
+
+已完成部分：
+
+```text
+baseline_selection_hard = 0.0000
+step_1_rollout_hard = 0.0000, action = skip_no_patches
+step_2_rollout_hard = 0.0000, action = skip_no_patches
+step_3_rollout_hard = 0.0000, action = skip_no_patches
+step_4_rollout_hard = 0.0000, action = skip_no_patches
+final_selection_hard = 0.0000
+baseline_test_hard = 0.0000
+```
+
+状态：
+
+```text
+CAM-Full formal fix1 = incomplete / no summary.json
+```
+
+说明：
+
+- 训练进程在 test 收尾阶段失联，输出目录没有生成 `summary.json`；
+- 因没有完整 summary，fix1 不作为正式结果；
+- 后续将使用新输出目录重新运行 CAM-Full formal fix2，避免覆盖 fix1 中断证据。
