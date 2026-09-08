@@ -204,6 +204,26 @@ def extract_code(text: str) -> str:
     return code if _looks_like_python_code(code) else ""
 
 
+def _looks_like_codex_tool_stall(text: str) -> bool:
+    lowered = (text or "").lower()
+    markers = (
+        "blocked by",
+        "shell",
+        "tool execution",
+        "failed to launch",
+        "shellexecuteexw",
+        "could not read",
+        "couldn't read",
+        "could not inspect",
+        "couldn't inspect",
+        "could not write",
+        "couldn't write",
+        "workspace",
+        "stall",
+    )
+    return any(marker in lowered for marker in markers)
+
+
 # ── Prompt construction (official SpreadsheetBench prompts) ─────────────────
 
 
@@ -318,12 +338,11 @@ def _build_codex_task(
     return (
         f"{prompt}\n\n"
         "## Codex Harness Task\n"
-        "- Read `.agents/skills/skillopt-target/SKILL.md` before writing code; do not call a Skill tool.\n"
-        "- Read and optionally inspect `input.xlsx` in this workspace.\n"
-        "- Write the final Python solution to `solution.py`.\n"
+        "- The full task, spreadsheet preview, and skill are already included in the prompt.\n"
+        "- Do not use shell commands and do not read workspace files unless absolutely necessary.\n"
+        "- Return one complete Python script in a ```python fenced code block.\n"
         "- The script should use the provided `INPUT_PATH` and `OUTPUT_PATH` variables.\n"
-        "- If you want to validate locally, run `python run_solution.py`.\n"
-        "- Do not return a code fence as the primary artifact; the source of truth is `solution.py`.\n"
+        "- Do not hardcode the local `input.xlsx` path; the harness injects INPUT_PATH.\n"
     )
 
 
@@ -372,10 +391,17 @@ def _prepare_codex_workspace(
         diagnostic_trace_context=diagnostic_trace_context,
     )
     prompt = (
-        "Read `.agents/skills/skillopt-target/SKILL.md` directly; do not call a Skill tool.\n"
-        "Read `task.md`, inspect `input.xlsx` if useful, and write the final solution to `solution.py`.\n"
-        "You may run `python run_solution.py` to validate the script locally.\n"
-        "In your final response, briefly confirm whether `solution.py` was written and summarize the approach."
+        "You are solving a SpreadsheetBench task in direct code-generation mode.\n"
+        "Important: do not use shell commands, do not run tools, and do not try to read task.md or SKILL.md. "
+        "The complete dynamic skill and task are included below.\n\n"
+        "Return exactly one complete Python script inside a ```python fenced code block. "
+        "The harness will save and execute that script as solution.py.\n\n"
+        "The script must use the injected variables INPUT_PATH and OUTPUT_PATH. "
+        "It should load INPUT_PATH, modify/create the workbook, and save OUTPUT_PATH.\n\n"
+        "## Dynamic Skill\n"
+        f"{skill_content.strip() or '(no additional skill)'}\n\n"
+        "## Full Task\n"
+        f"{task_md}\n"
     )
     prepare_workspace(
         work_dir=work_dir,
@@ -524,6 +550,26 @@ def run_single(
                 code = f.read()
         else:
             code = extract_code(final_message or raw)
+        if not code.strip() and not no_task_timeout:
+            remaining = int(deadline - time.time()) if deadline is not None else task_timeout
+            if remaining > 60 and _looks_like_codex_tool_stall(final_message or raw):
+                retry_prompt = (
+                    "Previous attempt failed because the workspace shell/tool path was blocked. "
+                    "Do not use any tools, do not inspect files, and do not write solution.py yourself. "
+                    "Return only one complete Python script in a ```python fenced code block. "
+                    "Use INPUT_PATH and OUTPUT_PATH.\n\n"
+                    f"## Dynamic Skill\n{skill_content.strip() or '(no additional skill)'}\n\n"
+                    f"## Full Task\n{task_md}\n"
+                )
+                retry_timeout = max(30, min(remaining, task_timeout))
+                retry_message, retry_raw = _run_exec_backend(
+                    work_dir=work_dir,
+                    prompt=retry_prompt,
+                    model=deployment,
+                    timeout=retry_timeout,
+                )
+                raw = f"{raw}\n\n===== DIRECT CODE RETRY =====\n{retry_raw or retry_message}"
+                code = extract_code(retry_message or retry_raw)
         return {
             "code": code,
             "raw": raw or final_message,
