@@ -1,0 +1,7 @@
+{
+  "skill": "C:\\CAM-SkillOpt\\SkillOpt\\outputs\\formal_normal\\spreadsheetbench_train16_sel8_t420_seed42\\best_skill.md",
+  "split": "valid_unseen",
+  "n_items": 8,
+  "hard": 0.125,
+  "soft": 0.125
+}

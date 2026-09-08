@@ -1,0 +1,98 @@
+{
+  "step": 1,
+  "epoch": 1,
+  "step_in_epoch": 0,
+  "timing": {
+    "rollout_s": 164.5,
+    "reflect_s": 97.7,
+    "aggregate_s": 39.9,
+    "select_s": 0.0,
+    "update_s": 0.0,
+    "evaluate_s": 149.2
+  },
+  "tokens": {
+    "rollout": {
+      "calls": 8,
+      "prompt_tokens": 0,
+      "completion_tokens": 0
+    },
+    "analyst": {
+      "calls": 4,
+      "prompt_tokens": 77078,
+      "completion_tokens": 2876
+    },
+    "merge": {
+      "calls": 2,
+      "prompt_tokens": 29228,
+      "completion_tokens": 1548
+    }
+  },
+  "rollout_hard": 0.0,
+  "rollout_soft": 0.0,
+  "rollout_n": 4,
+  "accumulation_batches": [
+    {
+      "batch_idx": 0,
+      "batch_seed": 1043,
+      "n_envs": 4,
+      "hard": 0.0,
+      "soft": 0.0,
+      "n_failure_patches": 2,
+      "n_success_patches": 0
+    }
+  ],
+  "n_patches": 2,
+  "n_failure_patches": 2,
+  "n_success_patches": 0,
+  "n_edits_merged": 3,
+  "cam_failure_confidence": {
+    "counts": {
+      "data_exploration: The agent inferred the target table's date and criteria layout without inspecting its labels, formulas, merged cells, or surrounding populated rows, leaving the required result blank.": 3,
+      "code_error: The agent passed style overrides to copy.copy(), which accepts no keyword arguments, causing the script to fail before saving.": 1
+    },
+    "entropy": 0.5623351446188083,
+    "normalized_entropy": 0.8112781244591328,
+    "confidence": 0.18872187554086717,
+    "total_failures": 4
+  },
+  "n_edits_ranked": 3,
+  "edit_budget": 3,
+  "lr_control_mode": "cam_adaptive",
+  "support_counts": [
+    1,
+    1,
+    1
+  ],
+  "candidate_hash": "bbccfcbb57ac0976",
+  "candidate_skill_len": 3561,
+  "edit_apply_summary": {
+    "total": 3,
+    "applied": 3,
+    "skipped": 0,
+    "errors": 0
+  },
+  "selection_hard": 0.5,
+  "selection_soft": 0.5,
+  "cam_gate": {
+    "action": "re_evaluate",
+    "mean_improvement": 0.25,
+    "lower_confidence_bound": -0.5,
+    "upper_confidence_bound": 1.0,
+    "confidence_level": 0.95,
+    "meaningful_improvement": 0.0,
+    "n_pairs": 4,
+    "bootstrap_samples": 10000,
+    "positive_bootstrap_fraction": 0.6212
+  },
+  "cam_gate_used": true,
+  "gate_metric": "hard",
+  "candidate_gate_score": 0.5,
+  "action": "cam_re_evaluate",
+  "current_score": 0.25,
+  "best_score": 0.25,
+  "best_step": 0,
+  "current_origin": "initial_skill",
+  "best_origin": "initial_skill",
+  "skill_len": 1594,
+  "wall_time_s": 451.2
+}
