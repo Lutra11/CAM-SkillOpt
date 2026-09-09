@@ -78,6 +78,79 @@ class InfraClassificationTests(unittest.TestCase):
 
 
 class StreamingProcessTests(unittest.TestCase):
+    def test_two_network_reconnect_notices_can_recover_and_are_reported(self):
+        with tempfile.TemporaryDirectory() as folder:
+            notice = json.dumps({"type": "error", "message": "Reconnecting... waiting for network (Connection failed: error sending request)"})
+            success = json.dumps({"type": "turn.completed", "usage": {"input_tokens": 1, "output_tokens": 1}})
+            code = f"import sys,time; sys.stdin.read(); print({notice!r},flush=True); print({notice!r},flush=True); time.sleep(0.05); print({success!r},flush=True)"
+            result = run_cli_failfast(
+                [sys.executable, "-u", "-c", code], prompt="test", timeout=5,
+                stage="target", model="offline", evidence_dir=folder,
+            )
+            self.assertEqual(result.returncode, 0)
+            self.assertIn("turn.completed", result.stdout)
+            warnings = json.loads((Path(folder) / "transport_warnings.json").read_text())
+            self.assertEqual(warnings["notice_count"], 2)
+            self.assertTrue(warnings["recovered"])
+            self.assertEqual(len(warnings["notices"]), 2)
+            self.assertFalse((Path(folder) / "infra_error.json").exists())
+
+    def test_third_network_reconnect_notice_exhausts_budget(self):
+        with tempfile.TemporaryDirectory() as folder:
+            notice = json.dumps({"type": "error", "message": "Reconnecting... waiting for network (Connection failed: error sending request)"})
+            code = f"import sys,time; sys.stdin.read(); print({notice!r},flush=True); print({notice!r},flush=True); print({notice!r},flush=True); time.sleep(30)"
+            started = time.monotonic()
+            with self.assertRaises(InfraError) as raised:
+                run_cli_failfast([sys.executable, "-u", "-c", code], prompt="test", timeout=40,
+                                 stage="target", model="offline", evidence_dir=folder)
+            self.assertLess(time.monotonic() - started, 8)
+            self.assertEqual(raised.exception.failure_type, "network_error")
+            warnings = json.loads((Path(folder) / "transport_warnings.json").read_text())
+            self.assertEqual(warnings["notice_count"], 3)
+            self.assertFalse(warnings["recovered"])
+            summary = json.loads((Path(folder) / "infra_error.json").read_text())
+            self.assertEqual(summary["details"]["transport_notice_count"], 3)
+            self.assertNotIn("hard", summary)
+
+    def test_reconnecting_401_is_fatal_before_any_recovery_allowance(self):
+        with tempfile.TemporaryDirectory() as folder:
+            notice = json.dumps({"type": "error", "message": "Reconnecting... network HTTP 401 invalid_refresh_token"})
+            code = f"import sys,time; sys.stdin.read(); print({notice!r},flush=True); time.sleep(30)"
+            started = time.monotonic()
+            with self.assertRaises(InfraError) as raised:
+                run_cli_failfast([sys.executable, "-u", "-c", code], prompt="test", timeout=40,
+                                 stage="target", model="offline", evidence_dir=folder)
+            self.assertLess(time.monotonic() - started, 8)
+            self.assertEqual(raised.exception.failure_type, "auth_error")
+            warnings = json.loads((Path(folder) / "transport_warnings.json").read_text())
+            self.assertEqual(warnings["notice_count"], 0)
+            self.assertFalse(warnings["recovered"])
+
+    def test_network_recovery_still_obeys_original_deadline(self):
+        with tempfile.TemporaryDirectory() as folder:
+            notice = json.dumps({"type": "error", "message": "Reconnecting... waiting for network (Connection failed: error sending request)"})
+            code = f"import sys,time; sys.stdin.read(); print({notice!r},flush=True); time.sleep(30)"
+            started = time.monotonic()
+            with self.assertRaises(InfraError) as raised:
+                run_cli_failfast([sys.executable, "-u", "-c", code], prompt="test", timeout=0.2,
+                                 stage="target", model="offline", evidence_dir=folder)
+            self.assertLess(time.monotonic() - started, 3)
+            self.assertEqual(raised.exception.failure_type, "network_error")
+            self.assertEqual(raised.exception.details["timeout_seconds"], 0.2)
+            self.assertEqual(raised.exception.details["transport_notice_count"], 1)
+
+    def test_terminal_stderr_network_error_is_not_a_recovery_notice(self):
+        with tempfile.TemporaryDirectory() as folder:
+            code = "import sys,time; sys.stdin.read(); print('ERROR: Connection failed: error sending request',file=sys.stderr,flush=True); time.sleep(30)"
+            started = time.monotonic()
+            with self.assertRaises(InfraError) as raised:
+                run_cli_failfast([sys.executable, "-u", "-c", code], prompt="test", timeout=40,
+                                 stage="target", model="offline", evidence_dir=folder)
+            self.assertLess(time.monotonic() - started, 8)
+            self.assertEqual(raised.exception.failure_type, "network_error")
+            warnings = json.loads((Path(folder) / "transport_warnings.json").read_text())
+            self.assertEqual(warnings["notice_count"], 0)
+
     def test_401_stops_first_request_without_waiting_for_reconnect(self):
         with tempfile.TemporaryDirectory() as folder:
             counter = Path(folder) / "request_count.txt"
@@ -162,7 +235,7 @@ class StreamingProcessTests(unittest.TestCase):
 
     def test_real_network_turn_error_is_not_ignored(self):
         with tempfile.TemporaryDirectory() as folder:
-            event = json.dumps({"type": "turn.failed", "error": {"message": "stream disconnected before completion"}})
+            event = json.dumps({"type": "turn.failed", "error": {"message": "Reconnecting... stream disconnected before completion"}})
             code = f"import sys,time; sys.stdin.read(); print({event!r},flush=True); time.sleep(30)"
             started = time.monotonic()
             with self.assertRaises(InfraError) as raised:

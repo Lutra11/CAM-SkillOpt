@@ -210,6 +210,44 @@ def _error_event_text(line: str, channel: str) -> str:
     return ""
 
 
+def _reconnect_notice_text(line: str, channel: str) -> str:
+    """Recognize only explicit network recovery notices, never terminal turns."""
+    message = line.strip() if channel == "stderr" else ""
+    try:
+        payload = json.loads(line)
+    except (ValueError, TypeError):
+        payload = None
+    if isinstance(payload, dict):
+        if payload.get("type") != "error":
+            return ""
+        message = str(payload.get("message", ""))
+    if re.match(r"\s*Reconnecting\b", message, re.I) and re.search(
+        r"network|connection|stream|error sending request", message, re.I,
+    ):
+        return message
+    return ""
+
+
+def _persist_transport_warnings(
+    notices: list[dict[str, Any]], *, stage: str, model: str, returncode: int | None,
+    failed: bool, evidence_dir: str | Path | None,
+) -> None:
+    if evidence_dir is None:
+        root = Path(os.environ.get("SKILLOPT_INFRA_ARTIFACT_DIR", "outputs/model_calls"))
+        evidence_dir = root / f"{datetime.now(timezone.utc):%Y%m%dT%H%M%S}_{uuid.uuid4().hex[:10]}"
+    destination = Path(evidence_dir)
+    destination.mkdir(parents=True, exist_ok=True)
+    record = {
+        "stage": stage, "model": model, "notice_count": len(notices),
+        "max_recovery_notices": 2, "recovered": bool(notices) and not failed,
+        "status": "failed" if failed else "completed", "returncode": returncode,
+        "notices": sanitize_details(notices),
+    }
+    (destination / "transport_warnings.json").write_text(
+        json.dumps(record, ensure_ascii=False, indent=2), encoding="utf-8",
+    )
+
+
 def _terminate_owned_process(proc: subprocess.Popen) -> None:
     if proc.poll() is not None:
         return
@@ -241,9 +279,11 @@ def run_cli_failfast(
     stage: str, model: str, cwd: str | None = None,
     evidence_dir: str | Path | None = None,
 ) -> subprocess.CompletedProcess:
-    """Read both pipes continuously and stop this CLI tree at its first infra error.
+    """Read both pipes and stop on terminal failure or bounded recovery exhaustion.
 
     Codex's internal reconnect loop can otherwise spend minutes retrying a 401.
+    Up to two explicit network reconnect notices can recover within the original
+    deadline. Authentication and terminal turn failures are never recoverable.
     JSON stdout ensures ordinary task/assistant text cannot trigger classification.
     """
     # Optimizer call sites historically omit a timeout. A silent child must
@@ -257,6 +297,7 @@ def run_cli_failfast(
     proc = None
     failure = None
     threads = []
+    transport_notices: list[dict[str, Any]] = []
     try:
         proc = subprocess.Popen(
             command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
@@ -284,7 +325,9 @@ def run_cli_failfast(
         closed = set()
         while len(closed) < 2 or proc.poll() is None:
             if timeout is not None and time.monotonic() - started >= timeout:
-                failure = InfraError("llm_timeout", f"Codex CLI exceeded {timeout}s", stage=stage, model=model,
+                failure = InfraError("network_error" if transport_notices else "llm_timeout",
+                                     f"Codex CLI exceeded {timeout}s" + (" while recovering its connection" if transport_notices else ""),
+                                     stage=stage, model=model,
                                      details={"timeout_seconds": timeout})
                 break
             try:
@@ -297,7 +340,23 @@ def run_cli_failfast(
             chunks[channel].append(line)
             error_text = _error_event_text(line, channel)
             if error_text:
-                failure = detect_infra_error(error_text, stage=stage, model=model)
+                detected = detect_infra_error(error_text, stage=stage, model=model)
+                if detected is not None and detected.failure_type in {"auth_error", "model_unavailable"}:
+                    failure = detected
+                    break
+                reconnect = _reconnect_notice_text(line, channel)
+                if reconnect:
+                    transport_notices.append({
+                        "notice_index": len(transport_notices) + 1, "channel": channel,
+                        "elapsed_s": round(time.monotonic() - started, 3),
+                        "message": sanitize_details(reconnect),
+                    })
+                    if len(transport_notices) <= 2:
+                        continue
+                    failure = InfraError("network_error", "Codex exceeded two network recovery notices",
+                                         stage=stage, model=model)
+                    break
+                failure = detected
                 if failure is not None:
                     break
         if failure:
@@ -313,9 +372,14 @@ def run_cli_failfast(
         if failure is None and returncode:
             failure = detect_infra_error(stderr or stdout, stage=stage, model=model, returncode=returncode)
         if failure:
-            failure.details.update({"returncode": returncode, "elapsed_s": time.monotonic() - started})
+            failure.details.update({"returncode": returncode, "elapsed_s": time.monotonic() - started,
+                                    "transport_notice_count": len(transport_notices)})
             persist_infra_error(failure, raw=f"[stdout]\n{stdout}\n[stderr]\n{stderr}", evidence_dir=evidence_dir)
+            _persist_transport_warnings(transport_notices, stage=stage, model=model, returncode=returncode,
+                                        failed=True, evidence_dir=failure.evidence_dir)
             raise failure
+        _persist_transport_warnings(transport_notices, stage=stage, model=model, returncode=returncode,
+                                    failed=False, evidence_dir=evidence_dir)
         return subprocess.CompletedProcess(command, returncode, stdout, stderr)
     except InfraError:
         raise
@@ -324,6 +388,8 @@ def run_cli_failfast(
             "provider_error", f"Unable to run model CLI: {type(exc).__name__}: {exc}", stage=stage, model=model,
         )
         persist_infra_error(failure, raw=str(exc), evidence_dir=evidence_dir)
+        _persist_transport_warnings(transport_notices, stage=stage, model=model, returncode=None,
+                                    failed=True, evidence_dir=failure.evidence_dir)
         raise failure from exc
     finally:
         if proc is not None:

@@ -3,6 +3,7 @@ import contextlib
 import hashlib
 import io
 import json
+import os
 import subprocess
 import tempfile
 import unittest
@@ -131,6 +132,14 @@ class PreviousGateTests(unittest.TestCase):
         self.assertEqual(self.check(manifest_changes={"transport": "http"},
                                     arg_changes={"transport": "http"})["status"], "passed")
 
+    def test_proxy_route_change_requires_new_gate(self):
+        with self.assertRaises(ValueError):
+            self.check(arg_changes={"proxy_url": "http://127.0.0.1:7890"})
+
+    def test_matching_proxy_route_gate_passes(self):
+        self.assertEqual(self.check(manifest_changes={"proxy_url": "http://127.0.0.1:7890"},
+                                    arg_changes={"proxy_url": "http://127.0.0.1:7890"})["status"], "passed")
+
     def test_base_config_mutation_requires_new_single_gate(self):
         with self.assertRaises(ValueError):
             self.check(change_config=True)
@@ -143,6 +152,75 @@ class PreviousGateTests(unittest.TestCase):
                 "manifest": {"auth_home": str(Path(folder).resolve()), "codex_bin": args.codex_bin}}))
             with self.assertRaises(ValueError):
                 cam_recovery.require_gate(str(path), "auth-check", args)
+
+
+class ProxyEnvironmentTests(unittest.TestCase):
+    def args(self, folder, proxy):
+        return SimpleNamespace(auth_home=str(Path(folder) / "auth"), codex_bin=str(Path(folder) / "codex.exe"),
+                               transport="http", proxy_url=proxy)
+
+    def test_loopback_routes_only_change_process_environment(self):
+        original_environment = dict(os.environ)
+        with tempfile.TemporaryDirectory() as folder:
+            for proxy in ("http://127.0.0.1:7890", "http://localhost:7890", "http://[::1]:7890"):
+                with self.subTest(proxy=proxy), patch.dict(os.environ, {}, clear=True):
+                    with patch("subprocess.run") as run, patch("subprocess.Popen") as start:
+                        with patch.object(Path, "write_text") as write, patch.object(Path, "mkdir") as mkdir:
+                            cam_recovery.configure_env(self.args(folder, proxy), Path(folder))
+                    for key in ("HTTP_PROXY", "HTTPS_PROXY", "http_proxy", "https_proxy"):
+                        self.assertEqual(os.environ[key], proxy)
+                    run.assert_not_called()
+                    start.assert_not_called()
+                    write.assert_not_called()
+                    mkdir.assert_not_called()
+        self.assertEqual(dict(os.environ), original_environment)
+
+    def test_invalid_explicit_proxy_rejected_before_any_request(self):
+        invalid = (
+            "http://outside.example:7890", "http://192.0.2.1:7890", "https://127.0.0.1:7890",
+            "socks5://127.0.0.1:7890", "http://name:password@127.0.0.1:7890",
+            "http://@127.0.0.1:7890", "http://:@127.0.0.1:7890",
+            "http://127.0.0.1:7890/path", "http://127.0.0.1:7890?key=value",
+            "http://127.0.0.1:7890#fragment", "http://127.0.0.1", "http://127.0.0.1:65536",
+        )
+        with tempfile.TemporaryDirectory() as folder:
+            for proxy in invalid:
+                with self.subTest(proxy=proxy), patch.dict(os.environ, {}, clear=True):
+                    with patch("skillopt.model.infra_errors.run_cli_failfast") as request:
+                        with self.assertRaises(ValueError):
+                            cam_recovery.configure_env(self.args(folder, proxy), Path(folder))
+                        request.assert_not_called()
+                    self.assertNotIn("HTTP_PROXY", os.environ)
+                    self.assertNotIn("HTTPS_PROXY", os.environ)
+
+    def test_external_proxy_inherited_from_environment_is_not_silent_route(self):
+        with tempfile.TemporaryDirectory() as folder:
+            for key in ("HTTP_PROXY", "HTTPS_PROXY", "http_proxy", "https_proxy", "ALL_PROXY", "all_proxy"):
+                with self.subTest(variable=key), patch.dict(os.environ, {key: "http://outside.example:7890"}, clear=True):
+                    with patch("skillopt.model.infra_errors.run_cli_failfast") as request:
+                        with self.assertRaises(ValueError):
+                            cam_recovery.configure_env(self.args(folder, ""), Path(folder))
+                        request.assert_not_called()
+
+    def test_inherited_loopback_proxy_requires_explicit_route_declaration(self):
+        with tempfile.TemporaryDirectory() as folder:
+            for key in ("HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY"):
+                with self.subTest(variable=key), patch.dict(os.environ, {key: "http://127.0.0.1:7890"}, clear=True):
+                    with patch("skillopt.model.infra_errors.run_cli_failfast") as request:
+                        with self.assertRaises(ValueError):
+                            cam_recovery.configure_env(self.args(folder, ""), Path(folder))
+                        request.assert_not_called()
+
+    def test_explicit_local_route_cannot_be_overridden_by_inherited_all_or_no_proxy(self):
+        proxy = "http://127.0.0.1:7890"
+        inherited = {"ALL_PROXY": "http://outside.example:7890", "all_proxy": "http://outside.example:7890",
+                     "NO_PROXY": "chatgpt.com", "no_proxy": "*"}
+        with tempfile.TemporaryDirectory() as folder, patch.dict(os.environ, inherited, clear=True):
+            cam_recovery.configure_env(self.args(folder, proxy), Path(folder))
+            for key in ("ALL_PROXY", "all_proxy"):
+                self.assertIn(os.environ.get(key), (None, "", proxy))
+            for key in ("NO_PROXY", "no_proxy"):
+                self.assertIn(os.environ.get(key), (None, ""))
 
 
 if __name__ == "__main__":

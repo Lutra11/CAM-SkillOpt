@@ -14,6 +14,7 @@ from pathlib import Path
 import re
 import sys
 import time
+from urllib.parse import urlparse
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -41,6 +42,17 @@ def source_hash() -> str:
 
 
 def configure_env(args, out: Path) -> None:
+    proxy = getattr(args, "proxy_url", "")
+    http_keys = ("HTTP_PROXY", "HTTPS_PROXY", "http_proxy", "https_proxy")
+    all_keys = ("ALL_PROXY", "all_proxy")
+    if proxy:
+        parsed = urlparse(proxy)
+        if (parsed.scheme != "http" or parsed.hostname not in {"127.0.0.1", "localhost", "::1"}
+                or not parsed.port or parsed.username is not None or parsed.password is not None
+                or parsed.path not in {"", "/"} or parsed.query or parsed.fragment):
+            raise ValueError("Use an existing loopback HTTP proxy without embedded credentials")
+    elif any(os.environ.get(key) for key in http_keys + all_keys):
+        raise ValueError("Inherited proxy route is not recorded; explicitly select an existing loopback HTTP proxy")
     # Both real wrappers and the login probes must use this exact identity/cache.
     os.environ["CODEX_HOME"] = str(Path(args.auth_home).resolve())
     os.environ["CODEX_CLI_BIN"] = str(Path(args.codex_bin).resolve())
@@ -53,6 +65,11 @@ def configure_env(args, out: Path) -> None:
     os.environ["SKILLOPT_CODEX_TIMEOUT_SECONDS"] = "420"
     os.environ["SKILLOPT_CODEX_TRANSPORT"] = args.transport
     os.environ["PYTHONUTF8"] = "1"
+    if proxy:
+        for key in all_keys + ("NO_PROXY", "no_proxy"):
+            os.environ.pop(key, None)
+        for key in http_keys:
+            os.environ[key] = proxy
 
 
 def auth_check(args, out: Path) -> dict:
@@ -153,6 +170,8 @@ def require_gate(path: str | None, stage: str, args) -> dict:
         raise ValueError("Legacy HTTP override probe is not an accepted recovery gate")
     if manifest.get("transport", "default") != getattr(args, "transport", "default"):
         raise ValueError("Transport changed after the previous gate")
+    if manifest.get("proxy_url", "") != getattr(args, "proxy_url", ""):
+        raise ValueError("Experiment proxy route changed after the previous gate")
     if stage != "auth-check":
         if manifest.get("target_reasoning") != args.target_reasoning:
             raise ValueError("Target reasoning changed after the single-sample gate")
@@ -245,6 +264,7 @@ def main() -> int:
     p.add_argument("--target-reasoning", choices=("none", "low"), default="none")
     p.add_argument("--auth-summary")
     p.add_argument("--transport", choices=("default", "http"), default="default")
+    p.add_argument("--proxy-url", default="", help="Existing loopback HTTP proxy; applies only to this process tree")
     p.add_argument("--single-summary")
     args = p.parse_args()
     out = Path(args.out).resolve()
@@ -258,6 +278,7 @@ def main() -> int:
                 "target_reasoning": args.target_reasoning, "started_at": time.strftime("%Y-%m-%dT%H:%M:%S%z")}
     manifest["http_only"] = False
     manifest["transport"] = args.transport
+    manifest["proxy_url"] = args.proxy_url
     if Path(args.base_config).exists():
         manifest["base_config_sha256"] = hashlib.sha256(Path(args.base_config).read_bytes()).hexdigest()
     save(out / "manifest.json", manifest)
