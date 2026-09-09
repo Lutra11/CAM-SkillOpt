@@ -369,3 +369,91 @@ CAM-Full formal fix1 = incomplete / no summary.json
 - 训练进程在 test 收尾阶段失联，输出目录没有生成 `summary.json`；
 - 因没有完整 summary，fix1 不作为正式结果；
 - 后续将使用新输出目录重新运行 CAM-Full formal fix2，避免覆盖 fix1 中断证据。
+
+## 8. 正式 CAM 方法对照：CAM-Full fix2 与补评
+
+重新启动 CAM-Full formal fix2：
+
+```text
+method = CAM-Full
+workers = 1
+analyst_workers = 1
+train_size = 16
+batch_size = 4
+epochs = 1
+selection_size = 8
+test_size = 8
+eval_test = true
+target = gpt-5.6-terra
+exec_timeout = 420
+seed = 42
+```
+
+输出目录：
+
+```text
+outputs/formal_cam/spreadsheetbench_terra_cam_full_seed42_w1_a1_fix2
+```
+
+训练过程记录：
+
+```text
+step_1_rollout_hard = 0.0000, action = skip_no_patches, wall = 217.0s
+step_2_rollout_hard = 0.0000, action = skip_no_patches, wall = 109.7s
+step_3_rollout_hard = 0.0000, action = skip_no_patches, wall = 123.1s
+step_4_rollout_hard = 0.0000, action = skip_no_patches, wall = 194.3s
+```
+
+状态：
+
+```text
+CAM-Full formal fix2 training = completed
+CAM-Full formal fix2 summary.json = missing
+```
+
+说明：
+
+- 训练 4 step 均完成；
+- 4 个 step 均没有生成可用 patch，因此 `best_skill.md` 等价于初始/最终 skill；
+- 主训练 run 仍未写出 `summary.json`，因此采用 `eval_only.py` 对 `best_skill.md` 进行独立补评。
+
+补评配置：
+
+```text
+skill = outputs/formal_cam/spreadsheetbench_terra_cam_full_seed42_w1_a1_fix2/best_skill.md
+workers = 1
+exec_timeout = 420
+mode = single
+selection_split = valid_seen
+test_split = valid_unseen
+n_items_each_split = 8
+```
+
+补评输出目录：
+
+```text
+outputs/eval_only/cam_full_fix2_best_valid_seen_8_w1_a1
+outputs/eval_only/cam_full_fix2_best_valid_unseen_8_w1_a1
+```
+
+补评结果：
+
+```text
+valid_seen:   hard = 0.0000, soft = 0.0000, n = 8
+valid_unseen: hard = 0.0000, soft = 0.0000, n = 8
+```
+
+阶段结论：
+
+```text
+CAM-Full formal fix2 = completed via eval_only supplementation
+selection_hard = 0.0000
+test_hard = 0.0000
+```
+
+论文记录口径：
+
+- 主训练过程完整完成，但没有生成主 summary；
+- 因无 patch 产生，采用训练输出的 `best_skill.md` 做独立补评；
+- CAM-Full 在本正式小规模设置下没有超过 baseline，且未产生可用 skill 更新；
+- 该结果应作为“SpreadsheetBench + Codex target 下 CAM 反思/更新链路不稳定或低产出”的负结果报告，而不是删除。
