@@ -20,6 +20,8 @@ Built on [SkillOpt](https://github.com/microsoft/SkillOpt), CAM-SkillOpt introdu
 
 This repository contains the CAM implementation, baseline and ablation configurations, data-materialization scripts, and selected experiment records. The current empirical evidence consists of offline module checks and small-scale SpreadsheetBench runs. The broader benchmark comparison described below remains a research protocol, with performance gains yet to be established.
 
+Latest implementation checkpoint: [Persistent Memory integration and offline acceptance, 2026-09-09](reports/stage12/recovery_20260909/MEMORY_STEP1_REPORT.md). The CAM Gate/final-best and token-accounting fixes remain pending; no new live P0 or formal ablation was launched at this checkpoint.
+
 ## Method
 
 ### Optimization workflow
@@ -40,12 +42,13 @@ flowchart TD
     I -->|Reject| K[Retain current skill]
     I -->|Uncertain| L[Retain skill and flag re-evaluation]
     K --> M[Persist rejected-edit evidence]
+    M -->|Retrieve historical matches before later reflection| C
     J --> N[Next training step]
     K --> N
     L --> N
 ```
 
-*The diagram summarizes the CAM path in the current trainer. Memory retrieval is implemented as a separate module; its output is not yet injected into the optimizer prompt.*
+*The diagram summarizes the intended CAM path. Persistent Memory retrieval is now injected before training reflection and audited against actual optimizer prompts; this has passed synthetic offline tests, not a new live benchmark run. The previously identified final-best path outside CAM Gate remains a pending fix.*
 
 ### Core components
 
@@ -59,7 +62,7 @@ For paired score differences $d_i = s_i^{\mathrm{candidate}} - s_i^{\mathrm{curr
 
 The adaptive budget uses failure concentration $c = 1 - H(p)/\log K$, where $p$ is the distribution over $K$ observed failure categories. It maps $c$ linearly to the configured integer budget range, using half-up rounding. An empty failure set gives $c = 0$; a single observed category gives $c = 1$.
 
-**Implementation scope.** In the current [trainer](skillopt/engine/trainer.py), an uncertain gate decision retains the current skill and records `cam_re_evaluate`; it does not automatically collect additional validation examples. If paired scores are unavailable or have unequal lengths, the trainer records a fallback to the baseline gate. Persistent memory is written on rejected updates, while retrieval is available through the module API. These distinctions matter when interpreting a CAM-Full run or a memory ablation.
+**Implementation scope.** In the current [trainer](skillopt/engine/trainer.py), an uncertain gate decision retains the current skill and records `cam_re_evaluate`; it does not automatically collect additional validation examples. If paired scores are unavailable or have unequal lengths, the trainer records a fallback to the baseline gate. Persistent memory is written on rejected updates and retrieved before later training reflection, using only strictly earlier global steps from the same benchmark. Retrieval, hits, request injection, and completed nonempty responses are recorded separately. These distinctions matter when interpreting a CAM-Full run or a memory ablation.
 
 ## Experimental design
 
@@ -74,7 +77,7 @@ The SpreadsheetBench configurations share a common base and expose the CAM compo
 | CAM-Full | [`spreadsheetbench_cam_full.yaml`](configs/cam_experiments/spreadsheetbench_cam_full.yaml) | Enable all three CAM switches, within the implementation scope above |
 | No-Bootstrap | [`spreadsheetbench_cam_no_bootstrap.yaml`](configs/cam_experiments/spreadsheetbench_cam_no_bootstrap.yaml) | Disable the paired bootstrap gate |
 | No-Adaptive-Budget | [`spreadsheetbench_cam_no_adaptive_budget.yaml`](configs/cam_experiments/spreadsheetbench_cam_no_adaptive_budget.yaml) | Disable confidence-guided edit allocation |
-| No-Memory | [`spreadsheetbench_cam_no_memory.yaml`](configs/cam_experiments/spreadsheetbench_cam_no_memory.yaml) | Disable persistent rejected-edit recording |
+| No-Memory | [`spreadsheetbench_cam_no_memory.yaml`](configs/cam_experiments/spreadsheetbench_cam_no_memory.yaml) | Disable persistent storage, retrieval and injection; the baseline epoch-local step buffer remains enabled |
 
 ### Default CAM parameters
 

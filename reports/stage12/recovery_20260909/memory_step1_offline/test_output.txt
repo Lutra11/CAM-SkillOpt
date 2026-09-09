@@ -1,0 +1,51 @@
+test_conflicting_train_and_test_split_labels_are_rejected (tests.test_persistent_memory_context.PersistentMemoryContextTests.test_conflicting_train_and_test_split_labels_are_rejected) ... ok
+test_context_hash_hit_ids_and_top_k_match_rendered_evidence (tests.test_persistent_memory_context.PersistentMemoryContextTests.test_context_hash_hit_ids_and_top_k_match_rendered_evidence) ... ok
+test_disabled_memory_never_loads_queries_or_retrieves (tests.test_persistent_memory_context.PersistentMemoryContextTests.test_disabled_memory_never_loads_queries_or_retrieves) ... ok
+test_earlier_global_step_in_current_epoch_can_be_used (tests.test_persistent_memory_context.PersistentMemoryContextTests.test_earlier_global_step_in_current_epoch_can_be_used) ... ok
+test_empty_failure_query_does_not_retrieve (tests.test_persistent_memory_context.PersistentMemoryContextTests.test_empty_failure_query_does_not_retrieve) ... ok
+test_empty_library_still_records_one_attempt_and_zero_hits (tests.test_persistent_memory_context.PersistentMemoryContextTests.test_empty_library_still_records_one_attempt_and_zero_hits) ... ok
+test_golden_expected_answer_and_reference_fields_never_enter_query (tests.test_persistent_memory_context.PersistentMemoryContextTests.test_golden_expected_answer_and_reference_fields_never_enter_query) ... ok
+test_infrastructure_failure_is_not_a_memory_pattern (tests.test_persistent_memory_context.PersistentMemoryContextTests.test_infrastructure_failure_is_not_a_memory_pattern) ... ok
+test_other_benchmark_current_step_and_future_epoch_are_isolated (tests.test_persistent_memory_context.PersistentMemoryContextTests.test_other_benchmark_current_step_and_future_epoch_are_isolated) ... ok
+test_preparation_reports_no_actual_prompt_injection (tests.test_persistent_memory_context.PersistentMemoryContextTests.test_preparation_reports_no_actual_prompt_injection) ... ok
+test_previous_epoch_survives_file_reload_and_is_retrieved (tests.test_persistent_memory_context.PersistentMemoryContextTests.test_previous_epoch_survives_file_reload_and_is_retrieved) ... ok
+test_rejected_commands_are_only_quoted_evidence (tests.test_persistent_memory_context.PersistentMemoryContextTests.test_rejected_commands_are_only_quoted_evidence) ... ok
+test_repeated_add_rejected_step_returns_zero_new_records (tests.test_persistent_memory_context.PersistentMemoryContextTests.test_repeated_add_rejected_step_returns_zero_new_records) ... ok
+test_successful_rows_do_not_contribute_failure_query (tests.test_persistent_memory_context.PersistentMemoryContextTests.test_successful_rows_do_not_contribute_failure_query) ... ok
+test_test_row_or_dataset_split_is_rejected_before_retrieval (tests.test_persistent_memory_context.PersistentMemoryContextTests.test_test_row_or_dataset_split_is_rejected_before_retrieval) ... ok
+test_test_source_split_is_rejected_before_retrieval (tests.test_persistent_memory_context.PersistentMemoryContextTests.test_test_source_split_is_rejected_before_retrieval) ... ok
+test_top_k_zero_disables_retrieval_and_prompt_context (tests.test_persistent_memory_context.PersistentMemoryContextTests.test_top_k_zero_disables_retrieval_and_prompt_context) ... ok
+test_unrelated_failure_does_not_return_arbitrary_top_k (tests.test_persistent_memory_context.PersistentMemoryContextTests.test_unrelated_failure_does_not_return_arbitrary_top_k) ... ok
+test_cached_patch_does_not_recount_retrieval_or_injection (tests.test_persistent_memory_reflection.MemoryReflectionTests.test_cached_patch_does_not_recount_retrieval_or_injection) ...     [2/6 REFLECT minibatch] failure=1→1 groups  success=0→0 groups  (M=1, L=4, workers=1)
+      [analyst] 1/1 minibatch_fail_000 (1 trajs) -> 1 edits
+    [2/6 REFLECT minibatch] failure=1→1 groups  success=0→0 groups  (M=1, L=4, workers=1)
+ok
+test_cold_start_and_disabled_keep_prompt_identical_and_local_buffer (tests.test_persistent_memory_reflection.MemoryReflectionTests.test_cold_start_and_disabled_keep_prompt_identical_and_local_buffer) ...     [2/6 REFLECT minibatch] failure=1→1 groups  success=0→0 groups  (M=1, L=4, workers=1)
+      [analyst] 1/1 minibatch_fail_000 (1 trajs) -> 1 edits
+    [2/6 REFLECT minibatch] failure=1→1 groups  success=0→0 groups  (M=1, L=4, workers=1)
+      [analyst] 1/1 minibatch_fail_000 (1 trajs) -> 1 edits
+ok
+test_empty_model_response_does_not_count_as_completed_injection (tests.test_persistent_memory_reflection.MemoryReflectionTests.test_empty_model_response_does_not_count_as_completed_injection) ...     [2/6 REFLECT minibatch] failure=1→1 groups  success=0→0 groups  (M=1, L=4, workers=1)
+      [analyst] 1/1 minibatch_fail_000 (1 trajs) -> 0 edits
+ok
+test_failed_request_is_attempted_injection_not_completed_injection (tests.test_persistent_memory_reflection.MemoryReflectionTests.test_failed_request_is_attempted_injection_not_completed_injection) ...     [2/6 REFLECT minibatch] failure=1→1 groups  success=0→0 groups  (M=1, L=4, workers=1)
+      [analyst] 1/1 minibatch_fail_000 (1 trajs) -> 0 edits
+ok
+test_hit_enters_actual_optimizer_prompt_with_matching_artifact_hash (tests.test_persistent_memory_reflection.MemoryReflectionTests.test_hit_enters_actual_optimizer_prompt_with_matching_artifact_hash) ...     [2/6 REFLECT minibatch] failure=1→1 groups  success=0→0 groups  (M=1, L=4, workers=1)
+      [analyst] 1/1 minibatch_fail_000 (1 trajs) -> 1 edits
+ok
+test_missing_trajectory_cannot_reuse_stale_injection_metadata (tests.test_persistent_memory_reflection.MemoryReflectionTests.test_missing_trajectory_cannot_reuse_stale_injection_metadata) ...     [2/6 REFLECT minibatch] failure=1→1 groups  success=0→0 groups  (M=1, L=4, workers=1)
+      [analyst] 1/1 minibatch_fail_000 (1 trajs) -> 0 edits
+ok
+test_success_only_does_not_retrieve_failure_memory (tests.test_persistent_memory_reflection.MemoryReflectionTests.test_success_only_does_not_retrieve_failure_memory) ...     [2/6 REFLECT minibatch] failure=0→0 groups  success=1→1 groups  (M=1, L=4, workers=1)
+      [analyst] 1/1 minibatch_succ_000 (1 trajs) -> 1 edits
+ok
+test_uninstrumented_cache_marks_cumulative_coverage_partial (tests.test_persistent_memory_reflection.MemoryReflectionTests.test_uninstrumented_cache_marks_cumulative_coverage_partial) ...     [2/6 REFLECT minibatch] failure=1→1 groups  success=0→0 groups  (M=1, L=4, workers=1)
+ok
+test_epoch_one_rejection_is_retrieved_in_epoch_two_actual_prompt (__main__.main.<locals>.DurableTrainerTests.test_epoch_one_rejection_is_retrieved_in_epoch_two_actual_prompt) ... ok
+test_memory_disabled_two_epochs_never_reads_writes_or_injects (__main__.main.<locals>.DurableTrainerTests.test_memory_disabled_two_epochs_never_reads_writes_or_injects) ... ok
+
+----------------------------------------------------------------------
+Ran 28 tests in 0.346s
+
+OK

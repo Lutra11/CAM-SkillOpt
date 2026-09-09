@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "stage": "persistent_memory_offline_acceptance",
+  "evidence_type": "synthetic_offline_tests_not_spreadsheetbench_performance",
+  "created_at_utc": "2026-09-09T09:11:46.578086+00:00",
+  "status": "passed",
+  "tests_run": 28,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "wall_time_s": 0.346,
+  "external_model_calls": 0,
+  "source_sha256_by_file": {
+    "skillopt/cam/rejected_memory.py": "167c2f41f12a0207884eb0d7ec93f9d174ad4918709804b9a28c4f40f4e861d8",
+    "skillopt/cam/memory_context.py": "2226589d482c997d8439942ab8f5ffb0c6b9d055976fe41fd7d65e8bcb501970",
+    "skillopt/gradient/reflect.py": "61794d0fead166e04704f715b93abe8edde0689555b5616093a0943fcfbf9ce6",
+    "skillopt/envs/base.py": "198c4a5d2fb42516adef054a4d1e7c24f4827403088190d27dc3fe16888747c0",
+    "skillopt/engine/trainer.py": "78b74833417af1ba5824fec3bc0cdc00819d9409dbf88c84d26883b0ad8fdb93",
+    "tests/test_persistent_memory_context.py": "efd28252ca4353cc7a8f0b9e6b25e714e615c1f7ef077b1b9104b098b96c7458",
+    "tests/test_persistent_memory_reflection.py": "fb9b2750b933816609f80f47211a6696f2437458d6a61b0bd91b2e8ea623e929",
+    "tests/test_persistent_memory_trainer.py": "882f1766e55b30ef42ad8166e37f13278978d8b99d0883a7b91a573b6ba8f63e",
+    "scripts/check_persistent_memory.py": "5a4a0e8b3fed4db835443d03b8aa999d392f76aae715465a6a2cac29cd00c514"
+  },
+  "synthetic_trainer_memory": {
+    "memory_enabled": {
+      "enabled": true,
+      "history_steps": 2,
+      "instrumented_steps": 2,
+      "coverage": "complete",
+      "counting_scope": "recorded_training_step_journals; cached_requests_not_recounted",
+      "stored_item_count": 2,
+      "retrieval_path": "training_reflection_minibatch",
+      "retrieval_calls": 2,
+      "hit_count": 1,
+      "injected_groups": 1,
+      "injected_items": 1,
+      "completed_injected_groups": 1,
+      "write_calls": 2,
+      "items_added": 2
+    },
+    "memory_disabled": {
+      "enabled": false,
+      "history_steps": 2,
+      "instrumented_steps": 2,
+      "coverage": "complete",
+      "counting_scope": "recorded_training_step_journals; cached_requests_not_recounted",
+      "stored_item_count": 0,
+      "retrieval_path": "training_reflection_minibatch",
+      "retrieval_calls": 0,
+      "hit_count": 0,
+      "injected_groups": 0,
+      "injected_items": 0,
+      "completed_injected_groups": 0,
+      "write_calls": 0,
+      "items_added": 0
+    }
+  },
+  "next_required_step": "Fix re_evaluate and final-best CAM Gate bypass; no live P0 launched here"
+}
