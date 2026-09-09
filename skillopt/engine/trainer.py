@@ -14,6 +14,7 @@ delegated to an :class:`~skillopt.envs.base.EnvAdapter` instance.
 from __future__ import annotations
 
 import glob
+import hashlib
 import json
 import math
 import os
@@ -29,7 +30,6 @@ from skillopt.cam import (
     PersistentRejectedEditMemory,
     compute_adaptive_budget,
     estimate_failure_confidence,
-    paired_bootstrap_gate,
 )
 from skillopt.gradient.aggregate import merge_patches
 from skillopt.optimizer.meta_skill import run_meta_skill
@@ -82,6 +82,8 @@ from skillopt.model import (
 from skillopt.utils import compute_item_scores, compute_score, skill_hash
 from skillopt.model.infra_errors import InfraError
 from skillopt.engine.run_artifacts import write_invalid_summary
+from skillopt.cam.selection_guard import SelectionEvidenceError, decide_cam_update, indexed_scores
+from skillopt.engine.run_artifacts import write_json
 
 
 # ── Skill-aware reflection: appendix flush ───────────────────────────────────
@@ -420,6 +422,28 @@ def _save_runtime_state(out_root: str, state: dict) -> None:
         json.dump(state, f, ensure_ascii=False, indent=2)
 
 
+def _cam_signature(cfg: dict) -> dict:
+    keys = ("env", "seed", "split_seed", "split_dir", "data_root", "data_path", "limit",
+            "sel_env_num", "target_model", "target_backend", "codex_exec_reasoning_effort",
+            "exec_timeout", "workers", "analyst_workers", "mode", "max_turns",
+            "gate_metric", "gate_mixed_weight", "cam_confidence_level", "cam_meaningful_improvement",
+            "cam_bootstrap_samples", "cam_seed")
+    signature = {key: cfg.get(key) for key in keys}
+    initial_path = os.path.abspath(cfg["skill_init"])
+    initial = ""
+    if os.path.exists(initial_path):
+        with open(initial_path, encoding="utf-8") as handle:
+            initial = handle.read()
+    signature["initial_skill_sha256"] = hashlib.sha256(initial.encode("utf-8")).hexdigest()
+    digest = hashlib.sha256()
+    for source_file in (__file__, os.path.join(os.path.dirname(__file__), "..", "cam", "selection_guard.py"),
+                        os.path.join(os.path.dirname(__file__), "..", "cam", "bootstrap_gate.py")):
+        with open(source_file, "rb") as handle:
+            digest.update(handle.read())
+    signature["gate_implementation_sha256"] = digest.hexdigest()
+    return signature
+
+
 def _resolve_train_size(cfg: dict, dataloader) -> int:
     configured = int(cfg.get("train_size", 0) or 0)
     inferred: int | None = None
@@ -610,9 +634,27 @@ class ReflACTTrainer:
     def train(self) -> dict:
         """Execute the full ReflACT training loop. Returns summary dict."""
         started_at = time.time()
+        self._validating_cam_resume = False
         try:
             return self._train_impl()
         except Exception as exc:
+            if isinstance(exc, SelectionEvidenceError):
+                if self._validating_cam_resume:
+                    write_json(os.path.join(self.cfg["out_root"], "resume_validation_error.json"), {
+                        "status": "resume_refused", "failure_type": "selection_evidence_error",
+                        "message": str(exc), "prior_run_artifacts_preserved": True,
+                    })
+                    raise
+                write_json(os.path.join(self.cfg["out_root"], "cam_gate_error.json"), {
+                    "status": "invalid_selection_evidence", "eligible_for_paper": False,
+                    "failure_type": "selection_evidence_error", "message": str(exc),
+                })
+                write_json(os.path.join(self.cfg["out_root"], "summary.json"), {
+                    "status": "invalid_selection_evidence", "eligible_for_paper": False,
+                    "failure_type": "selection_evidence_error", "message": str(exc),
+                    "best_selection_hard": None, "test_hard": None, "test_soft": None,
+                })
+                raise
             infra = exc if isinstance(exc, InfraError) else None
             if infra is None:
                 raise
@@ -629,6 +671,28 @@ class ReflACTTrainer:
         adapter = self.adapter
         out_root = cfg["out_root"]
         os.makedirs(out_root, exist_ok=True)
+        strict_cam = bool(cfg.get("cam_enabled", False) and cfg.get("cam_bootstrap_gate", True))
+        cam_policy = "paired_selection_all_updates_v1"
+        cam_state_path = os.path.join(out_root, "cam_gate_state.json")
+        saved_cam_state = None
+        cam_signature = _cam_signature(cfg) if strict_cam else None
+        if strict_cam:
+            if cfg.get("use_gate", True) is False:
+                raise ValueError("CAM bootstrap cannot be combined with use_gate=False; use an explicit No-Bootstrap configuration")
+            if os.path.exists(cam_state_path):
+                with open(cam_state_path, encoding="utf-8") as handle:
+                    saved_cam_state = json.load(handle)
+                if saved_cam_state.get("policy") != cam_policy:
+                    raise ValueError("Incompatible CAM checkpoint policy; use a new output directory")
+                if saved_cam_state.get("signature") != cam_signature:
+                    # Reject BEFORE setup/config/S0 writes, preserving old results.
+                    raise ValueError("CAM checkpoint model/selection/gate/initial signature changed; use a new output directory")
+                self._validating_cam_resume = True
+            elif any(os.path.exists(os.path.join(out_root, name)) for name in
+                     ("runtime_state.json", "history.json", "best_skill.md")):
+                # Never upgrade/overwrite an old, potentially ungated best in place.
+                raise ValueError("Legacy CAM checkpoint has no gate certificate; preserve it and use a new output directory")
+        cam_events = list((saved_cam_state or {}).get("events", []))
 
         # ── Adapter setup (one-time init) ────────────────────────────
         adapter.setup(cfg)
@@ -842,8 +906,9 @@ class ReflACTTrainer:
         cfg["lr_control_mode"] = lr_control_mode
 
         # Save config after deriving runtime values.
-        with open(os.path.join(out_root, "config.json"), "w") as f:
-            json.dump(_redact_cfg(cfg), f, indent=2, ensure_ascii=False)
+        if not self._validating_cam_resume:
+            with open(os.path.join(out_root, "config.json"), "w") as f:
+                json.dump(_redact_cfg(cfg), f, indent=2, ensure_ascii=False)
 
         train_pool_size = train_size
 
@@ -899,8 +964,8 @@ class ReflACTTrainer:
                     best_skill = f.read()
             else:
                 best_skill = current_skill
-            current_score = float(runtime_state.get("current_score", -1.0) or -1.0)
-            best_score = float(runtime_state.get("best_score", current_score) or current_score)
+            current_score = float(runtime_state["current_score"] if runtime_state.get("current_score") is not None else -1.0)
+            best_score = float(runtime_state["best_score"] if runtime_state.get("best_score") is not None else current_score)
             best_step = runtime_state.get("best_step", last_step)
             current_origin = str(
                 runtime_state.get("current_origin")
@@ -945,7 +1010,8 @@ class ReflACTTrainer:
             best_origin = "initial_skill"
             resume_from = 1
 
-        _save_skill(out_root, 0, skill_init)
+        if not self._validating_cam_resume:
+            _save_skill(out_root, 0, skill_init)
 
         use_skill_aware = cfg.get("use_skill_aware_reflection", False)
         # Publish the toggle process-wide so run_minibatch_reflect resolves it
@@ -954,10 +1020,19 @@ class ReflACTTrainer:
             use_skill_aware,
             cfg.get("skill_aware_appendix_source", "both"),
         )
-        if use_skill_aware:
+        if use_skill_aware and not strict_cam:
             current_skill = inject_empty_appendix_field(current_skill)
 
         def _persist_runtime_state(last_completed_step: int) -> None:
+            if strict_cam:
+                _save_skill(out_root, last_completed_step, current_skill)
+                with open(os.path.join(out_root, "best_skill.md"), "w", encoding="utf-8") as handle:
+                    handle.write(best_skill)
+                write_json(cam_state_path, {
+                    "policy": cam_policy, "signature": cam_signature,
+                    "current_hash": skill_hash(current_skill), "best_hash": skill_hash(best_skill),
+                    "selection_cache": sel_result_cache, "events": cam_events,
+                })
             _save_runtime_state(
                 out_root,
                 {
@@ -977,6 +1052,21 @@ class ReflACTTrainer:
         # ── Selection cache ──────────────────────────────────────────────
         sel_cache: dict[str, tuple[float, float]] = {}
         sel_detail_cache: dict[str, list[float]] = {}
+        sel_result_cache = dict((saved_cam_state or {}).get("selection_cache", {}))
+        if strict_cam and saved_cam_state:
+            if saved_cam_state.get("signature") != cam_signature:
+                raise SelectionEvidenceError("CAM checkpoint model/selection/gate signature changed; start a new run")
+            if saved_cam_state.get("current_hash") != skill_hash(current_skill) or saved_cam_state.get("best_hash") != skill_hash(best_skill):
+                raise SelectionEvidenceError("CAM checkpoint skill hash does not match its gate certificate")
+            authorized_current = {skill_hash(skill_init)}
+            authorized_best = {skill_hash(skill_init)}
+            for event in cam_events:
+                if event.get("action") in {"accept", "accept_new_best"}:
+                    authorized_current.add(event.get("candidate_hash"))
+                if event.get("promotion_authorized"):
+                    authorized_best.add(event.get("candidate_hash"))
+            if skill_hash(current_skill) not in authorized_current or skill_hash(best_skill) not in authorized_best:
+                raise SelectionEvidenceError("CAM checkpoint current/best has no recorded acceptance")
         for rec in history:
             sh = rec.get("candidate_hash", "")
             if sh and rec.get("selection_hard") is not None:
@@ -1029,13 +1119,130 @@ class ReflACTTrainer:
             )
         slow_gate_with_selection = bool(
             cfg.get("slow_update_gate_with_selection", False)
-        )
+        ) or strict_cam
         print(
             "  [slow update] acceptance="
             + ("gated (selection-set validation)"
                if slow_gate_with_selection
                else "force-accept (unconditional)")
         )
+
+        def _store_cam_selection(skill, results, directory, expected_n):
+            # Both reported metrics must be real; gate_metric selects the
+            # decision, not permission to fabricate an unmeasured hard/soft.
+            indexed_scores(results, metric="hard")
+            indexed_scores(results, metric="soft")
+            scores = indexed_scores(results, metric=gate_metric, mixed_weight=gate_mixed_weight)
+            if len(scores) != expected_n or expected_n != int(cfg["sel_env_num"]):
+                raise SelectionEvidenceError("Selection result count does not match the fixed requested sample count")
+            baseline = sel_result_cache.get(skill_hash(skill_init))
+            if baseline and set(scores) != set(indexed_scores(baseline["rows"], metric=gate_metric, mixed_weight=gate_mixed_weight)):
+                raise SelectionEvidenceError("Selection IDs changed from the initial fixed split")
+            rows = [{key: row[key] for key in ("id", "hard", "soft", "status", "split", "dataset_split") if key in row}
+                    for row in results]
+            sh = skill_hash(skill)
+            sel_result_cache[sh] = {"rows": rows, "source": os.path.relpath(directory, out_root).replace(os.sep, "/"),
+                                    "skill_sha256": hashlib.sha256(skill.encode("utf-8")).hexdigest(),
+                                    "rows_sha256": hashlib.sha256(json.dumps(rows, sort_keys=True).encode("utf-8")).hexdigest()}
+            sel_cache[sh] = compute_score(rows)
+
+        def _ensure_cam_selection_identity(skill, directory):
+            identity_path = os.path.join(directory, "selection_identity.json")
+            identity = {"skill_sha256": hashlib.sha256(skill.encode("utf-8")).hexdigest(),
+                        "selection_signature": cam_signature}
+            if os.path.exists(identity_path):
+                with open(identity_path, encoding="utf-8") as handle:
+                    if json.load(handle) != identity:
+                        raise SelectionEvidenceError("Selection artifact directory belongs to another skill or protocol")
+            elif os.path.isdir(directory) and os.listdir(directory):
+                raise SelectionEvidenceError("Existing selection artifacts have no matching skill identity; use a fresh run")
+            else:
+                write_json(identity_path, identity)
+
+        def _cam_selection(skill, directory):
+            sh = skill_hash(skill)
+            if sh not in sel_result_cache:
+                env, n = _build_eval_env("valid_seen", cfg["sel_env_num"], seed)
+                _ensure_cam_selection_identity(skill, directory)
+                results = adapter.rollout(env, skill, directory)
+                _store_cam_selection(skill, results, directory, n)
+            entry = sel_result_cache[sh]
+            if entry.get("skill_sha256") != hashlib.sha256(skill.encode("utf-8")).hexdigest() or entry.get("rows_sha256") != hashlib.sha256(json.dumps(entry["rows"], sort_keys=True).encode("utf-8")).hexdigest():
+                raise SelectionEvidenceError("Cached CAM skill/evidence fingerprint mismatch")
+            indexed_scores(entry["rows"], metric="hard")
+            indexed_scores(entry["rows"], metric="soft")
+            scores = indexed_scores(entry["rows"], metric=gate_metric, mixed_weight=gate_mixed_weight)
+            if len(scores) != int(cfg["sel_env_num"]):
+                raise SelectionEvidenceError("Cached CAM selection evidence is incomplete")
+            sel_cache[sh] = compute_score(entry["rows"])
+            return entry["rows"]
+
+        def _cam_decide(candidate, directory, *, origin, reference_skill=None):
+            reference = current_skill if reference_skill is None else reference_skill
+            reference_rows = _cam_selection(reference, os.path.join(directory, "reference_selection_eval"))
+            candidate_rows = _cam_selection(candidate, os.path.join(directory, "selection_eval"))
+            best_rows = _cam_selection(best_skill, os.path.join(directory, "best_reference_selection_eval"))
+            gate, audit = decide_cam_update(
+                candidate_skill=candidate, current_skill=reference, best_skill=best_skill,
+                current_results=reference_rows, candidate_results=candidate_rows, best_results=best_rows,
+                best_step=best_step, global_step=global_step,
+                metric=gate_metric, mixed_weight=gate_mixed_weight, cfg=cfg,
+            )
+            event = {**audit, "action": gate.action, "origin": origin, "step": global_step,
+                     "selection_sources": {"current": sel_result_cache[skill_hash(reference)]["source"],
+                                           "candidate": sel_result_cache[skill_hash(candidate)]["source"],
+                                           "best": sel_result_cache[skill_hash(best_skill)]["source"]}}
+            cam_events.append(event)
+            write_json(os.path.join(directory, "cam_gate.json"), event)
+            if audit.get("pending_additional_paired_evidence"):
+                pending_target = "current" if gate.action == "cam_re_evaluate" else "best"
+                with open(os.path.join(directory, "pending_candidate_skill.md"), "w", encoding="utf-8") as handle:
+                    handle.write(candidate)
+                write_json(os.path.join(directory, "pending_re_evaluation.json"), {
+                    "status": "pending_additional_paired_evidence", "automatic_retry": False,
+                    "pending_target": pending_target,
+                    "candidate_hash": skill_hash(candidate),
+                    "reference_hash": skill_hash(reference if pending_target == "current" else best_skill),
+                    "pair_ids": audit.get("pair_ids"),
+                    "note": "Not accepted as the uncertain state transition; do not retry the same evidence until it passes.",
+                })
+            write_json(os.path.join(out_root, "cam_gate_events.json"), cam_events)
+            return gate, audit
+
+        def _cam_auxiliary(candidate, directory, origin):
+            nonlocal current_skill, current_score, best_skill, best_score, best_step, current_origin, best_origin
+            if skill_hash(candidate) == skill_hash(current_skill):
+                return None
+            gate, audit = _cam_decide(candidate, directory, origin=origin)
+            current_skill, current_score = gate.current_skill, gate.current_score
+            best_skill, best_score, best_step = gate.best_skill, gate.best_score, gate.best_step
+            if gate.action in {"accept", "accept_new_best"}:
+                current_origin = origin
+            if audit.get("promotion_authorized"):
+                best_origin = origin
+            return gate, audit
+
+        def _flush_appendix(raw_patches, record, directory):
+            nonlocal current_skill
+            candidate = _flush_skill_aware_appendix(current_skill, raw_patches, record, directory, cfg)
+            if strict_cam:
+                outcome = _cam_auxiliary(candidate, os.path.join(directory, "appendix_gate"), f"appendix_step_{global_step:04d}")
+                if outcome:
+                    record["appendix_cam_gate"] = outcome[1]
+            else:
+                current_skill = candidate
+
+        if strict_cam and saved_cam_state:
+            if skill_hash(skill_init) not in sel_result_cache:
+                raise SelectionEvidenceError("CAM checkpoint is missing initial selection evidence")
+            _cam_selection(skill_init, os.path.join(out_root, "selection_eval_baseline"))
+            for skill, stored_score in ((current_skill, current_score), (best_skill, best_score)):
+                if skill_hash(skill) not in sel_result_cache:
+                    raise SelectionEvidenceError("CAM checkpoint is missing paired selection evidence")
+                scores = indexed_scores(_cam_selection(skill, out_root), metric=gate_metric, mixed_weight=gate_mixed_weight)
+                if not math.isclose(sum(scores.values()) / len(scores), stored_score, abs_tol=1e-9):
+                    raise SelectionEvidenceError("CAM checkpoint score does not match the skill's selection evidence")
+            self._validating_cam_resume = False
         if current_score < 0:
             print(f"\n{'='*60}")
             print("  BASELINE — evaluate initial skill on Selection set (valid_seen)")
@@ -1047,8 +1254,12 @@ class ReflACTTrainer:
             )
             print(f"  Selection items: {sel_n}")
             baseline_dir = os.path.join(out_root, "selection_eval_baseline")
+            if strict_cam:
+                _ensure_cam_selection_identity(skill_init, baseline_dir)
             baseline_results = adapter.rollout(sel_env, skill_init, baseline_dir)
             baseline_hard, baseline_soft = compute_score(baseline_results)
+            if strict_cam:
+                _store_cam_selection(skill_init, baseline_results, baseline_dir, sel_n)
             current_score = select_gate_score(
                 baseline_hard, baseline_soft, gate_metric, gate_mixed_weight,
             )
@@ -1282,9 +1493,7 @@ class ReflACTTrainer:
                     # may still carry appendix notes — flush them BEFORE
                     # skipping, or they would be silently dropped.
                     if use_skill_aware:
-                        current_skill = _flush_skill_aware_appendix(
-                            current_skill, all_raw_patches, step_rec, step_dir, cfg,
-                        )
+                        _flush_appendix(all_raw_patches, step_rec, step_dir)
                     step_rec["action"] = "skip_no_patches"
                     step_rec["current_score"] = current_score
                     step_rec["best_score"] = best_score
@@ -1508,9 +1717,7 @@ class ReflACTTrainer:
                     # Skill-aware: flush appendix notes before skipping (see
                     # the skip_no_patches branch above).
                     if use_skill_aware:
-                        current_skill = _flush_skill_aware_appendix(
-                            current_skill, all_raw_patches, step_rec, step_dir, cfg,
-                        )
+                        _flush_appendix(all_raw_patches, step_rec, step_dir)
                     step_rec["action"] = "skip_no_rewrite"
                     step_rec["current_score"] = current_score
                     step_rec["best_score"] = best_score
@@ -1533,7 +1740,10 @@ class ReflACTTrainer:
                 # ⑥ EVALUATE ───────────────────────────────────────────────
                 t_phase = time.time()
                 current_hash_at_eval = skill_hash(current_skill)
-                if cand_hash in sel_cache:
+                if strict_cam:
+                    _cam_selection(candidate_skill, os.path.join(step_dir, "selection_eval"))
+                    cand_hard, cand_soft = sel_cache[cand_hash]
+                elif cand_hash in sel_cache:
                     cand_hard, cand_soft = sel_cache[cand_hash]
                     print(
                         f"    [6/6 EVALUATE] "
@@ -1565,73 +1775,10 @@ class ReflACTTrainer:
                 cand_item_scores = sel_detail_cache.get(cand_hash, [])
                 current_item_scores = sel_detail_cache.get(current_hash_at_eval, [])
                 cam_gate_used = False
-                if (
-                    use_gate
-                    and cam_enabled
-                    and cam_bootstrap_gate
-                    and current_item_scores
-                    and cand_item_scores
-                    and len(current_item_scores) == len(cand_item_scores)
-                ):
-                    cam_decision = paired_bootstrap_gate(
-                        current_item_scores,
-                        cand_item_scores,
-                        confidence_level=float(cfg.get("cam_confidence_level", 0.95)),
-                        meaningful_improvement=float(
-                            cfg.get("cam_meaningful_improvement", 0.0)
-                        ),
-                        bootstrap_samples=int(cfg.get("cam_bootstrap_samples", 10000)),
-                        seed=int(cfg.get("cam_seed", seed)),
-                    )
+                if strict_cam:
+                    gate, audit = _cam_decide(candidate_skill, step_dir, origin=f"step_{global_step:04d}")
                     cam_gate_used = True
-                    step_rec["cam_gate"] = {
-                        "action": cam_decision.action,
-                        "mean_improvement": cam_decision.mean_improvement,
-                        "lower_confidence_bound": cam_decision.lower_confidence_bound,
-                        "upper_confidence_bound": cam_decision.upper_confidence_bound,
-                        "confidence_level": cam_decision.confidence_level,
-                        "meaningful_improvement": cam_decision.meaningful_improvement,
-                        "n_pairs": cam_decision.n_pairs,
-                        "bootstrap_samples": cam_decision.bootstrap_samples,
-                        "positive_bootstrap_fraction": cam_decision.positive_bootstrap_fraction,
-                    }
-                    if cam_decision.action == "accept":
-                        if cand_gate_score > best_score:
-                            gate = GateResult(
-                                action="accept_new_best",
-                                current_skill=candidate_skill,
-                                current_score=cand_gate_score,
-                                best_skill=candidate_skill,
-                                best_score=cand_gate_score,
-                                best_step=global_step,
-                            )
-                        else:
-                            gate = GateResult(
-                                action="accept",
-                                current_skill=candidate_skill,
-                                current_score=cand_gate_score,
-                                best_skill=best_skill,
-                                best_score=best_score,
-                                best_step=best_step,
-                            )
-                    elif cam_decision.action == "reject":
-                        gate = GateResult(
-                            action="reject",
-                            current_skill=current_skill,
-                            current_score=current_score,
-                            best_skill=best_skill,
-                            best_score=best_score,
-                            best_step=best_step,
-                        )
-                    else:
-                        gate = GateResult(
-                            action="cam_re_evaluate",
-                            current_skill=current_skill,
-                            current_score=current_score,
-                            best_skill=best_skill,
-                            best_score=best_score,
-                            best_step=best_step,
-                        )
+                    step_rec["cam_gate"] = audit
                 elif use_gate:
                     gate = evaluate_gate(
                         candidate_skill=candidate_skill,
@@ -1646,13 +1793,6 @@ class ReflACTTrainer:
                         metric=gate_metric,
                         mixed_weight=gate_mixed_weight,
                     )
-                    if cam_enabled and cam_bootstrap_gate:
-                        step_rec["cam_gate"] = {
-                            "action": "fallback_baseline_gate",
-                            "reason": "paired item scores unavailable or length mismatch",
-                            "current_pairs": len(current_item_scores),
-                            "candidate_pairs": len(cand_item_scores),
-                        }
                 else:
                     # Validation ran (scores recorded above) but the gate is
                     # disabled: force-accept the candidate as the new current
@@ -1693,9 +1833,7 @@ class ReflACTTrainer:
                     best_origin = current_origin
 
                 if use_skill_aware:
-                    current_skill = _flush_skill_aware_appendix(
-                        current_skill, all_raw_patches, step_rec, step_dir, cfg,
-                    )
+                    _flush_appendix(all_raw_patches, step_rec, step_dir)
 
                 if gate_metric == "hard":
                     score_label = f"hard={cand_hard:.4f}"
@@ -1851,7 +1989,15 @@ class ReflACTTrainer:
                 slow_dir = os.path.join(out_root, "slow_update", f"epoch_{epoch:02d}")
                 slow_done_path = os.path.join(slow_dir, "slow_result.json")
 
-                if os.path.exists(slow_done_path):
+                if strict_cam and os.path.exists(slow_done_path):
+                    # The certified runtime state already contains accepted
+                    # updates. Replaying old guidance can alter a newer skill.
+                    print(f"\n  [SLOW UPDATE epoch {epoch}] certified state retained; no text replay")
+                    comparison_path = os.path.join(slow_dir, "comparison_pairs.json")
+                    if os.path.exists(comparison_path):
+                        with open(comparison_path, encoding="utf-8") as handle:
+                            epoch_comparison_pairs = json.load(handle)
+                elif os.path.exists(slow_done_path):
                     # Resume support
                     print(
                         f"\n  [SLOW UPDATE epoch {epoch}] "
@@ -1889,6 +2035,12 @@ class ReflACTTrainer:
                             current_skill = replace_slow_update_field(
                                 current_skill, slow_saved["slow_update_content"],
                             )
+                elif epoch == 1 and strict_cam:
+                    # An empty marker still changes the target prompt/hash.
+                    # Nonempty future guidance constructs its own field.
+                    write_json(slow_done_path, {"action": "skip_empty_placeholder_cam", "epoch": epoch,
+                                               "reason": "No unvalidated prompt mutation"})
+                    print("\n  [SLOW UPDATE epoch 1] no empty placeholder injected under CAM")
                 elif epoch == 1:
                     # Epoch 1: inject empty placeholder
                     os.makedirs(slow_dir, exist_ok=True)
@@ -2030,7 +2182,17 @@ class ReflACTTrainer:
 
                         # Slow update acceptance — two modes selected via
                         # `optimizer.slow_update_gate_with_selection`.
-                        if slow_gate_with_selection:
+                        if strict_cam:
+                            slow_gate, slow_audit = _cam_auxiliary(
+                                slow_candidate, slow_dir, f"slow_update_epoch_{epoch:02d}"
+                            ) if skill_hash(slow_candidate) != skill_hash(current_skill) else (None, None)
+                            if slow_gate is not None:
+                                slow_result["selection_hard"], slow_result["selection_soft"] = sel_cache[slow_candidate_hash]
+                                slow_result["action"] = slow_gate.action
+                                slow_result["cam_gate"] = slow_audit
+                            else:
+                                slow_result["action"] = "no_change"
+                        elif slow_gate_with_selection:
                             # ── Gated mode (follow SkillReflection) ──────────
                             # Evaluate the slow-update candidate on the
                             # selection set and accept/reject via the same
@@ -2293,6 +2455,29 @@ class ReflACTTrainer:
         final_test_soft = None
         final_selection_hard = None
         final_selection_soft = None
+        final_cam_gate = None
+
+        if strict_cam:
+            # Selection is independent of whether the held-out test is enabled.
+            # Reuse fixed evidence; do not re-sample the same candidate until lucky.
+            _cam_selection(current_skill, os.path.join(out_root, "final_selection_eval"))
+            final_selection_hard, final_selection_soft = sel_cache[skill_hash(current_skill)]
+            if skill_hash(current_skill) == skill_hash(best_skill):
+                final_cam_gate = {"action": "reuse_accepted_best", "promotion_authorized": False,
+                                  "candidate_hash": skill_hash(current_skill),
+                                  "selection_source": sel_result_cache[skill_hash(current_skill)]["source"]}
+            else:
+                final_gate, final_cam_gate = _cam_decide(
+                    current_skill, os.path.join(out_root, "final_gate"),
+                    origin=current_origin, reference_skill=best_skill,
+                )
+                if final_cam_gate.get("promotion_authorized"):
+                    best_skill, best_score, best_step = final_gate.best_skill, final_gate.best_score, final_gate.best_step
+                    best_origin = current_origin
+                    with open(os.path.join(out_root, "best_skill.md"), "w", encoding="utf-8") as handle:
+                        handle.write(best_skill)
+            write_json(os.path.join(out_root, "final_cam_gate.json"), final_cam_gate)
+            _persist_runtime_state(global_step)
 
         if cfg["eval_test"]:
             task_types = adapter.get_task_types()
@@ -2306,11 +2491,14 @@ class ReflACTTrainer:
             # true val-argmax over all skills (including the final slow_update).
             # When final == best, reuse the existing val score (no rollout).
             try:
-                if skill_hash(current_skill) == skill_hash(best_skill):
-                    final_selection_hard, final_selection_soft = best_score, None
+                if strict_cam:
+                    pass  # Already decided above by the same paired CAM gate.
+                elif skill_hash(current_skill) == skill_hash(best_skill):
+                    final_selection_hard, final_selection_soft = sel_cache.get(
+                        skill_hash(best_skill), (best_score if gate_metric == "hard" else None, None))
                     print(
                         "\n  [final skill == best skill] "
-                        f"final_selection_hard={best_score:.4f} (reused)"
+                        f"final_selection_hard={final_selection_hard} (reused)"
                     )
                 else:
                     fval_env, fval_n = _build_eval_env(
@@ -2350,6 +2538,8 @@ class ReflACTTrainer:
                         _persist_runtime_state(global_step)
             except Exception as _e:  # noqa: BLE001
                 infra = _e if isinstance(_e, InfraError) else None
+                if isinstance(_e, SelectionEvidenceError):
+                    raise
                 if infra is not None:
                     raise infra from _e
                 final_selection_hard = None
@@ -2558,7 +2748,10 @@ class ReflACTTrainer:
             "baseline_selection_hard": sel_cache.get(
                 skill_hash(skill_init), (None, None),
             )[0],
-            "best_selection_hard": best_score,
+            "best_selection_hard": sel_cache.get(skill_hash(best_skill), (best_score if gate_metric == "hard" else None, None))[0],
+            "best_selection_soft": sel_cache.get(skill_hash(best_skill), (None, None))[1],
+            "best_gate_score": best_score,
+            "gate_metric": gate_metric,
             "final_selection_hard": final_selection_hard,
             "final_selection_soft": final_selection_soft,
             "best_step": best_step,
@@ -2588,6 +2781,14 @@ class ReflACTTrainer:
             "total_wall_time_s": round(total_wall, 1),
             "token_summary": token_summary,
             "persistent_memory": memory_summary,
+            "cam_selection_guard": {
+                "enabled": strict_cam, "policy": cam_policy if strict_cam else "baseline_or_explicit_no_gate",
+                "event_count": len(cam_events),
+                "accepted_promotions": sum(bool(event.get("promotion_authorized")) for event in cam_events),
+                "pending_transitions": sum(bool(event.get("pending_additional_paired_evidence")) for event in cam_events),
+                "best_hash": skill_hash(best_skill), "current_hash": skill_hash(current_skill),
+                "final_gate": final_cam_gate,
+            },
         }
         with open(os.path.join(out_root, "summary.json"), "w") as f:
             json.dump(summary, f, indent=2, ensure_ascii=False)
