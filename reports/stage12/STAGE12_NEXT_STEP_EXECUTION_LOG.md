@@ -587,3 +587,93 @@ test_hard = 0.0000
 - No-Adaptive-Budget 主 run 正常生成 `summary.json`；
 - 4 个训练 step 均没有可用 patch；
 - 在当前正式小规模设置下没有产生可观测性能改进。
+
+## 11. 正式 CAM 方法对照：No-Memory
+
+配置：
+
+```text
+method = CAM-No-Memory
+workers = 1
+analyst_workers = 1
+train_size = 16
+batch_size = 4
+epochs = 1
+selection_size = 8
+test_size = 8
+eval_test = true
+target = gpt-5.6-terra
+exec_timeout = 420
+seed = 42
+```
+
+输出目录：
+
+```text
+outputs/formal_cam/spreadsheetbench_terra_cam_no_memory_seed42_w1_a1_fix1
+```
+
+训练过程：
+
+```text
+step_1_rollout_hard = 0.0000, action = skip_no_patches, wall = 286.5s
+step_2_rollout_hard = 0.0000, action = skip_no_patches, wall = 284.8s
+step_3_rollout_hard = 0.0000, action = skip_no_patches, wall = 277.9s
+step_4_rollout_hard = 0.0000, action = skip_no_patches, wall = 203.8s
+```
+
+正式结果：
+
+```text
+baseline_selection_hard = 0.0000
+best_selection_hard = 0.0000
+final_selection_hard = 0.0000
+baseline_test_hard = 0.0000
+best_test_hard = 0.0000
+final_test_hard = 0.0000
+test_delta_hard = 0.0000
+final_test_delta_hard = 0.0000
+total_steps = 4
+total_skips = 4
+wall_time = 2634s
+total_calls = 56
+```
+
+阶段结论：
+
+```text
+CAM-No-Memory formal = completed
+selection_hard = 0.0000
+test_hard = 0.0000
+```
+
+说明：
+
+- No-Memory 主 run 正常生成 `summary.json`；
+- 4 个训练 step 均没有可用 patch；
+- 在当前正式小规模设置下没有产生可观测性能改进。
+
+## 12. 当前正式对照实验状态
+
+截至本记录，4 个 CAM 方法对照均已获得可记录结果：
+
+```text
+CAM-Full:               completed via eval_only supplementation, selection=0.0000, test=0.0000
+CAM-No-Bootstrap:       completed, selection=0.0000, test=0.0000
+CAM-No-Adaptive-Budget: completed, selection=0.0000, test=0.0000
+CAM-No-Memory:          completed, selection=0.0000, test=0.0000
+```
+
+补充参照：
+
+```text
+CAM-Off valid_unseen補评: hard=0.1250, soft=0.1250, n=8
+P0 fix1 probe: selection=0.5000, test=0.2500, n=4
+```
+
+初步论文解释方向：
+
+- 正式小规模对照中，4 个 CAM 变体均未产生可用 patch；
+- 在 SpreadsheetBench + Codex target 设置下，主要瓶颈不是 CAM gate 的具体开关，而是目标侧代码生成失败导致反思样本无法转化为有效编辑；
+- 因此论文结果应诚实呈现为负结果/边界条件：CAM 机制在已有 benchmark 上可运行，但当前 SpreadsheetBench 真实任务与 Codex CLI 执行链路下，更新产出不足，未观察到稳定收益；
+- 后续论文表格需要同时报告：探针阶段 P0 fix1 的非零信号、正式阶段 4 个 CAM 变体的 0 结果、以及 CAM-Off 补评结果，避免只展示单一口径。
