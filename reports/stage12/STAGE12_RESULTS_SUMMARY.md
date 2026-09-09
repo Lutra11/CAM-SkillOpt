@@ -2,6 +2,8 @@
 
 Updated: 2026-09-09 (Asia/Shanghai)
 
+Recovery update: a fresh n=4 P0 has now completed and passed artifact/infrastructure auditing. Baseline, best and final test scores are all 0.25; the patch candidate was not accepted by CAM. This does not validate the historical formal runs below or establish a method advantage. See the [final recovery report](recovery_20260909/P0_FINAL_REPORT.md) and [formal-experiment prerequisites](recovery_20260909/FORMAL_EXPERIMENT_PREREQUISITES.md).
+
 Dataset: SpreadsheetBench verified split
 
 Historical target: gpt-5.6-terra via Codex exec

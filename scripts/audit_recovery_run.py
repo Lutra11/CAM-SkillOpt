@@ -12,6 +12,7 @@ import argparse
 from collections import Counter
 from datetime import datetime, timezone
 import hashlib
+import itertools
 import json
 import math
 from pathlib import Path
@@ -102,6 +103,52 @@ def label(value, allowed, fallback="unknown"):
 def task_id(value):
     text = str(value or "")
     return text if re.fullmatch(r"[A-Za-z0-9_-]{1,80}", text) else "redacted_nonstandard_id"
+
+
+def origin_label(value):
+    """Only source-generated origin labels, never arbitrary summary text."""
+    return value if isinstance(value, str) and re.fullmatch(
+        r"initial_skill|step_\d{4}|slow_update(?:_placeholder)?_epoch_\d{2}", value
+    ) else "unknown"
+
+
+def paired_test_diagnostic(tasks, stages, core_verified):
+    """Exact n=4 paired bootstrap enumeration; not a population efficacy CI."""
+    result = {"status": "unavailable_or_unverified", "baseline_stage": "test_eval_baseline",
+        "best_stage": "test_eval", "n_pairs": None, "pairs": [], "metrics": {},
+        "confidence_level": 0.95, "resamples": None,
+        "method": "exact_enumeration_of_all_ordered_paired_bootstrap_resamples_linear_percentiles",
+        "scope": "diagnostic_only_four_observed_tasks_not_formal_efficacy_evidence",
+        "note": "A degenerate [0,0] interval means the four observed paired differences are all zero; it does not prove equivalence or generalize beyond these tasks."}
+    baseline = [row for row in tasks if row["stage"] == result["baseline_stage"]]
+    best = [row for row in tasks if row["stage"] == result["best_stage"]]
+    stage_map = {row["stage"]: row for row in stages}
+    ids = [row["task_id"] for row in baseline]
+    other = {row["task_id"]: row for row in best}
+    if (not core_verified or len(ids) != 4 or len(best) != 4 or len(set(ids)) != 4
+        or set(ids) != set(other)
+        or not all(stage_map.get(name, {}).get("complete_scored_artifacts")
+                   for name in (result["baseline_stage"], result["best_stage"]))
+        or not all(row.get("scored") and score(row.get("hard")) is not None
+                   and score(row.get("soft")) is not None for row in baseline + best)):
+        return result
+    result.update(status="verified_exploratory_diagnostic", n_pairs=4, resamples=4 ** 4)
+    result["pairs"] = [{"task_id": row["task_id"], "baseline_hard": row["hard"],
+        "best_hard": other[row["task_id"]]["hard"], "hard_difference": other[row["task_id"]]["hard"] - row["hard"],
+        "baseline_soft": row["soft"], "best_soft": other[row["task_id"]]["soft"],
+        "soft_difference": other[row["task_id"]]["soft"] - row["soft"]} for row in baseline]
+    for metric in ("hard", "soft"):
+        differences = [row[metric + "_difference"] for row in result["pairs"]]
+        means = sorted(sum(sample) / 4 for sample in itertools.product(differences, repeat=4))
+        def percentile(q):
+            position = (len(means) - 1) * q
+            lower = math.floor(position)
+            upper = math.ceil(position)
+            return means[lower] + (means[upper] - means[lower]) * (position - lower)
+        result["metrics"][metric] = {"mean_difference_best_minus_baseline": sum(differences) / 4,
+            "lower": percentile(0.025), "upper": percentile(0.975),
+            "all_observed_differences_zero": all(value == 0 for value in differences)}
+    return result
 
 
 def task_failure(row):
@@ -245,7 +292,12 @@ def source_evidence(source_root: Path) -> dict:
             "separate_step_buffer_context": "step_buffer_context = _format_step_buffer(step_buffer)",
             "budget_computation": "edit_budget = compute_adaptive_budget(",
             "memory_write_stat": 'buf_entry["cam_memory_items_added"]',
+            "baseline_selection_call_before_loop_timer": "baseline_results = adapter.rollout(sel_env, skill_init, baseline_dir)",
+            "trainer_wall_timer_start": "t_loop_start = time.time()",
+            "trainer_wall_timer_end": "total_wall = time.time() - t_loop_start",
         },
+        "scripts/cam_recovery.py": {"wrapper_wall_timer_start": "started = time.monotonic()",
+            "wrapper_wall_timer_end": "summary.update(manifest=manifest, wall_seconds="},
         "skillopt/cam/rejected_memory.py": {"memory_retrieve_definition": "def retrieve("},
         "skillopt/model/__init__.py": {"codex_tracker_summary_added": "codex_summary = _codex.get_token_summary()", "claude_tracker_summary_added": "claude_summary = _claude.get_token_summary()"},
         "skillopt/model/codex_harness.py": {"target_tracker_zero_tokens": '_openai.tracker.record("rollout", 0, 0)'},
@@ -320,7 +372,9 @@ def evaluation_provenance(run, cfg, summary, stage_map, step_records, issues):
             final_selection = {"verified": True, "kind": "direct", "source": "final_selection_eval"}
     elif same_current_best:
         source = next((stage for key, stage in sources if key == best_hash), None)
-        if source and score(summary.get("final_selection_hard")) == stage_map[source]["completed_task_hard"]:
+        if (source and score(summary.get("final_selection_hard")) == stage_map[source]["completed_task_hard"]
+            and (summary.get("final_selection_soft") is None
+                 or score(summary.get("final_selection_soft")) == stage_map[source]["completed_task_soft"])):
             final_selection = {"verified": True, "kind": "same_skill_reuse", "source": source}
     final_test = {"verified": False, "kind": "missing_or_unproven", "source": None}
     if usable("test_eval_final"):
@@ -336,6 +390,11 @@ def evaluation_provenance(run, cfg, summary, stage_map, step_records, issues):
             and score(overall.get("hard_acc")) == row["completed_task_hard"]
             and number(overall.get("total")) == number(cfg.get("test_env_num"))):
             final_test = {"verified": True, "kind": "same_skill_reuse", "source": "test_eval"}
+    for item in (final_selection, final_test):
+        if item["verified"]:
+            row = stage_map[item["source"]]
+            item.update(derived_hard=row["completed_task_hard"], derived_soft=row["completed_task_soft"],
+                derived_from_verified_source=True)
     return {"candidate_selection": candidate_records, "final_selection": final_selection,
             "final_test": final_test, "current_best_skill_hashes_match": same_current_best}
 
@@ -423,7 +482,10 @@ def audit(run: Path, source_root: Path) -> dict:
         gate = mapping(record.get("cam_gate"))
         confidence = mapping(record.get("cam_failure_confidence"))
         steps.append({"step": number(record.get("step")), "patches": number(record.get("n_patches")),
-            "action": label(record.get("action"), {"accept", "reject", "cam_re_evaluate", "skip_no_patches", "force_accept", "skip_no_change", "reject_no_change"}),
+            "action": label(record.get("action"), {"accept", "accept_new_best", "reject", "cam_re_evaluate", "skip_no_patches", "force_accept", "skip_no_change", "reject_no_change"}),
+            "candidate_selection_hard": score(record.get("selection_hard")),
+            "candidate_accepted_by_recorded_action": True if record.get("action") in {"accept", "accept_new_best", "force_accept"}
+                else False if record.get("action") in {"reject", "cam_re_evaluate", "skip_no_patches", "skip_no_change", "reject_no_change"} else None,
             "cam_gate_used": record.get("cam_gate_used") is True,
             "gate": {key: number(gate.get(key)) for key in ("mean_improvement", "lower_confidence_bound", "upper_confidence_bound", "n_pairs", "bootstrap_samples")},
             "gate_action": label(gate.get("action"), {"accept", "reject", "re_evaluate", "fallback"}),
@@ -536,13 +598,15 @@ def audit(run: Path, source_root: Path) -> dict:
     for row in stage_records:
         row["stage_score_for_comparison"] = bool(row["complete_scored_artifacts"] and not invalid and core_pass)
     return {
-        "audit_schema": 3, "captured_at": datetime.now(timezone.utc).isoformat(), "run_name": run.name,
+        "audit_schema": 4, "captured_at": datetime.now(timezone.utc).isoformat(), "run_name": run.name,
         "observation_status": "invalid_infrastructure" if invalid else "completed_core_evidence_verified" if core_pass else "completed_pending_validation" if finished else "partial_snapshot",
         "study_scope": "exploratory_four_sample_P0_not_formal_ablation", "paper_formal_eligible": False,
         "configuration": {key: number(cfg.get(key)) for key in CONFIG_NUMERIC},
         "manifest_source_sha256": manifest.get("source_sha256") if re.fullmatch(r"[0-9a-f]{64}", str(manifest.get("source_sha256", ""))) else None,
         "current_source_matches_manifest": source_matches,
         "summary_metrics": {key: number(summary.get(key)) if not invalid or key == "total_wall_time_s" else None for key in SUMMARY_METRICS},
+        "skill_origins_as_recorded": {key: origin_label(summary.get(key)) for key in ("best_origin", "current_origin")},
+        "paired_baseline_best_test_diagnostic": paired_test_diagnostic(public_tasks, stage_records, core_pass),
         "task_stage_counts": {"completed_task_attempts": sum(row["status"] == "completed" for row in public_tasks), "n_scored": sum(row["scored"] for row in public_tasks), "infra_error_attempts": infra_count,
             "failure_counts": dict(Counter(row["failure_type"] for row in public_tasks)), "note": "Repeated tasks across stages are separate attempts, not independent test samples."},
         "stages": stage_records, "per_task_metrics": public_tasks,
@@ -560,6 +624,10 @@ def audit(run: Path, source_root: Path) -> dict:
                 "retrieval_calls": None, "retrieval_hits": None,
                 "note": "Missing retrieval instrumentation is null, not zero measured hits. Step-buffer context is distinct from persistent rejected-memory retrieval. Initialization is not activation."}},
         "cost": {"target_canonical_raw_usage": sum_usage(target_usage), "optimizer_canonical_raw_usage": sum_usage(optimizer_usage),
+            "combined_canonical_raw_usage": sum_usage(transport_records),
+            "wall_time": {"wrapper_wall_seconds": nonnegative(recovery.get("wall_seconds")),
+                "trainer_wall_seconds": nonnegative(summary.get("total_wall_time_s")),
+                "note": "Different scopes: wrapper spans the probe; trainer timer starts after initial selection-baseline evaluation and includes later evaluations. Do not sum these nested timings or call their difference pure model time. Verify source references and manifest before attributing this scope."},
             "target_request_trace_files": len(target_usage), "optimizer_request_artifact_counts": dict(request_stages),
             "completed_optimizer_request_counts": dict(completed_request_stages), "incomplete_optimizer_requests": incomplete_optimizer_requests,
             "target_usage_by_attempt": target_usage, "optimizer_usage_by_request": optimizer_usage, "tracker_summary_as_recorded": safe_tracker,
@@ -590,12 +658,17 @@ def markdown(data):
     for row in data["stages"]:
         lines.append(f"| {row['stage']} | {row['n_recorded']} / {row['expected']} | {row['n_scored']} | {row['completed_task_hard']} | {row['completed_task_soft']} | {row['complete_scored_artifacts']} |")
     reflection, mechanism, cost = data["reflection"], data["mechanisms"], data["cost"]
-    lines += ["", f"Patch yield: {reflection['groups_with_payload']} payload groups / {reflection['groups_with_observed_optimizer_call']} observed called groups; actual analyst request artifacts={reflection['actual_analyst_request_artifacts']}.",
+    lines += ["", "Skill origins as recorded: " + json.dumps(data["skill_origins_as_recorded"]),
+              "", "Step decisions (a scored candidate is not necessarily an accepted skill): " + json.dumps(mechanism["steps"]),
+              "", "Paired baseline-versus-best test diagnostic (not generalizable): " + json.dumps(data["paired_baseline_best_test_diagnostic"]),
+              "", f"Patch yield: {reflection['groups_with_payload']} payload groups / {reflection['groups_with_observed_optimizer_call']} observed called groups; actual analyst request artifacts={reflection['actual_analyst_request_artifacts']}.",
               "", f"CAM Gate used={mechanism['cam_gate_used_count']}; adaptive budget computations={mechanism['adaptive_budget_computations']}.",
               "", "Budget transitions: " + json.dumps(mechanism["budget_transitions"], ensure_ascii=False),
               "", "Persistent rejected memory: " + json.dumps(mechanism["rejected_memory"], ensure_ascii=False),
               "", "Target canonical raw usage: " + json.dumps(cost["target_canonical_raw_usage"]),
               "", "Optimizer canonical raw usage: " + json.dumps(cost["optimizer_canonical_raw_usage"]),
+              "", "Combined canonical raw usage: " + json.dumps(cost["combined_canonical_raw_usage"]),
+              "", "Wall-time scopes: " + json.dumps(cost["wall_time"]),
               "", "Transport recovery evidence: " + json.dumps(data["transport"], ensure_ascii=False),
               "", cost["note"], "", "Completeness: " + json.dumps(data["completeness"], ensure_ascii=False),
               "", "Source references (current source; compare manifest hash before attributing to the run):", ""]

@@ -2,6 +2,8 @@
 
 日期：2026-09-09（Asia/Shanghai）。本轮范围：任务 1–5。正式矩阵与论文性能结论需在预检通过后另行推进。
 
+**最新结论：恢复任务 1–5 已完成验收，P0 已正常结束并通过独立完整性审计。** 请先读 [最终中文报告](P0_FINAL_REPORT.md)。baseline/best/final test 均为 0.25，没有测试分数提升；持久化 Memory 与最终 best 选择流程仍需核查，正式消融未启动。
+
 ## 已确认的事实
 
 - 已对实验专用 `C:/CAM-SkillOpt/codex-home` 完成官方设备登录；target 与 optimizer 使用同一认证环境。
@@ -24,7 +26,7 @@
 | HTTP 独立诊断 | `SkillOpt/outputs/recovery_20260909/http_diagnostic_01` | 同一官方端点、同一 target 模型返回正确标记，provider 为 `cam_openai_http` |
 | 参数覆盖诊断 | `auth_check_http_02` / `single_http_01` | manifest 虽标 HTTP，实际仍为 openai；不能作为 HTTP 验收。原产物保留，后续验收强制核对实际 provider |
 | 修正后 HTTP 双角色验收 | `SkillOpt/outputs/recovery_20260909/auth_check_http_03` | 4/4 通过；模型、实际 provider、退出码和返回内容均正确；总耗时 117.1 秒 |
-| 离线回归测试 | 4 个新增 unittest 模块 | 加入代理隔离与有界重连测试后 59 个运行回归测试通过；另有 24 项独立离线审计测试 |
+| 离线回归测试 | 4 个运行模块＋1 个审计模块 | 加入代理隔离与有界重连测试后 59 个运行回归测试通过；另有 29 项独立离线审计测试，共 88 项 |
 | 单样本完整链路 | `SkillOpt/outputs/recovery_20260909/single_http_02` | 通过：llm/code/exec 均 true，conversation 完整，analyst calls=1，patch=1（2 edits）；样本评分 hard=0/soft=0，非基础设施失败；总耗时 100.3 秒 |
 | 四样本 P0 第一轮 | `SkillOpt/outputs/recovery_20260909/p0_http_01` | 第 8 次 target 请求发生 HTTP 网络断流，266.7 秒中止；7 个任务已有结果；整轮 invalid_infra，分数 null，未进入反思/后续评估 |
 | 四样本 P0 同配置重试 | `SkillOpt/outputs/recovery_20260909/p0_http_02` | 第 7 次 target 请求发生网络断流，243.0 秒中止；6 个任务完成评分；未进入反思，整轮 invalid_infra |
@@ -34,7 +36,11 @@
 | 新版 CLI 四样本 P0 | `SkillOpt/outputs/recovery_20260909/p0_newcli_proxy_01` | 首个 selection 请求在“正在重连”通知处被上层终止；24.2 秒，0 个有效评分，整轮 invalid_infra；后续检查确认该通知尚非最终失败 |
 | 有界重连修复后认证 | `SkillOpt/outputs/recovery_20260909/auth_check_newcli_retry_01` | 4/4 通过；双角色各连续 2 次，实际模型/provider 正确；155.4 秒 |
 | 有界重连修复后单样本 | `SkillOpt/outputs/recovery_20260909/single_newcli_retry_01` | 完整链路通过；analyst=1，patch=1（2 edits）；hard/soft=0；105.7 秒 |
-| 有界重连修复后 P0 | `SkillOpt/outputs/recovery_20260909/p0_newcli_retry_01` | 运行中；同样本、同模型/配置、单并发，完成后独立审计；没有启动正式消融 |
+| 有界重连修复后 P0 | `SkillOpt/outputs/recovery_20260909/p0_newcli_retry_01` | 正常退出码 0，独立完整性审计通过；24 条评分、2 组 patch/3 edits、预算=8、Gate=1；baseline/best/final test 均 0.25；完整耗时 1128.313 秒 |
+
+当前 P0 的阶段性事实：baseline selection 4/4，hard/soft=0.25；训练 4/4，hard/soft=0；候选 selection 4/4，hard/soft=0.75。候选与初始技能的 4 个配对差值均值为 0.5，95% bootstrap 差值区间为 `[0, 1]`，包含 0，因此 CAM Gate 输出 `re_evaluate`，候选没有被接受。此为 n=4 探针的运行轨迹，不是正式性能提升结论。实际反思请求为 2 次、合并请求为 1 次；原 trainer token_summary 存在已记录的重复计数限制，不能直接当调用成本。
+
+最终阶段：初始技能＋空 Slow Update 占位的 selection 为 0.50，被独立 final-selection 分支提升为 best；其 test 为 0.25，与初始技能相同。final/best 哈希一致，final test 合法复用 best 的 4 条记录，不另增样本。本轮 27 个 CLI 模型请求的 canonical 已报告用量合计 384,380 tokens；3 个请求共 4 条网络通知恢复成功，所有通知保留，终止性基础设施错误为 0。核查清单见 [正式实验前提](FORMAL_EXPERIMENT_PREREQUISITES.md)。
 
 早期 `auth_check_01` 与 `auth_check_http_01` 在后台预连接告警处过早终止，仅作为调试证据，不是最终认证验收。
 

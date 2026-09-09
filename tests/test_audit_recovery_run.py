@@ -156,9 +156,82 @@ class AuditRecoveryRunTests(unittest.TestCase):
         result = self.audit()
         evidence = result["completeness"]["evaluation_provenance"]
         self.assertEqual(evidence["final_selection"]["kind"], "same_skill_reuse")
+        self.assertIsNone(result["summary_metrics"]["final_selection_soft"])
+        self.assertEqual(evidence["final_selection"]["derived_soft"], 0.5)
+        self.assertTrue(evidence["final_selection"]["derived_from_verified_source"])
         self.assertEqual(evidence["final_test"]["kind"], "same_skill_reuse")
         self.assertTrue(result["completeness"]["core_probe_evidence_pass"])
         self.assertEqual(result["task_stage_counts"]["n_scored"], stages * 4)
+
+    def test_reused_selection_contradictory_soft_is_not_ignored(self):
+        self.fixture(reuse=True)
+        summary = json.loads((self.run / "summary.json").read_text())
+        summary["final_selection_soft"] = 0.75
+        self.write("summary.json", summary)
+        self.assertFalse(self.audit()["completeness"]["core_probe_evidence_pass"])
+
+    def test_paired_diagnostic_zero_difference_is_degenerate_and_not_formal(self):
+        self.fixture()
+        diagnostic = self.audit()["paired_baseline_best_test_diagnostic"]
+        self.assertEqual(diagnostic["status"], "verified_exploratory_diagnostic")
+        self.assertEqual(diagnostic["n_pairs"], 4)
+        self.assertEqual(diagnostic["resamples"], 256)
+        for metric in ("hard", "soft"):
+            self.assertEqual(diagnostic["metrics"][metric]["mean_difference_best_minus_baseline"], 0)
+            self.assertEqual(diagnostic["metrics"][metric]["lower"], 0)
+            self.assertEqual(diagnostic["metrics"][metric]["upper"], 0)
+        self.assertIn("not_formal", diagnostic["scope"])
+
+    def test_paired_diagnostic_matches_ids_and_enumerates_nonzero_differences(self):
+        self.fixture()
+        result = self.audit()
+        tasks = [dict(row) for row in result["per_task_metrics"]]
+        for row in tasks:
+            if row["stage"] == "test_eval":
+                row.update(hard=1, soft=1)
+        diagnostic = helper.paired_test_diagnostic(list(reversed(tasks)), result["stages"], True)
+        self.assertEqual(diagnostic["metrics"]["hard"]["mean_difference_best_minus_baseline"], 0.5)
+        self.assertEqual(diagnostic["metrics"]["hard"]["lower"], 0)
+        self.assertEqual(diagnostic["metrics"]["hard"]["upper"], 1)
+        for pair in diagnostic["pairs"]:
+            self.assertEqual(pair["baseline_hard"], int(pair["task_id"]) % 2)
+
+    def test_paired_diagnostic_rejects_missing_mismatched_duplicate_or_invalid_evidence(self):
+        self.fixture()
+        result = self.audit()
+        original = result["per_task_metrics"]
+        for kind in ("missing", "mismatched", "duplicate", "invalid_core"):
+            with self.subTest(kind=kind):
+                tasks = [dict(row) for row in original]
+                index = next(i for i, row in enumerate(tasks) if row["stage"] == "test_eval")
+                if kind == "missing":
+                    tasks.pop(index)
+                elif kind == "mismatched":
+                    tasks[index]["task_id"] = "unpaired"
+                elif kind == "duplicate":
+                    tasks.append(dict(tasks[index]))
+                diagnostic = helper.paired_test_diagnostic(tasks, result["stages"], kind != "invalid_core")
+                self.assertEqual(diagnostic["status"], "unavailable_or_unverified")
+                self.assertEqual(diagnostic["metrics"], {})
+                self.assertIsNone(diagnostic["n_pairs"])
+
+    def test_timing_and_origin_are_allowlisted_and_candidate_acceptance_is_explicit(self):
+        stages = self.fixture()
+        summary = json.loads((self.run / "summary.json").read_text())
+        summary.update(best_origin="slow_update_placeholder_epoch_01", current_origin=SENTINELS[2])
+        self.write("summary.json", summary)
+        self.write("recovery_summary.json", {"status": "completed_pending_audit", "wall_seconds": 123.456})
+        record = json.loads((self.run / "steps/step_0001/step_record.json").read_text())
+        record.update(action="cam_re_evaluate")
+        self.write("steps/step_0001/step_record.json", record)
+        result = self.audit()
+        self.assertEqual(result["skill_origins_as_recorded"]["best_origin"], "slow_update_placeholder_epoch_01")
+        self.assertEqual(result["skill_origins_as_recorded"]["current_origin"], "unknown")
+        self.assertEqual(result["cost"]["wall_time"]["wrapper_wall_seconds"], 123.456)
+        self.assertEqual(result["cost"]["wall_time"]["trainer_wall_seconds"], 100)
+        self.assertFalse(result["mechanisms"]["steps"][0]["candidate_accepted_by_recorded_action"])
+        self.assertEqual(result["cost"]["combined_canonical_raw_usage"]["input_plus_output_tokens"], (stages * 4 + 1) * 110)
+        self.assertNotIn(SENTINELS[2], json.dumps(result) + helper.markdown(result))
 
     def test_matching_metrics_without_skill_hash_proof_do_not_pass(self):
         self.fixture(reuse=True)
