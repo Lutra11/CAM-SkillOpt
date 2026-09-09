@@ -7,6 +7,7 @@ effective step size. Previously core/select.py.
 from __future__ import annotations
 
 from skillopt.model import chat_optimizer
+from skillopt.model.infra_errors import InfraError, classify_infra_error
 from skillopt.optimizer.meta_skill import format_meta_skill_context
 from skillopt.optimizer.update_modes import (
     describe_item,
@@ -98,8 +99,12 @@ def rank_and_select(
                     payload_key(update_mode): selected,
                     "ranking_details": result,
                 }
-    except Exception:  # noqa: BLE001
-        pass
+    except InfraError:
+        raise
+    except Exception as exc:  # noqa: BLE001
+        infra = classify_infra_error(exc, stage="ranking") if isinstance(exc, (RuntimeError, TimeoutError, ConnectionError)) else None
+        if infra is not None:
+            raise infra from exc
 
     # Fallback: simple truncation
     return {

@@ -5,7 +5,6 @@ import base64
 import json
 import mimetypes
 import os
-import subprocess
 import tempfile
 import time
 import uuid
@@ -18,6 +17,14 @@ from skillopt.model.common import (
     CompatToolCall,
     CompatToolFunction,
     tracker,
+)
+from skillopt.model.infra_errors import (
+    InfraError,
+    classify_infra_error,
+    codex_transport_args,
+    persist_infra_error,
+    run_cli_failfast,
+    sanitize_details,
 )
 
 
@@ -322,7 +329,18 @@ def _run_codex_exec(
     attachments: list[dict[str, Any]],
     output_schema: dict[str, Any] | None,
     timeout: int | None,
+    stage: str = "optimizer",
 ) -> tuple[str, dict[str, int]]:
+    artifact_root = Path(os.environ.get("SKILLOPT_INFRA_ARTIFACT_DIR", "outputs/model_calls"))
+    artifact_dir = artifact_root / uuid.uuid4().hex
+    artifact_dir.mkdir(parents=True, exist_ok=True)
+    request = {
+        "stage": stage, "model_requested": model,
+        "reasoning_effort": REASONING_EFFORT, "status": "running",
+        "messages": [{"role": "user", "content": sanitize_details(prompt)}],
+    }
+    conversation_path = artifact_dir / "conversation.json"
+    conversation_path.write_text(json.dumps(request, ensure_ascii=False, indent=2), encoding="utf-8")
     with tempfile.TemporaryDirectory(prefix="skillopt_codex_") as temp_dir:
         output_path = os.path.join(temp_dir, "last_message.txt")
         image_paths = _materialize_attachments(attachments, temp_dir)
@@ -330,10 +348,9 @@ def _run_codex_exec(
         command = [
             CODEX_BIN,
             "exec",
+            *codex_transport_args(),
             "--json",
             "--ephemeral",
-            "--profile",
-            CODEX_PROFILE,
             "-c",
             "approval_policy=\"never\"",
             "--sandbox",
@@ -346,6 +363,9 @@ def _run_codex_exec(
             "--output-last-message",
             output_path,
         ]
+
+        if CODEX_PROFILE:
+            command.extend(["--profile", CODEX_PROFILE])
 
         if REASONING_EFFORT:
             command.extend(["-c", f"model_reasoning_effort={json.dumps(REASONING_EFFORT)}"])
@@ -362,16 +382,17 @@ def _run_codex_exec(
 
         command.append("-")
 
-        proc = subprocess.run(
-            command,
-            input=prompt,
-            text=True,
-            encoding="utf-8",
-            errors="replace",
-            capture_output=True,
-            timeout=timeout,
-            check=False,
-        )
+        try:
+            proc = run_cli_failfast(
+                command, prompt=prompt, timeout=timeout, stage=stage, model=model,
+                evidence_dir=artifact_dir,
+            )
+        except InfraError as exc:
+            request.update(exc.to_dict())
+            conversation_path.write_text(json.dumps(request, ensure_ascii=False, indent=2), encoding="utf-8")
+            raise
+        raw = sanitize_details(proc.stdout + "\n[stderr]\n" + proc.stderr)
+        (artifact_dir / "raw_trace.txt").write_text(raw, encoding="utf-8")
 
         usage_info = {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0}
         fallback_text = ""
@@ -398,9 +419,21 @@ def _run_codex_exec(
             last_message = fallback_text.strip()
 
         if proc.returncode != 0:
-            raise RuntimeError(_extract_error(proc.stdout, proc.stderr))
+            error = InfraError("provider_error", _extract_error(proc.stdout, proc.stderr), stage=stage, model=model)
+            persist_infra_error(error, raw=raw, evidence_dir=artifact_dir)
+            request.update(error.to_dict())
+            conversation_path.write_text(json.dumps(request, ensure_ascii=False, indent=2), encoding="utf-8")
+            raise error
         if not last_message:
-            raise RuntimeError("Codex returned an empty final message")
+            error = InfraError("provider_error", "Codex returned an empty final message", stage=stage, model=model)
+            persist_infra_error(error, raw=raw, evidence_dir=artifact_dir)
+            request.update(error.to_dict())
+            conversation_path.write_text(json.dumps(request, ensure_ascii=False, indent=2), encoding="utf-8")
+            raise error
+        request["status"] = "ok"
+        request["usage"] = usage_info
+        request["messages"].append({"role": "assistant", "content": sanitize_details(last_message)})
+        conversation_path.write_text(json.dumps(request, ensure_ascii=False, indent=2), encoding="utf-8")
         return last_message, usage_info
 
 
@@ -478,6 +511,7 @@ def _chat_messages_impl(
                 attachments=attachments,
                 output_schema=_assistant_message_schema() if structured_output else None,
                 timeout=timeout,
+                stage=stage,
             )
             tracker.record(
                 stage,
@@ -491,9 +525,12 @@ def _chat_messages_impl(
             payload = json.loads(raw_text)
             compat = _compat_message_from_payload(payload, tool_choice=tool_choice)
             return (compat if return_message else compat.content), usage_info
-        except subprocess.TimeoutExpired as exc:
-            last_err = RuntimeError(f"Codex CLI timed out after {timeout}s") if timeout else exc
+        except InfraError:
+            raise
         except Exception as exc:  # noqa: BLE001
+            infra = classify_infra_error(exc, stage=stage, model=model)
+            if infra is not None:
+                raise persist_infra_error(infra, raw=str(exc)) from exc
             last_err = exc
         time.sleep(min(2 ** attempt, 30))
 

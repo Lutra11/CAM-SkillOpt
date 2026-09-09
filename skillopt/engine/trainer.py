@@ -80,6 +80,8 @@ from skillopt.model import (
     set_optimizer_deployment,
 )
 from skillopt.utils import compute_item_scores, compute_score, skill_hash
+from skillopt.model.infra_errors import InfraError
+from skillopt.engine.run_artifacts import write_invalid_summary
 
 
 # ── Skill-aware reflection: appendix flush ───────────────────────────────────
@@ -346,11 +348,16 @@ def _redact_value(val: str) -> str:
 
 
 def _redact_cfg(cfg: dict) -> dict:
-    redacted = dict(cfg)
-    for key in list(redacted):
-        if key.lower() in _SECRET_KEYS and redacted.get(key):
-            redacted[key] = _redact_value(str(redacted[key]))
-    return redacted
+    def redact(value):
+        if isinstance(value, dict):
+            return {key: ("[REDACTED]" if any(
+                token in str(key).lower() for token in ("api_key", "apikey", "access_token",
+                                                        "refresh_token", "id_token", "password", "secret")
+            ) and item else redact(item)) for key, item in value.items()}
+        if isinstance(value, list):
+            return [redact(item) for item in value]
+        return value
+    return redact(cfg)
 
 def _load_history(out_root: str) -> list[dict]:
     path = os.path.join(out_root, "history.json")
@@ -602,6 +609,22 @@ class ReflACTTrainer:
 
     def train(self) -> dict:
         """Execute the full ReflACT training loop. Returns summary dict."""
+        started_at = time.time()
+        try:
+            return self._train_impl()
+        except Exception as exc:
+            infra = exc if isinstance(exc, InfraError) else None
+            if infra is None:
+                raise
+            write_invalid_summary(
+                self.cfg["out_root"], infra, started_at=started_at,
+                context={"config": _redact_cfg(self.cfg), "token_summary": get_token_summary()},
+            )
+            print(f"\n  [ABORTED infrastructure failure] {infra}", flush=True)
+            raise infra from exc
+
+    def _train_impl(self) -> dict:
+        """Training body; the public entrypoint persists fatal error evidence."""
         cfg = self.cfg
         adapter = self.adapter
         out_root = cfg["out_root"]
@@ -2285,6 +2308,9 @@ class ReflACTTrainer:
                             f.write(best_skill)
                         _persist_runtime_state(global_step)
             except Exception as _e:  # noqa: BLE001
+                infra = _e if isinstance(_e, InfraError) else None
+                if infra is not None:
+                    raise infra from _e
                 final_selection_hard = None
                 final_selection_soft = None
                 print(f"\n  [final skill val FAILED: {_e!r}]")
@@ -2423,6 +2449,9 @@ class ReflACTTrainer:
                             f, indent=2, ensure_ascii=False,
                         )
             except Exception as _e:  # noqa: BLE001
+                infra = _e if isinstance(_e, InfraError) else None
+                if infra is not None:
+                    raise infra from _e
                 final_test_hard = None
                 final_test_soft = None
                 print(f"\n  [final skill test FAILED: {_e!r}] "

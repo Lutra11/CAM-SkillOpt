@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 
 from skillopt.model import chat_optimizer
+from skillopt.model.infra_errors import InfraError, classify_infra_error
 from skillopt.prompts import load_prompt
 from skillopt.optimizer.update_modes import get_payload_items
 from skillopt.utils import extract_json
@@ -54,6 +55,11 @@ def rewrite_skill_from_suggestions(
             if "change_summary" not in result or not isinstance(result["change_summary"], list):
                 result["change_summary"] = []
             return result
-    except Exception:  # noqa: BLE001
+    except InfraError:
+        raise
+    except Exception as exc:  # noqa: BLE001
+        infra = classify_infra_error(exc, stage="rewrite") if isinstance(exc, (RuntimeError, TimeoutError, ConnectionError)) else None
+        if infra is not None:
+            raise infra from exc
         return None
     return None

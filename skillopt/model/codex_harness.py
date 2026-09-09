@@ -16,6 +16,15 @@ from skillopt.model.backend_config import (
     get_codex_exec_config,
     get_target_backend,
 )
+from skillopt.model.infra_errors import (
+    InfraError,
+    classify_infra_error,
+    codex_transport_args,
+    detect_infra_error,
+    persist_infra_error,
+    run_cli_failfast,
+    sanitize_details,
+)
 
 
 ANSWER_SCHEMA: dict[str, Any] = {
@@ -239,11 +248,11 @@ def _persist_artifacts(
     raw_path = os.path.join(pred_dir, f"{prefix}_raw.txt")
     summary_path = os.path.join(pred_dir, f"{prefix}_trace_summary.txt")
 
-    combined_raw = raw
+    combined_raw = sanitize_details(raw)
     if os.path.exists(raw_path):
         with open(raw_path, encoding="utf-8") as f:
             prev = f.read()
-        combined_raw = f"{prev}\n\n===== TURN BREAK =====\n\n{raw}" if prev.strip() else raw
+        combined_raw = sanitize_details(f"{prev}\n\n===== TURN BREAK =====\n\n{raw}" if prev.strip() else raw)
 
     with open(raw_path, "w", encoding="utf-8") as f:
         f.write(combined_raw)
@@ -286,7 +295,27 @@ def parse_codex_raw(raw: str) -> dict:
             first_step_line = idx
             break
     if first_step_line is None:
-        return {"steps": [], "trace_body": ""}
+        json_steps = []
+        for idx, line in enumerate(lines):
+            try:
+                event = json.loads(line)
+            except ValueError:
+                continue
+            if not isinstance(event, dict) or event.get("type") != "item.completed":
+                continue
+            item = event.get("item", {}) or {}
+            kind = item.get("type")
+            if kind not in {"agent_message", "command_execution", "reasoning"}:
+                continue
+            content = str(item.get("text", "") or "")
+            if kind == "command_execution":
+                content = f"{item.get('command', '')}\n{item.get('status', '')}: exit {item.get('exit_code')}\n{item.get('aggregated_output', '')}"
+            json_steps.append({
+                "index": len(json_steps) + 1, "type": "exec" if kind == "command_execution" else "codex",
+                "start_line": idx, "end_line": idx + 1, "content": content,
+            })
+        first_json_line = json_steps[0]["start_line"] if json_steps else len(lines)
+        return {"steps": json_steps, "trace_body": "\n".join(lines[first_json_line:]).strip()}
 
     steps: list[dict] = []
     current: dict | None = None
@@ -863,6 +892,20 @@ def _run_codex_sdk_exec(
             "is_error": bool(parse_error),
             "items": getattr(turn, "items", []),
         })
+        # SDKs normally raise on turn.failed, but preserve the same contract for
+        # SDK versions that return terminal error items instead.
+        for item in getattr(turn, "items", []) or []:
+            if isinstance(item, dict) and item.get("type") in {"error", "turn.failed"}:
+                infra = detect_infra_error(_json_dumps(item), stage="target", model=model)
+                if infra is not None:
+                    raise persist_infra_error(
+                        infra, raw=raw, evidence_dir=os.path.dirname(work_dir.rstrip(os.sep)),
+                    )
+        if not result_text.strip():
+            raise persist_infra_error(
+                InfraError("provider_error", parse_error, stage="target", model=model),
+                raw=raw, evidence_dir=os.path.dirname(work_dir.rstrip(os.sep)),
+            )
         return response, raw
 
     return _run_async(asyncio.wait_for(_query(), timeout=timeout))
@@ -885,6 +928,8 @@ def _run_codex_cli_exec(
     cmd = [
         str(config["path"]),
         "exec",
+        *codex_transport_args(),
+        "--json",
         "--skip-git-repo-check",
         "--color",
         "never",
@@ -911,23 +956,26 @@ def _run_codex_cli_exec(
         cmd.extend(["-i", image])
     cmd.extend(["--output-last-message", last_message_path, "-"])
 
+    # A reused workspace must never make an old answer look like this request's
+    # output. This is a harness-owned per-request artifact.
+    if os.path.exists(last_message_path):
+        os.remove(last_message_path)
     try:
-        proc = subprocess.run(
+        proc = run_cli_failfast(
             cmd,
-            input=prompt,
+            prompt=prompt,
             cwd=work_dir,
-            capture_output=True,
-            text=True,
-            encoding="utf-8",
-            errors="replace",
             timeout=timeout,
+            stage="target",
+            model=model,
+            evidence_dir=os.path.dirname(work_dir.rstrip(os.sep)),
         )
-    except subprocess.TimeoutExpired as exc:
-        stdout = exc.stdout or ""
-        stderr = exc.stderr or ""
-        raw = stdout
-        if stderr:
-            raw = f"{raw}\n[stderr]\n{stderr}" if raw else stderr
+    except InfraError as exc:
+        raw_path = os.path.join(exc.evidence_dir, "infra_raw_trace.txt")
+        raw = exc.message
+        if os.path.exists(raw_path):
+            with open(raw_path, encoding="utf-8") as f:
+                raw = f.read()
         _persist_codex_artifacts(work_dir, raw, "")
         raise
     try:
@@ -941,6 +989,17 @@ def _run_codex_cli_exec(
     if os.path.exists(last_message_path):
         with open(last_message_path, encoding="utf-8") as f:
             last_message = f.read()
+    if not last_message.strip():
+        for line in stdout.splitlines():
+            try:
+                event = json.loads(line)
+            except ValueError:
+                continue
+            if not isinstance(event, dict):
+                continue
+            item = event.get("item", {}) or {}
+            if event.get("type") == "item.completed" and item.get("type") == "agent_message":
+                last_message = str(item.get("text", "") or last_message)
     raw = "COMMAND_JSON: " + json.dumps(cmd, ensure_ascii=False) + "\n"
     raw += "CWD: " + str(work_dir) + "\n"
     raw += stdout
@@ -949,8 +1008,15 @@ def _run_codex_cli_exec(
     if proc.returncode != 0:
         _persist_codex_artifacts(work_dir, raw, last_message)
         detail = (stderr or stdout).strip()
-        raise RuntimeError(
-            f"codex exec failed with exit code {proc.returncode}: {detail[:4000]}"
+        raise persist_infra_error(
+            InfraError("provider_error", f"codex exec failed with exit code {proc.returncode}: {detail[:4000]}", stage="target", model=model),
+            raw=raw, evidence_dir=os.path.dirname(work_dir.rstrip(os.sep)),
+        )
+    if not last_message.strip():
+        _persist_codex_artifacts(work_dir, raw, "")
+        raise persist_infra_error(
+            InfraError("provider_error", "Codex returned an empty final message", stage="target", model=model),
+            raw=raw, evidence_dir=os.path.dirname(work_dir.rstrip(os.sep)),
         )
     return last_message, raw
 
@@ -989,6 +1055,12 @@ def run_codex_exec(
                     combined = "\n\n".join(all_raw)
                     _persist_codex_artifacts(work_dir, combined, response)
                     return response, combined
+            except InfraError as exc:
+                raw = _raw_exception("codex_sdk", exc)
+                _persist_codex_artifacts(work_dir, raw, "")
+                if not exc.evidence_dir:
+                    persist_infra_error(exc, raw=raw, evidence_dir=os.path.dirname(work_dir.rstrip(os.sep)))
+                raise
             except (ImportError, ModuleNotFoundError) as exc:
                 raw = _raw_exception("codex_sdk", exc)
                 all_raw.append(f"===== CODEX SDK ATTEMPT {attempt + 1} =====\n{raw}")
@@ -997,6 +1069,12 @@ def run_codex_exec(
                     raise
             except Exception as exc:  # noqa: BLE001
                 raw = _raw_exception("codex_sdk", exc)
+                infra = classify_infra_error(exc, stage="target", model=model)
+                if infra is not None:
+                    _persist_codex_artifacts(work_dir, raw, "")
+                    raise persist_infra_error(
+                        infra, raw=raw, evidence_dir=os.path.dirname(work_dir.rstrip(os.sep)),
+                    ) from exc
                 all_raw.append(f"===== CODEX SDK ATTEMPT {attempt + 1} =====\n{raw}")
                 if mode == "sdk" and attempt >= retries:
                     _persist_codex_artifacts(work_dir, "\n\n".join(all_raw), "")

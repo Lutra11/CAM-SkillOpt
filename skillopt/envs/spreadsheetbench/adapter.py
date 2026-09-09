@@ -17,6 +17,8 @@ from skillopt.envs.spreadsheetbench.rollout import (
     run_spreadsheet_batch_codegen,
 )
 from skillopt.model import get_target_backend, is_target_exec_backend
+from skillopt.model.infra_errors import InfraError
+from skillopt.engine.run_artifacts import assert_valid_results, write_json
 
 
 # Task types used for per-category breakdowns
@@ -108,17 +110,8 @@ class SpreadsheetBenchAdapter(EnvAdapter):
         results_path = os.path.join(out_dir, "results.jsonl")
         os.makedirs(out_dir, exist_ok=True)
 
-        # Resume support
-        if os.path.exists(results_path):
-            existing: list[dict] = []
-            with open(results_path, encoding="utf-8") as f:
-                for line in f:
-                    try:
-                        existing.append(json.loads(line))
-                    except Exception:
-                        pass
-            if existing:
-                return existing
+        # The batch runner resumes only completed task IDs and rejects cached
+        # infrastructure errors. A nonempty partial file is not a full stage.
 
         if self.mode in ("single", "multi"):
             results = run_spreadsheet_batch_codegen(
@@ -156,6 +149,22 @@ class SpreadsheetBenchAdapter(EnvAdapter):
                 f.write(json.dumps(r, ensure_ascii=False) + "\n")
 
         return results
+
+    def reflect(self, results, skill_content, out_dir, **kwargs):
+        assert_valid_results(results, stage="reflect")
+        prediction_dir = kwargs.get("prediction_dir", os.path.join(out_dir, "predictions"))
+        for row in results:
+            path = os.path.join(prediction_dir, str(row["id"]), "conversation.json")
+            conversation = []
+            if os.path.exists(path):
+                with open(path, encoding="utf-8") as handle:
+                    conversation = json.load(handle)
+            if not any(m.get("role") == "assistant" and m.get("content") for m in conversation):
+                error = InfraError("artifact_missing", "Target trajectory has no captured assistant response",
+                                   stage="reflect", details={"task_id": row["id"], "path": path})
+                write_json(os.path.join(out_dir, "reflect_infra_error.json"), error.to_dict())
+                raise error
+        return super().reflect(results, skill_content, out_dir, **kwargs)
 
     def get_task_types(self) -> list[str]:
         return list(TASK_TYPES)

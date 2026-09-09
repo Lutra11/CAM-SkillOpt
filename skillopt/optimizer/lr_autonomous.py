@@ -6,6 +6,7 @@ import re
 from typing import Any
 
 from skillopt.model import chat_optimizer
+from skillopt.model.infra_errors import InfraError, classify_infra_error
 from skillopt.optimizer.meta_skill import format_meta_skill_context
 from skillopt.optimizer.update_modes import describe_item, get_payload_items, payload_label
 from skillopt.prompts import load_prompt
@@ -83,7 +84,12 @@ def decide_autonomous_learning_rate(
         parsed = extract_json(response)
         if parsed:
             decision = _coerce_nonnegative_int(parsed.get("learning_rate"))
+    except InfraError:
+        raise
     except Exception as exc:  # noqa: BLE001
+        infra = classify_infra_error(exc, stage="lr_autonomous") if isinstance(exc, (RuntimeError, TimeoutError, ConnectionError)) else None
+        if infra is not None:
+            raise infra from exc
         parsed = {"error": str(exc)}
 
     fallback = False

@@ -484,7 +484,21 @@ def main() -> None:
     print(f"{'='*60}")
 
     # Run rollout
-    results = adapter.rollout(items, skill_content, out_root)
+    from skillopt.model.infra_errors import InfraError
+    from skillopt.engine.run_artifacts import write_invalid_summary
+    import time
+    eval_started_at = time.time()
+    try:
+        results = adapter.rollout(items, skill_content, out_root)
+    except Exception as exc:
+        infra = exc if isinstance(exc, InfraError) else None
+        if infra is None:
+            raise
+        write_invalid_summary(out_root, infra, started_at=eval_started_at,
+                              context={"skill": skill_path, "split": split, "n_items": len(items)},
+                              filename="eval_summary.json")
+        print(f"  Evaluation stopped: {infra}", flush=True)
+        raise SystemExit(2) from None
 
     # Score
     hard, soft = compute_score(results)

@@ -20,7 +20,6 @@ from concurrent.futures import (
     FIRST_COMPLETED,
     ThreadPoolExecutor,
     wait,
-    TimeoutError as FuturesTimeoutError,
 )
 
 import openpyxl
@@ -30,6 +29,189 @@ from skillopt.envs.spreadsheetbench.evaluator import (
     evaluate, _generate_cell_names, _compare_cell_value,
 )
 from skillopt.envs.spreadsheetbench.executor import run_generated_code
+from skillopt.model.infra_errors import InfraError, classify_infra_error
+from skillopt.engine.run_artifacts import assert_valid_results, write_json, write_stage_stats
+
+
+def _failure_type(result: dict) -> str:
+    if result.get("failure_type"):
+        return result["failure_type"]
+    if result.get("ok"):
+        return "none"
+    reason = result.get("fail_reason", "")
+    if "timeout" in reason.lower():
+        return "task_timeout"
+    return {"setup": "dataset_error", "llm": "llm_output_error",
+            "agent": "agent_error", "extract": "code_missing",
+            "exec": "execution_error" if not result.get("exec_ok") else "score_mismatch",
+            "error": "unexpected_error"}.get(result.get("phase"), "score_mismatch")
+
+
+def _persist_task_result(out_root: str, result: dict, started_at: float) -> None:
+    """Persist even an attempt that obtained no assistant response."""
+    task_out = os.path.join(out_root, "predictions", str(result["id"]))
+    os.makedirs(task_out, exist_ok=True)
+    result.setdefault("status", "completed")
+    result["failure_type"] = _failure_type(result)
+    result["wall_time_s"] = round(time.time() - started_at, 3)
+    conversation_path = os.path.join(task_out, "conversation.json")
+    if not os.path.exists(conversation_path):
+        # An empty observed transcript is truthful. Do not invent an assistant
+        # answer or make the infrastructure error look like a model message.
+        write_json(conversation_path, [])
+    with open(conversation_path, encoding="utf-8") as handle:
+        conversation = json.load(handle)
+    write_json(os.path.join(task_out, "conversation_meta.json"), {
+        "status": result["status"], "partial": result["status"] == "infra_error",
+        "assistant_response_observed": any(
+            m.get("role") == "assistant" and bool(m.get("content")) for m in conversation
+        ),
+        "failure_type": result["failure_type"],
+        "note": "Only observed messages are stored; an empty list means no response was captured.",
+    })
+    raw_path = os.path.join(task_out, "raw.txt")
+    if not os.path.exists(raw_path):
+        with open(raw_path, "w", encoding="utf-8") as handle:
+            handle.write("")
+    trace_path = os.path.join(task_out, "raw_trace.txt")
+    if not os.path.exists(trace_path):
+        evidence_path = os.path.join(task_out, "infra_raw_trace.txt")
+        if not os.path.exists(evidence_path):
+            evidence_path = raw_path
+        with open(evidence_path, encoding="utf-8") as handle:
+            raw = handle.read()
+        with open(trace_path, "w", encoding="utf-8") as handle:
+            handle.write(raw or result.get("error", ""))
+    result["conversation_path"] = conversation_path
+    result["raw_trace_path"] = trace_path
+    write_json(os.path.join(task_out, "result.json"), result)
+    write_stage_stats(task_out, [result], expected=1,
+                      status=result["status"], started_at=started_at)
+
+
+def _raise_task_infra(result: dict, exc: Exception, *, stage: str,
+                      model_call: bool = False) -> None:
+    # Workbook/cell errors can contain numbers such as 401 and local execution
+    # can time out. Only actual model-call boundaries interpret legacy text.
+    infra = exc if isinstance(exc, InfraError) else (
+        classify_infra_error(exc, stage=stage, role="target") if model_call else None
+    )
+    if infra is None:
+        return
+    result.update(status="infra_error", failure_type=infra.failure_type,
+                  infra_error=infra.to_dict(), hard=None, soft=None, ok=False,
+                  fail_reason=str(infra), error=json.dumps(infra.to_dict(), ensure_ascii=False))
+    infra.details["task_id"] = result["id"]
+    infra.task_result = result
+    raise infra from exc
+
+
+def _append_result(results_path: str, result: dict) -> None:
+    with open(results_path, "a", encoding="utf-8") as handle:
+        handle.write(json.dumps(result, ensure_ascii=False) + "\n")
+        handle.flush()
+
+
+def _batch_infra_result(item: dict, error: InfraError) -> dict:
+    return getattr(error, "task_result", None) or {
+        "id": str(item["id"]), "status": "infra_error", "ok": False,
+        "hard": None, "soft": None, "phase": error.stage,
+        "failure_type": error.failure_type, "infra_error": error.to_dict(),
+        "fail_reason": str(error), "llm_ok": False, "code_ok": False,
+        "exec_ok": False, "n_turns": 0,
+    }
+
+
+def _run_task_batch(items, out_root, run_one, *, workers, task_timeout) -> list[dict]:
+    """Bound submission and persist each outcome before dispatching another."""
+    if workers < 1:
+        raise ValueError("workers must be >= 1")
+    os.makedirs(out_root, exist_ok=True)
+    started = time.time()
+    results_path = os.path.join(out_root, "results.jsonl")
+    requested_ids = {str(item["id"]) for item in items}
+    results = []
+    if os.path.exists(results_path):
+        with open(results_path, encoding="utf-8") as handle:
+            for line in handle:
+                if line.strip():
+                    row = json.loads(line)
+                    if str(row["id"]) in requested_ids:
+                        results.append(row)
+    assert_valid_results(results, stage=out_root)
+    done_ids = {str(row["id"]) for row in results}
+    pending = [item for item in items if str(item["id"]) not in done_ids]
+    state = "running"
+    write_stage_stats(out_root, results, expected=len(items), status=state, started_at=started)
+
+    def record(row):
+        row.setdefault("status", "completed")
+        row["failure_type"] = _failure_type(row)
+        results.append(row)
+        _append_result(results_path, row)
+        write_stage_stats(out_root, results, expected=len(items), status=state, started_at=started)
+        print(f"    {len(results)}/{len(items)} id={row['id']} "
+              f"status={row['status']} failure={row['failure_type']} "
+              f"hard={row.get('hard')} elapsed={time.time() - started:.0f}s", flush=True)
+
+    def fail(item, error):
+        nonlocal state
+        state = "infra_error"
+        row = _batch_infra_result(item, error)
+        _persist_task_result(out_root, row, started)
+        record(row)
+        write_json(os.path.join(out_root, "infra_error.json"), error.to_dict())
+        raise error
+
+    # Serial dispatch guarantees a failing first model request never launches
+    # task two. The model backend owns the hard subprocess/request deadline.
+    if workers == 1:
+        for item in pending:
+            try:
+                row = run_one(item)
+                assert_valid_results([row], stage=out_root)
+            except Exception as exc:
+                infra = exc if isinstance(exc, InfraError) else None
+                if infra is not None:
+                    fail(item, infra)
+                raise
+            record(row)
+    else:
+        iterator = iter(pending)
+        executor = ThreadPoolExecutor(max_workers=workers)
+        active = {}
+        def submit_one():
+            item = next(iterator, None)
+            if item is not None:
+                active[executor.submit(run_one, item)] = (item, time.monotonic())
+        try:
+            for _ in range(min(workers, len(pending))):
+                submit_one()
+            while active:
+                done, _ = wait(active, timeout=1, return_when=FIRST_COMPLETED)
+                for future in done:
+                    item, _ = active.pop(future)
+                    try:
+                        row = future.result()
+                        assert_valid_results([row], stage=out_root)
+                    except Exception as exc:
+                        infra = exc if isinstance(exc, InfraError) else None
+                        if infra is not None:
+                            fail(item, infra)
+                        raise
+                    record(row)
+                for future, (item, began) in active.items():
+                    if task_timeout > 0 and time.monotonic() - began >= task_timeout:
+                        fail(item, InfraError("worker_timeout", "Worker exceeded task deadline; batch aborted",
+                                              stage=out_root, details={"timeout_s": task_timeout}))
+                for _ in range(workers - len(active)):
+                    submit_one()
+        finally:
+            for future in active:
+                future.cancel()
+            executor.shutdown(wait=False, cancel_futures=True)
+    write_stage_stats(out_root, results, expected=len(items), status="completed", started_at=started)
+    return results
 
 
 # ── Data loading ─────────────────────────────────────────────────────────────
@@ -277,6 +459,7 @@ def process_one(
         "error": "",
     }
 
+    task_started_at = time.time()
     try:
         cases = _find_test_cases(task_dir)
         result["n_cases"] = len(cases)
@@ -373,6 +556,7 @@ def process_one(
                 shutil.copy2(solution_src, solution_dst)
 
         except Exception as e:
+            _raise_task_infra(result, e, stage="target_react", model_call=True)
             result["fail_reason"] = f"agent-error: {type(e).__name__}: {e}"
             result["error"] = traceback.format_exc()
             return result
@@ -457,9 +641,12 @@ def process_one(
         return result
 
     except Exception as e:  # noqa: BLE001
+        _raise_task_infra(result, e, stage=result["phase"])
         result["fail_reason"] = f"unexpected: {type(e).__name__}: {e}"
         result["error"] = traceback.format_exc()
         return result
+    finally:
+        _persist_task_result(out_root, result, task_started_at)
 
 
 # ── Batch runner ─────────────────────────────────────────────────────────────
@@ -478,122 +665,16 @@ def run_spreadsheet_batch(
     diagnostic_instruction: str = "",
     diagnostic_trace_context_by_id: dict[str, str] | None = None,
 ) -> list[dict]:
-    """Run the ReAct agent on all items with ThreadPoolExecutor.
-
-    Returns list of result dicts compatible with ``compute_score()``.
-    """
-    os.makedirs(out_root, exist_ok=True)
-
-    # Check for already-done items (resume support)
-    results_path = os.path.join(out_root, "results.jsonl")
-    done_ids: set[str] = set()
-    existing: list[dict] = []
-    if os.path.exists(results_path):
-        with open(results_path, encoding="utf-8") as f:
-            for line in f:
-                try:
-                    r = json.loads(line)
-                    done_ids.add(str(r["id"]))
-                    existing.append(r)
-                except Exception:
-                    pass
-
-    pending = [it for it in items if str(it["id"]) not in done_ids]
-    print(
-        f"  [spreadsheet rollout] total={len(items)} done={len(done_ids)} "
-        f"pending={len(pending)} workers={max_api_workers} task_timeout={task_timeout}s"
-    )
-
-    if not pending:
-        return existing
-
-    t0 = time.time()
-    results = list(existing)
-    started_at: dict[str, float] = {}
-
-    def _timeout_result(item: dict) -> dict:
-        return {
-            "id": str(item["id"]),
-            "ok": False,
-            "phase": "timeout",
-            "fail_reason": f"task-timeout-{task_timeout}s",
-            "n_cases": 0, "n_pass": 0, "soft": 0.0, "hard": 0,
-            "n_turns": 0, "cases": [], "error": "timeout",
-        }
-
-    def _error_result(item: dict, exc: Exception) -> dict:
-        return {
-            "id": str(item["id"]),
-            "ok": False,
-            "phase": "error",
-            "fail_reason": f"unexpected: {type(exc).__name__}: {exc}",
-            "n_cases": 0, "n_pass": 0, "soft": 0.0, "hard": 0,
-            "n_turns": 0, "cases": [], "error": str(exc),
-        }
-
-    def _run_one(it: dict) -> dict:
-        started_at[str(it["id"])] = time.time()
+    """Run legacy ReAct tasks with persistent evidence and fail-fast infra errors."""
+    def run_one(item):
         return process_one(
-            it,
-            data_root,
-            out_root,
-            skill_content,
-            max_turns,
-            diagnostic_mode,
-            diagnostic_instruction,
-            (diagnostic_trace_context_by_id or {}).get(str(it["id"]), ""),
+            item, data_root, out_root, skill_content, max_turns,
+            diagnostic_mode, diagnostic_instruction,
+            (diagnostic_trace_context_by_id or {}).get(str(item["id"]), ""),
             max_completion_tokens,
         )
-
-    ex = ThreadPoolExecutor(max_workers=max_api_workers)
-    try:
-        futs = {ex.submit(_run_one, it): it for it in pending}
-        pending_futs = set(futs)
-        finished = 0
-        while pending_futs:
-            done, _ = wait(pending_futs, timeout=5, return_when=FIRST_COMPLETED)
-            now = time.time()
-            timed_out = [
-                fut for fut in pending_futs - done
-                if str(futs[fut]["id"]) in started_at
-                and now - started_at[str(futs[fut]["id"])] >= task_timeout
-            ]
-            for fut in done:
-                pending_futs.remove(fut)
-                item = futs[fut]
-                try:
-                    res = fut.result()
-                except FuturesTimeoutError:
-                    res = _timeout_result(item)
-                except Exception as e:  # noqa: BLE001
-                    res = _error_result(item, e)
-                results.append(res)
-                finished += 1
-                status = "PASS" if res.get("hard") else ("TIMEOUT" if res.get("phase") == "timeout" else "FAIL")
-                dt = time.time() - t0
-                print(
-                    f"    {finished}/{len(pending)} id={res['id']:<10} {status}  "
-                    f"turns={res.get('n_turns', 0):<3} "
-                    f"cases={res.get('n_pass', 0)}/{res.get('n_cases', 0)}  "
-                    f"dt={dt:.0f}s"
-                )
-            for fut in timed_out:
-                pending_futs.remove(fut)
-                res = _timeout_result(futs[fut])
-                results.append(res)
-                finished += 1
-                status = "TIMEOUT"
-                dt = time.time() - t0
-                print(
-                    f"    {finished}/{len(pending)} id={res['id']:<10} {status}  "
-                    f"turns={res.get('n_turns', 0):<3} "
-                    f"cases={res.get('n_pass', 0)}/{res.get('n_cases', 0)}  "
-                    f"dt={dt:.0f}s"
-                )
-    finally:
-        ex.shutdown(wait=False, cancel_futures=True)
-
-    return results
+    return _run_task_batch(items, out_root, run_one, workers=max_api_workers,
+                           task_timeout=task_timeout)
 
 
 # ── Codegen per-task worker (no tool-call) ──────────────────────────────────
@@ -666,6 +747,7 @@ def process_one_codegen(
         "error": "",
     }
 
+    task_started_at = time.time()
     try:
         cases = _find_test_cases(task_dir)
         result["n_cases"] = len(cases)
@@ -750,6 +832,7 @@ def process_one_codegen(
                     diagnostic_trace_context=diagnostic_trace_context,
                 )
         except Exception as e:  # noqa: BLE001
+            _raise_task_infra(result, e, stage="target_codegen", model_call=True)
             result["fail_reason"] = f"llm-call-failed: {type(e).__name__}: {e}"
             result["error"] = traceback.format_exc()
             return result
@@ -764,13 +847,17 @@ def process_one_codegen(
             f.write(code)
         with open(os.path.join(task_out_dir, "raw.txt"), "w", encoding="utf-8") as f:
             f.write(raw)
-        if agent_result.get("conversation"):
-            with open(os.path.join(task_out_dir, "conversation.json"), "w", encoding="utf-8") as f:
-                json.dump(agent_result["conversation"], f, ensure_ascii=False, indent=2)
+        with open(os.path.join(task_out_dir, "conversation.json"), "w", encoding="utf-8") as f:
+            json.dump(agent_result.get("conversation", []), f, ensure_ascii=False, indent=2)
 
         if not code.strip():
             result["phase"] = "extract"
             result["fail_reason"] = "empty-code-block"
+            return result
+        try:
+            compile(code, "generated_solution.py", "exec")
+        except SyntaxError as error:
+            result.update(phase="extract", failure_type="code_syntax_error", fail_reason=str(error))
             return result
         result["code_ok"] = True
 
@@ -854,9 +941,12 @@ def process_one_codegen(
         return result
 
     except Exception as e:  # noqa: BLE001
+        _raise_task_infra(result, e, stage=result["phase"])
         result["fail_reason"] = f"unexpected: {type(e).__name__}: {e}"
         result["error"] = traceback.format_exc()
         return result
+    finally:
+        _persist_task_result(out_root, result, task_started_at)
 
 
 # ── Codegen batch runner ────────────────────────────────────────────────────
@@ -877,147 +967,15 @@ def run_spreadsheet_batch_codegen(
     diagnostic_instruction: str = "",
     diagnostic_trace_context_by_id: dict[str, str] | None = None,
 ) -> list[dict]:
-    """Run codegen agent on all items (no tool-call).
-
-    Args:
-        mode: "single" or "multi".
-        task_timeout: Hard per-task timeout in seconds at the future level.
-            0 or negative disables the per-task timeout.
-    """
-    no_task_timeout = task_timeout <= 0
-    task_timeout_label = "none" if no_task_timeout else f"{task_timeout}s"
-
-    os.makedirs(out_root, exist_ok=True)
-
-    results_path = os.path.join(out_root, "results.jsonl")
-    done_ids: set[str] = set()
-    existing: list[dict] = []
-    if os.path.exists(results_path):
-        with open(results_path, encoding="utf-8") as f:
-            for line in f:
-                try:
-                    r = json.loads(line)
-                    done_ids.add(str(r["id"]))
-                    existing.append(r)
-                except Exception:
-                    pass
-
-    pending = [it for it in items if str(it["id"]) not in done_ids]
-    print(
-        f"  [spreadsheet codegen-{mode}] total={len(items)} done={len(done_ids)} "
-        f"pending={len(pending)} workers={max_api_workers} task_timeout={task_timeout_label}"
-    )
-
-    if not pending:
-        return existing
-
-    t0 = time.time()
-    results = list(existing)
-
-    started_at: dict[str, float] = {}
-
-    def _run_one(it: dict) -> dict:
-        started_at[str(it["id"])] = time.time()
+    """Run code-generation tasks, aborting the stage on infrastructure errors."""
+    def run_one(item):
         return process_one_codegen(
-            item=it,
-            data_root=data_root,
-            out_root=out_root,
-            skill_content=skill_content,
-            mode=mode,
-            max_turns=max_turns,
-            max_completion_tokens=max_completion_tokens,
-            task_timeout=task_timeout,
-            use_eval_feedback=use_eval_feedback,
-            diagnostic_mode=diagnostic_mode,
+            item=item, data_root=data_root, out_root=out_root,
+            skill_content=skill_content, mode=mode, max_turns=max_turns,
+            max_completion_tokens=max_completion_tokens, task_timeout=task_timeout,
+            use_eval_feedback=use_eval_feedback, diagnostic_mode=diagnostic_mode,
             diagnostic_instruction=diagnostic_instruction,
-            diagnostic_trace_context=(diagnostic_trace_context_by_id or {}).get(str(it["id"]), ""),
+            diagnostic_trace_context=(diagnostic_trace_context_by_id or {}).get(str(item["id"]), ""),
         )
-
-    def _timeout_result(item: dict, reason: str | None = None) -> dict:
-        fail_reason = reason or f"task-timeout-{task_timeout}s"
-        return {
-            "id": str(item["id"]),
-            "ok": False,
-            "instruction_type": item.get("instruction_type", ""),
-            "task_type": "other",
-            "phase": "timeout",
-            "fail_reason": fail_reason,
-            "n_cases": 0, "n_pass": 0, "soft": 0.0, "hard": 0,
-            "n_turns": 0, "cases": [], "error": fail_reason,
-        }
-
-    def _error_result(item: dict, e: Exception) -> dict:
-        return {
-            "id": str(item["id"]),
-            "ok": False,
-            "instruction_type": item.get("instruction_type", ""),
-            "task_type": "other",
-            "phase": "error",
-            "fail_reason": f"unexpected: {type(e).__name__}: {e}",
-            "n_cases": 0, "n_pass": 0, "soft": 0.0, "hard": 0,
-            "n_turns": 0, "cases": [], "error": str(e),
-        }
-
-    def _record(res: dict, i: int) -> None:
-        results.append(res)
-        status = "PASS" if res.get("hard") else ("TIMEOUT" if res.get("phase") == "timeout" else "FAIL")
-        dt = time.time() - t0
-        print(
-            f"    {i}/{len(pending)} id={res['id']:<10} {status}  "
-            f"turns={res.get('n_turns', 0):<3} "
-            f"cases={res.get('n_pass', 0)}/{res.get('n_cases', 0)}  "
-            f"dt={dt:.0f}s"
-        )
-
-    ex = ThreadPoolExecutor(max_workers=max_api_workers)
-    try:
-        futs = {ex.submit(_run_one, it): it for it in pending}
-        pending_futs = set(futs)
-        finished = 0
-        while pending_futs:
-            done, _ = wait(pending_futs, timeout=5, return_when=FIRST_COMPLETED)
-            now = time.time()
-            timed_out = [] if no_task_timeout else [
-                fut for fut in pending_futs - done
-                if str(futs[fut]["id"]) in started_at
-                and now - started_at[str(futs[fut]["id"])] >= task_timeout
-            ]
-            for fut in done:
-                pending_futs.remove(fut)
-                item = futs[fut]
-                try:
-                    res = fut.result()
-                except FuturesTimeoutError:
-                    res = _timeout_result(item)
-                except Exception as e:  # noqa: BLE001
-                    res = _error_result(item, e)
-                finished += 1
-                _record(res, finished)
-            for fut in timed_out:
-                pending_futs.remove(fut)
-                fut.cancel()
-                finished += 1
-                _record(_timeout_result(futs[fut]), finished)
-            if timed_out:
-                # ThreadPoolExecutor cannot forcibly stop a worker that is stuck
-                # inside a Codex/Claude CLI subprocess.  With workers=1 this can
-                # leave queued futures permanently pending because they never
-                # enter _run_one() and therefore never get a started_at timestamp.
-                # Treat the whole outstanding batch as timed out so the training
-                # loop can continue and record a reproducible failure instead of
-                # hanging forever.
-                for fut in list(pending_futs):
-                    pending_futs.remove(fut)
-                    fut.cancel()
-                    finished += 1
-                    _record(
-                        _timeout_result(
-                            futs[fut],
-                            reason=f"task-timeout-cancelled-after-worker-stall-{task_timeout}s",
-                        ),
-                        finished,
-                    )
-    finally:
-        ex.shutdown(wait=False, cancel_futures=True)
-
-    return results
+    return _run_task_batch(items, out_root, run_one, workers=max_api_workers,
+                           task_timeout=task_timeout)

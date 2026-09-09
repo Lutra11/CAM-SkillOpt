@@ -38,6 +38,7 @@ from skillopt.model.azure_openai import (
 )
 from skillopt.model import get_codex_exec_config, get_target_backend, is_target_exec_backend
 from skillopt.model.codex_harness import prepare_workspace, render_skill_md, run_target_exec
+from skillopt.model.infra_errors import classify_infra_error
 from skillopt.prompts import load_prompt
 from skillopt.envs.spreadsheetbench.executor import run_generated_code
 from skillopt.envs.spreadsheetbench.evaluator import evaluate
@@ -291,6 +292,9 @@ def _llm_call_with_retry(call_fn, *, retries: int = 5, timeout: int | None = 120
         try:
             return call_fn(timeout=timeout)
         except Exception as e:  # noqa: BLE001
+            infra = classify_infra_error(e, stage="target_codegen", role="target")
+            if infra is not None:
+                raise infra from e
             last_err = e
             sleep = min(2 ** attempt + random.random(), 60)
             time.sleep(sleep)
@@ -544,6 +548,8 @@ def run_single(
             model=deployment,
             timeout=effective_timeout,
         )
+        conversation = [{"role": "user", "content": prompt},
+                        {"role": "assistant", "content": final_message or raw}]
         solution_path = os.path.join(work_dir, "solution.py")
         if os.path.exists(solution_path):
             with open(solution_path, encoding="utf-8") as f:
@@ -568,13 +574,17 @@ def run_single(
                     model=deployment,
                     timeout=retry_timeout,
                 )
+                conversation.extend([
+                    {"role": "user", "content": retry_prompt},
+                    {"role": "assistant", "content": retry_message or retry_raw},
+                ])
                 raw = f"{raw}\n\n===== DIRECT CODE RETRY =====\n{retry_raw or retry_message}"
                 code = extract_code(retry_message or retry_raw)
         return {
             "code": code,
             "raw": raw or final_message,
             "n_turns": 1,
-            "conversation": [{"role": "assistant", "content": final_message or raw}],
+            "conversation": conversation,
             "target_system_prompt": skill_md,
             "target_user_prompt": f"{prompt}\n\n## Task File\n\n{task_md}",
         }

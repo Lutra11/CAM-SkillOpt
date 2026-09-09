@@ -23,6 +23,7 @@ import os
 import traceback
 
 from skillopt.model import chat_optimizer
+from skillopt.model.infra_errors import InfraError, classify_infra_error
 from skillopt.prompts import load_prompt
 from skillopt.utils import extract_json
 
@@ -390,7 +391,12 @@ def run_slow_update(
                 "reasoning": str(result.get("reasoning", "")).strip(),
                 "slow_update_content": str(result["slow_update_content"]).strip(),
             }
-    except Exception:  # noqa: BLE001
+    except InfraError:
+        raise
+    except Exception as exc:  # noqa: BLE001
+        infra = classify_infra_error(exc, stage="slow_update") if isinstance(exc, (RuntimeError, TimeoutError, ConnectionError)) else None
+        if infra is not None:
+            raise infra from exc
         traceback.print_exc()
 
     return None

@@ -10,6 +10,7 @@ import json
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from skillopt.model import chat_optimizer
+from skillopt.model.infra_errors import InfraError, classify_infra_error
 from skillopt.optimizer.meta_skill import format_meta_skill_context
 from skillopt.optimizer.update_modes import (
     get_payload_items,
@@ -56,8 +57,12 @@ def _merge_batch(
             for e in merged.get(key, []):
                 e["merge_level"] = level
             return merged
-    except Exception:  # noqa: BLE001
-        pass
+    except InfraError:
+        raise
+    except Exception as exc:  # noqa: BLE001
+        infra = classify_infra_error(exc, stage="merge") if isinstance(exc, (RuntimeError, TimeoutError, ConnectionError)) else None
+        if infra is not None:
+            raise infra from exc
     # Fallback: concatenate all edits
     all_edits = []
     for p in patches:
@@ -244,8 +249,12 @@ def merge_patches(
                     f"{len(f_edits)}+{len(s_edits)} → {len(final[key])} {payload_label(update_mode)}"
                 )
             return final
-    except Exception:  # noqa: BLE001
-        pass
+    except InfraError:
+        raise
+    except Exception as exc:  # noqa: BLE001
+        infra = classify_infra_error(exc, stage="merge") if isinstance(exc, (RuntimeError, TimeoutError, ConnectionError)) else None
+        if infra is not None:
+            raise infra from exc
 
     return {
         "reasoning": "fallback: failure first, then success",

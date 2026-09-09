@@ -24,10 +24,13 @@ from __future__ import annotations
 import json
 import os
 import random
+import time
 import traceback
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from skillopt.model import chat_optimizer
+from skillopt.model.infra_errors import InfraError, classify_infra_error
+from skillopt.engine.run_artifacts import assert_valid_results, write_json
 from skillopt.optimizer.meta_skill import format_meta_skill_context
 from skillopt.optimizer.skill_aware import (
     augment_error_prompt,
@@ -46,6 +49,42 @@ from skillopt.optimizer.update_modes import (
 )
 from skillopt.prompts import load_prompt
 from skillopt.utils import extract_json
+
+
+def _analyst_request(*, artifact_dir: str = "", **kwargs):
+    """Record the actual optimizer request/response, including failed attempts."""
+    started = time.time()
+    messages = [{"role": "system", "content": kwargs["system"]},
+                {"role": "user", "content": kwargs["user"]}]
+    meta = {"stage": "reflect", "optimizer_called": True, "status": "running"}
+    if artifact_dir:
+        write_json(os.path.join(artifact_dir, "conversation.json"), messages)
+        write_json(os.path.join(artifact_dir, "request_meta.json"), meta)
+    try:
+        response, usage = chat_optimizer(**kwargs)
+        messages.append({"role": "assistant", "content": response})
+        meta.update(status="completed", failure_type="none", wall_time_s=time.time() - started)
+        if artifact_dir:
+            write_json(os.path.join(artifact_dir, "conversation.json"), messages)
+            with open(os.path.join(artifact_dir, "raw_trace.txt"), "w", encoding="utf-8") as handle:
+                handle.write(response)
+        return response, usage
+    except Exception as exc:
+        error = classify_infra_error(exc, stage="reflect", role="optimizer")
+        meta.update(status="infra_error" if error else "optimizer_error",
+                    failure_type=error.failure_type if error else "optimizer_exception",
+                    wall_time_s=time.time() - started, partial=True)
+        if artifact_dir:
+            detail = error.to_dict() if error else {"message": str(exc)}
+            write_json(os.path.join(artifact_dir, "error.json"), detail)
+            with open(os.path.join(artifact_dir, "raw_trace.txt"), "w", encoding="utf-8") as handle:
+                handle.write(json.dumps(detail, ensure_ascii=False, indent=2))
+        if error is not None:
+            raise error from exc
+        raise
+    finally:
+        if artifact_dir:
+            write_json(os.path.join(artifact_dir, "request_meta.json"), meta)
 
 
 # ── Trajectory formatting ────────────────────────────────────────────────────
@@ -266,6 +305,7 @@ def run_error_analyst_minibatch(
     meta_skill_context: str = "",
     update_mode: str = "patch",
     skill_aware_reflection: bool = False,
+    artifact_dir: str = "",
 ) -> dict | None:
     """Analyze a minibatch of failed trajectories in one optimizer call.
 
@@ -331,7 +371,8 @@ def run_error_analyst_minibatch(
     user += f"## Failed Trajectories ({len(items)} total)\n{trajectories_text}"
 
     try:
-        response, _ = chat_optimizer(
+        response, _ = _analyst_request(
+            artifact_dir=artifact_dir,
             system=actual_system, user=user,
             max_completion_tokens=64000 if is_full_rewrite_minibatch_mode(mode) else 16384,
             retries=3,
@@ -358,7 +399,10 @@ def run_error_analyst_minibatch(
                 "patch": {"reasoning": "execution-lapse only", "edits": []},
                 "appendix_notes": notes,
             }
-    except Exception:  # noqa: BLE001
+    except Exception as exc:  # noqa: BLE001
+        error = exc if isinstance(exc, InfraError) else None
+        if error is not None:
+            raise error from exc
         traceback.print_exc()
     return None
 
@@ -376,6 +420,7 @@ def run_success_analyst_minibatch(
     update_mode: str = "patch",
     skill_aware_reflection: bool = False,
     emit_appendix_notes: bool = True,
+    artifact_dir: str = "",
 ) -> dict | None:
     """Analyze a minibatch of successful trajectories in one optimizer call.
 
@@ -428,7 +473,8 @@ def run_success_analyst_minibatch(
     user += f"## Successful Trajectories ({len(items)} total)\n{trajectories_text}"
 
     try:
-        response, _ = chat_optimizer(
+        response, _ = _analyst_request(
+            artifact_dir=artifact_dir,
             system=actual_system, user=user,
             max_completion_tokens=64000 if is_full_rewrite_minibatch_mode(mode) else 16384,
             retries=3,
@@ -442,7 +488,10 @@ def run_success_analyst_minibatch(
             if sa_emit:
                 result["appendix_notes"] = extract_appendix_notes(result)
             return result
-    except Exception:  # noqa: BLE001
+    except Exception as exc:  # noqa: BLE001
+        error = exc if isinstance(exc, InfraError) else None
+        if error is not None:
+            raise error from exc
         traceback.print_exc()
     return None
 
@@ -532,6 +581,7 @@ def run_minibatch_reflect(
         skill_aware_appendix_source = get_skill_aware_appendix_source()
 
     os.makedirs(patches_dir, exist_ok=True)
+    assert_valid_results(results, stage="reflect")
 
     # Separate failure / success
     failures = [r for r in results if not r.get("hard") or float(r.get("hard", 0)) < 1e-9]
@@ -587,6 +637,7 @@ def run_minibatch_reflect(
             meta_skill_context=meta_skill_context,
             update_mode=update_mode,
             skill_aware_reflection=skill_aware_reflection,
+            artifact_dir=os.path.join(patches_dir, f"minibatch_fail_{idx:03d}"),
         )
         return f"minibatch_fail_{idx:03d}", patch
 
@@ -601,6 +652,7 @@ def run_minibatch_reflect(
             update_mode=update_mode,
             skill_aware_reflection=skill_aware_reflection,
             emit_appendix_notes=(skill_aware_appendix_source != "failure_only"),
+            artifact_dir=os.path.join(patches_dir, f"minibatch_succ_{idx:03d}"),
         )
         return f"minibatch_succ_{idx:03d}", patch
 
@@ -610,26 +662,72 @@ def run_minibatch_reflect(
         + [("succ", idx, batch) for idx, batch in pending_succ]
     )
 
-    with ThreadPoolExecutor(max_workers=workers) as ex:
-        futs = {}
-        for kind, idx, batch in all_pending:
-            if kind == "fail":
-                futs[ex.submit(_do_fail, idx, batch)] = (kind, idx, len(batch))
-            else:
-                futs[ex.submit(_do_succ, idx, batch)] = (kind, idx, len(batch))
+    started = time.time()
+    stage_records = []
+    def save_stats(status):
+        write_json(os.path.join(patches_dir, "stage_stats.json"), {
+            "stage": "reflect", "status": status, "n_groups": len(all_pending),
+            "n_completed_groups": len(stage_records),
+            "analyst_calls": sum(bool(r.get("optimizer_called")) for r in stage_records),
+            "patches_with_payload": sum(r.get("n_edits", 0) > 0 for r in stage_records),
+            "wall_time_s": round(time.time() - started, 3),
+        })
 
-        for i, fut in enumerate(as_completed(futs), 1):
-            kind, idx, batch_len = futs[fut]
-            tag, patch = fut.result()
+    def record(kind, idx, batch_len, patch=None, error=None):
+        tag = f"minibatch_{kind}_{idx:03d}"
+        meta_path = os.path.join(patches_dir, tag, "request_meta.json")
+        meta = {}
+        if os.path.exists(meta_path):
+            with open(meta_path, encoding="utf-8") as handle:
+                meta = json.load(handle)
+        n_edits = len(get_payload_items(patch.get("patch", {}) if patch else {}, update_mode))
+        row = {"id": tag, "n_trajectories": batch_len, "n_edits": n_edits,
+               "optimizer_called": bool(meta.get("optimizer_called")),
+               "status": "infra_error" if error else "completed",
+               "failure_type": error.failure_type if error else ("none" if patch else "no_patch")}
+        if error:
+            row["infra_error"] = error.to_dict()
+            write_json(os.path.join(patches_dir, "infra_error.json"), error.to_dict())
+        else:
+            write_json(os.path.join(patches_dir, f"{tag}.json"), patch)
             if patch:
-                path = os.path.join(patches_dir, f"{tag}.json")
-                with open(path, "w", encoding="utf-8") as f:
-                    json.dump(patch, f, ensure_ascii=False, indent=2)
                 raw_patches.append(patch)
-            n_edits = len(get_payload_items(patch.get("patch", {}) if patch else {}, update_mode))
-            print(
-                f"      [analyst] {i}/{len(all_pending)} {tag} "
-                f"({batch_len} trajs) → {n_edits} {payload_label(update_mode)}"
-            )
+        stage_records.append(row)
+        with open(os.path.join(patches_dir, "results.jsonl"), "a", encoding="utf-8") as handle:
+            handle.write(json.dumps(row, ensure_ascii=False) + "\n")
+        save_stats("infra_error" if error else "running")
+        print(f"      [analyst] {len(stage_records)}/{len(all_pending)} {tag} "
+              f"({batch_len} trajs) -> {n_edits} {payload_label(update_mode)}", flush=True)
 
+    def complete(kind, idx, batch, call):
+        try:
+            tag, patch = call()
+        except Exception as exc:
+            error = exc if isinstance(exc, InfraError) else None
+            if error is not None:
+                record(kind, idx, len(batch), error=error)
+                raise error from exc
+            raise
+        record(kind, idx, len(batch), patch=patch)
+
+    save_stats("running")
+    if workers == 1:
+        for kind, idx, batch in all_pending:
+            worker = _do_fail if kind == "fail" else _do_succ
+            complete(kind, idx, batch, lambda: worker(idx, batch))
+    else:
+        ex = ThreadPoolExecutor(max_workers=workers)
+        futs = {}
+        try:
+            for kind, idx, batch in all_pending:
+                worker = _do_fail if kind == "fail" else _do_succ
+                futs[ex.submit(worker, idx, batch)] = (kind, idx, batch)
+            for fut in as_completed(futs):
+                kind, idx, batch = futs[fut]
+                complete(kind, idx, batch, fut.result)
+        finally:
+            for fut in futs:
+                fut.cancel()
+            ex.shutdown(wait=False, cancel_futures=True)
+    save_stats("completed")
     return raw_patches

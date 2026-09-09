@@ -10,6 +10,7 @@ from __future__ import annotations
 import traceback
 
 from skillopt.model import chat_optimizer
+from skillopt.model.infra_errors import InfraError, classify_infra_error
 from skillopt.optimizer.slow_update import format_comparison_text
 from skillopt.prompts import load_prompt
 from skillopt.utils import extract_json
@@ -73,7 +74,12 @@ def run_meta_skill(
                 "reasoning": str(result.get("reasoning", "")).strip(),
                 "meta_skill_content": str(result["meta_skill_content"]).strip(),
             }
-    except Exception:  # noqa: BLE001
+    except InfraError:
+        raise
+    except Exception as exc:  # noqa: BLE001
+        infra = classify_infra_error(exc, stage="meta_skill") if isinstance(exc, (RuntimeError, TimeoutError, ConnectionError)) else None
+        if infra is not None:
+            raise infra from exc
         traceback.print_exc()
 
     return None

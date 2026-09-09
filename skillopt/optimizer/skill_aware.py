@@ -24,6 +24,8 @@ Design notes
 """
 from __future__ import annotations
 
+from skillopt.model.infra_errors import InfraError, classify_infra_error
+
 
 # ── Runtime switch (config-driven, env-independent) ─────────────────────────
 #
@@ -171,8 +173,8 @@ def consolidate_appendix_notes(
 
     Mirrors GMemory ``_maybe_refactor_execution_notes`` and paper Eq.11. ``chat_fn``
     is the optimizer chat callable ``(system, user, max_completion_tokens, retries,
-    stage) -> (text, meta)``. On ANY failure (parse, empty, exception) the original
-    notes are returned unchanged, so consolidation can never lose the appendix.
+    stage) -> (text, meta)``. On parse, empty, or non-infrastructure failures the
+    original notes are returned unchanged. Infrastructure failures abort the run.
     """
     from skillopt.utils import extract_json  # local import to avoid cycles
 
@@ -201,6 +203,10 @@ def consolidate_appendix_notes(
         # Guard: only accept a non-empty result that actually shrinks the set.
         if compacted and len(compacted) <= len(clean):
             return compacted
-    except Exception:  # noqa: BLE001
-        pass
+    except InfraError:
+        raise
+    except Exception as exc:  # noqa: BLE001
+        infra = classify_infra_error(exc, stage="appendix_consolidate") if isinstance(exc, (RuntimeError, TimeoutError, ConnectionError)) else None
+        if infra is not None:
+            raise infra from exc
     return clean
