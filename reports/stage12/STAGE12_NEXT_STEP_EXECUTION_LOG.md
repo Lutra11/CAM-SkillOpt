@@ -522,3 +522,68 @@ test_hard = 0.0000
 - No-Bootstrap 主 run 正常生成 `summary.json`；
 - 4 个训练 step 均没有可用 patch；
 - 在当前正式小规模设置下没有产生可观测性能改进。
+
+## 10. 正式 CAM 方法对照：No-Adaptive-Budget
+
+配置：
+
+```text
+method = CAM-No-Adaptive-Budget
+workers = 1
+analyst_workers = 1
+train_size = 16
+batch_size = 4
+epochs = 1
+selection_size = 8
+test_size = 8
+eval_test = true
+target = gpt-5.6-terra
+exec_timeout = 420
+seed = 42
+```
+
+输出目录：
+
+```text
+outputs/formal_cam/spreadsheetbench_terra_cam_no_adaptive_budget_seed42_w1_a1_fix1
+```
+
+训练过程：
+
+```text
+step_1_rollout_hard = 0.0000, action = skip_no_patches, wall = 204.5s
+step_2_rollout_hard = 0.0000, action = skip_no_patches, wall = 206.9s
+step_3_rollout_hard = 0.0000, action = skip_no_patches, wall = 165.5s
+step_4_rollout_hard = 0.0000, action = skip_no_patches, wall = 200.9s
+```
+
+正式结果：
+
+```text
+baseline_selection_hard = 0.0000
+best_selection_hard = 0.0000
+final_selection_hard = 0.0000
+baseline_test_hard = 0.0000
+best_test_hard = 0.0000
+final_test_hard = 0.0000
+test_delta_hard = 0.0000
+final_test_delta_hard = 0.0000
+total_steps = 4
+total_skips = 4
+wall_time = 2534s
+total_calls = 56
+```
+
+阶段结论：
+
+```text
+CAM-No-Adaptive-Budget formal = completed
+selection_hard = 0.0000
+test_hard = 0.0000
+```
+
+说明：
+
+- No-Adaptive-Budget 主 run 正常生成 `summary.json`；
+- 4 个训练 step 均没有可用 patch；
+- 在当前正式小规模设置下没有产生可观测性能改进。
