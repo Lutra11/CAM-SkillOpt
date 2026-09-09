@@ -24,12 +24,35 @@
 | HTTP 独立诊断 | `SkillOpt/outputs/recovery_20260909/http_diagnostic_01` | 同一官方端点、同一 target 模型返回正确标记，provider 为 `cam_openai_http` |
 | 参数覆盖诊断 | `auth_check_http_02` / `single_http_01` | manifest 虽标 HTTP，实际仍为 openai；不能作为 HTTP 验收。原产物保留，后续验收强制核对实际 provider |
 | 修正后 HTTP 双角色验收 | `SkillOpt/outputs/recovery_20260909/auth_check_http_03` | 4/4 通过；模型、实际 provider、退出码和返回内容均正确；总耗时 117.1 秒 |
-| 离线回归测试 | 4 个新增 unittest 模块 | 47 个测试全部通过；同步后的 GitHub 工作目录也通过 |
+| 离线回归测试 | 4 个新增 unittest 模块 | 加入代理隔离与有界重连测试后 59 个运行回归测试通过；另有 24 项独立离线审计测试 |
 | 单样本完整链路 | `SkillOpt/outputs/recovery_20260909/single_http_02` | 通过：llm/code/exec 均 true，conversation 完整，analyst calls=1，patch=1（2 edits）；样本评分 hard=0/soft=0，非基础设施失败；总耗时 100.3 秒 |
 | 四样本 P0 第一轮 | `SkillOpt/outputs/recovery_20260909/p0_http_01` | 第 8 次 target 请求发生 HTTP 网络断流，266.7 秒中止；7 个任务已有结果；整轮 invalid_infra，分数 null，未进入反思/后续评估 |
-| 四样本 P0 同配置重试 | `SkillOpt/outputs/recovery_20260909/p0_http_02` | 已启动，新目录、同模型/代码/配置；原轮证据保留 |
+| 四样本 P0 同配置重试 | `SkillOpt/outputs/recovery_20260909/p0_http_02` | 第 7 次 target 请求发生网络断流，243.0 秒中止；6 个任务完成评分；未进入反思，整轮 invalid_infra |
+| 旧 CLI + 现有回环代理 | `SkillOpt/outputs/recovery_20260909/auth_check_proxy_01` | 首个最小请求 network_error，26.2 秒终止；不能把端点可达当成模型稳定 |
+| 本机新版 CLI + 同一回环代理 | `SkillOpt/outputs/recovery_20260909/auth_check_newcli_proxy_01` | 4/4 通过，两个角色各连续 2 次，实际 provider/model 正确；138.0 秒；无 401 或断流 |
+| 新版 CLI 单样本 | `SkillOpt/outputs/recovery_20260909/single_newcli_proxy_01` | 通过：llm/code/exec=true，conversation 完整，analyst=1，patch=1（2 edits）；hard/soft=0；77.0 秒 |
+| 新版 CLI 四样本 P0 | `SkillOpt/outputs/recovery_20260909/p0_newcli_proxy_01` | 首个 selection 请求在“正在重连”通知处被上层终止；24.2 秒，0 个有效评分，整轮 invalid_infra；后续检查确认该通知尚非最终失败 |
+| 有界重连修复后认证 | `SkillOpt/outputs/recovery_20260909/auth_check_newcli_retry_01` | 4/4 通过；双角色各连续 2 次，实际模型/provider 正确；155.4 秒 |
+| 有界重连修复后单样本 | `SkillOpt/outputs/recovery_20260909/single_newcli_retry_01` | 完整链路通过；analyst=1，patch=1（2 edits）；hard/soft=0；105.7 秒 |
+| 有界重连修复后 P0 | `SkillOpt/outputs/recovery_20260909/p0_newcli_retry_01` | 运行中；同样本、同模型/配置、单并发，完成后独立审计；没有启动正式消融 |
 
 早期 `auth_check_01` 与 `auth_check_http_01` 在后台预连接告警处过早终止，仅作为调试证据，不是最终认证验收。
+
+## 连接恢复与实验边界
+
+用户反馈没有在用的本地代理；只读检查发现后台已有 FlClashCore 监听 `127.0.0.1:7890`，但 WinHTTP 为 Direct、系统代理开关关闭，实验没有代理环境变量。未启动或修改该服务，也未修改全局代理、路由、认证或 TLS 校验。
+
+不带凭据的端点连通性检查中，直连报 ConnectionError；通过现有回环入口获得 HTTP 405，只能证明当时 TLS/端点可达，不能证明模型请求成功。随后旧 CLI 最小请求仍断流。改用本机已安装的 Codex 0.153.4（原实验 CLI 为 0.147.0），重新进行 4 次模型验收和同一样本全链路，均通过。此观察不足以单独证明故障完全由旧版本造成。
+
+新增 `--proxy-url` 仅允许无凭据的回环 HTTP 地址，只修改实验进程及其子进程环境；清除冲突的 ALL_PROXY/NO_PROXY，拒绝未显式记录的继承代理。实际地址、CLI 路径、模型/配置/源码哈希写入 manifest；换 CLI 或代理必须重新过门禁。没有安装新代理、下载源码、关闭证书验证或改用其他模型。
+
+新版验收与单样本的运行源码 SHA256 均为 `cf58ca1ef6b2f831280f14dd469d835394d924190e012886154031f9c4d37689`；配置 SHA256 为 `f3374b0ad13a6fac347655bf012b92069601553b62fb92f528b95f8f55eb1fb9`。旧版两次 P0 的中断记录完整保留，不拼接为一轮成功实验。
+
+新版 CLI 二进制 SHA256：`e5aa76d19c7c94e2e9ef9b707d590206a73ac0e97c8ddc8382181242494bef75`。本次路径为 `C:/Users/hp/AppData/Local/OpenAI/Codex/bin/8e5b6932251c2c1c/codex.exe`；未覆盖原实验 CLI。
+
+15:15 的新 P0 原始事件是 `Reconnecting... waiting for network`，同时存在 `waiting to retry` / `retry_delay=5s` 警告，而不是 `turn.failed`。当时 fail-fast 将所有 JSON error 都当成最终失败，这会过早杀掉可恢复的网络等待。现已修正为：认证/模型不可用立即终止，最终失败立即终止；仅明确的网络重连通知允许最多 2 条恢复机会，第 3 条或原超时期限到达仍中止。未增加请求总期限，也未增加正式实验重试循环。
+
+每个请求另存 `transport_warnings.json`，报告通知数量和是否恢复，不能将恢复后的连接称为“从未断流”。修复后的 401 整链路模拟再次通过（`simulated_401_bounded_reconnect`，1 次模拟请求、0 次外部调用、真实退出码 2）。运行回归 59 项通过，另有独立离线审计测试。新运行源码 SHA256 为 `524ca3716b4457a47f09c5baeb496a4f254d6b3852a01ec7e2bd01a66d6cadad`；旧中止结果不会被改写。
 
 ## 固定的恢复实验配置
 
@@ -51,13 +74,14 @@
 
 ## 复现入口
 
-在实验源码目录使用原 `.venv/Scripts/python.exe`：
+在实验源码目录使用原 `.venv/Scripts/python.exe`。下例为本机最新验收使用的 CLI 与现有回环入口；换机器时必须先核实两者存在，不能把此地址当作新安装代理的指令：
 
 ```powershell
 .venv/Scripts/python.exe scripts/check_spreadsheet_infra.py --out-root outputs/recovery_validation/new_401_check
-.venv/Scripts/python.exe scripts/cam_recovery.py auth-check --transport http --out outputs/recovery/new_auth
-.venv/Scripts/python.exe scripts/cam_recovery.py single --transport http --auth-summary outputs/recovery/new_auth/recovery_summary.json --out outputs/recovery/new_single
-.venv/Scripts/python.exe scripts/cam_recovery.py p0 --transport http --auth-summary outputs/recovery/new_auth/recovery_summary.json --single-summary outputs/recovery/new_single/recovery_summary.json --out outputs/recovery/new_p0
+$recoveryRoute = @('--transport', 'http', '--proxy-url', 'http://127.0.0.1:7890', '--codex-bin', 'C:/Users/hp/AppData/Local/OpenAI/Codex/bin/8e5b6932251c2c1c/codex.exe')
+.venv/Scripts/python.exe scripts/cam_recovery.py auth-check @recoveryRoute --out outputs/recovery/new_auth
+.venv/Scripts/python.exe scripts/cam_recovery.py single @recoveryRoute --auth-summary outputs/recovery/new_auth/recovery_summary.json --out outputs/recovery/new_single
+.venv/Scripts/python.exe scripts/cam_recovery.py p0 @recoveryRoute --auth-summary outputs/recovery/new_auth/recovery_summary.json --single-summary outputs/recovery/new_single/recovery_summary.json --out outputs/recovery/new_p0
 ```
 
 每条命令是独立步骤。前三道验收未通过时，后续模型实验会被门禁拒绝。401 模拟命令预期退出码为 2，以其 `acceptance.json` 判断模拟验收是否通过。其它机器可通过 `--codex-bin`、`--auth-home` 和 `--base-config` 指定安装及数据位置。

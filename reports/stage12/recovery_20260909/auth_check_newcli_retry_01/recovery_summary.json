@@ -1,0 +1,82 @@
+{
+  "status": "passed",
+  "stage": "auth-check",
+  "consecutive_passes_per_role": 2,
+  "request_count": 4,
+  "results": [
+    {
+      "stage": "target_1",
+      "status": "passed",
+      "exit_code": 0,
+      "model_requested": "gpt-5.6-terra",
+      "model_cli_header": "gpt-5.6-terra",
+      "model_verification": "CLI selected-model header",
+      "provider_cli_header": "cam_openai_http",
+      "expected_provider": "cam_openai_http",
+      "reasoning": "none",
+      "marker_ok": true,
+      "wall_seconds": 37.468,
+      "hard": null,
+      "soft": null
+    },
+    {
+      "stage": "target_2",
+      "status": "passed",
+      "exit_code": 0,
+      "model_requested": "gpt-5.6-terra",
+      "model_cli_header": "gpt-5.6-terra",
+      "model_verification": "CLI selected-model header",
+      "provider_cli_header": "cam_openai_http",
+      "expected_provider": "cam_openai_http",
+      "reasoning": "none",
+      "marker_ok": true,
+      "wall_seconds": 40.922,
+      "hard": null,
+      "soft": null
+    },
+    {
+      "stage": "optimizer_1",
+      "status": "passed",
+      "exit_code": 0,
+      "model_requested": "gpt-5.6-sol",
+      "model_cli_header": "gpt-5.6-sol",
+      "model_verification": "CLI selected-model header",
+      "provider_cli_header": "cam_openai_http",
+      "expected_provider": "cam_openai_http",
+      "reasoning": "medium",
+      "marker_ok": true,
+      "wall_seconds": 42.094,
+      "hard": null,
+      "soft": null
+    },
+    {
+      "stage": "optimizer_2",
+      "status": "passed",
+      "exit_code": 0,
+      "model_requested": "gpt-5.6-sol",
+      "model_cli_header": "gpt-5.6-sol",
+      "model_verification": "CLI selected-model header",
+      "provider_cli_header": "cam_openai_http",
+      "expected_provider": "cam_openai_http",
+      "reasoning": "medium",
+      "marker_ok": true,
+      "wall_seconds": 34.234,
+      "hard": null,
+      "soft": null
+    }
+  ],
+  "manifest": {
+    "stage": "auth-check",
+    "source_sha256": "524ca3716b4457a47f09c5baeb496a4f254d6b3852a01ec7e2bd01a66d6cadad",
+    "python": "C:\\CAM-SkillOpt\\SkillOpt\\.venv\\Scripts\\python.exe",
+    "auth_home": "C:\\CAM-SkillOpt\\codex-home",
+    "codex_bin": "C:/Users/hp/AppData/Local/OpenAI/Codex/bin/8e5b6932251c2c1c/codex.exe",
+    "target_reasoning": "none",
+    "started_at": "2026-09-09T15:25:30+0800",
+    "http_only": false,
+    "transport": "http",
+    "proxy_url": "http://127.0.0.1:7890",
+    "base_config_sha256": "f3374b0ad13a6fac347655bf012b92069601553b62fb92f528b95f8f55eb1fb9"
+  },
+  "wall_seconds": 155.422
+}

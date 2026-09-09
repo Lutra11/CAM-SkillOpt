@@ -1,0 +1,33 @@
+{
+  "status": "infra_error",
+  "stage": "p0",
+  "error": {
+    "status": "infra_error",
+    "failure_type": "network_error",
+    "message": "{\"type\": \"error\", \"message\": \"Reconnecting... waiting for network (Connection failed: error sending request)\"}",
+    "stage": "target",
+    "model": "gpt-5.6-terra",
+    "details": {
+      "returncode": 1,
+      "elapsed_s": 23.18699999999808,
+      "task_id": "45635"
+    },
+    "evidence_dir": "C:\\CAM-SkillOpt\\SkillOpt\\outputs\\recovery_20260909\\p0_newcli_proxy_01\\selection_eval_baseline\\predictions\\45635"
+  },
+  "hard": null,
+  "soft": null,
+  "manifest": {
+    "stage": "p0",
+    "source_sha256": "cf58ca1ef6b2f831280f14dd469d835394d924190e012886154031f9c4d37689",
+    "python": "C:\\CAM-SkillOpt\\SkillOpt\\.venv\\Scripts\\python.exe",
+    "auth_home": "C:\\CAM-SkillOpt\\codex-home",
+    "codex_bin": "C:/Users/hp/AppData/Local/OpenAI/Codex/bin/8e5b6932251c2c1c/codex.exe",
+    "target_reasoning": "none",
+    "started_at": "2026-09-09T15:14:47+0800",
+    "http_only": false,
+    "transport": "http",
+    "proxy_url": "http://127.0.0.1:7890",
+    "base_config_sha256": "f3374b0ad13a6fac347655bf012b92069601553b62fb92f528b95f8f55eb1fb9"
+  },
+  "wall_seconds": 24.219
+}

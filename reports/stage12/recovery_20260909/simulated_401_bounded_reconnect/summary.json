@@ -1,0 +1,48 @@
+{
+  "status": "infra_error",
+  "validity": "invalid_auth",
+  "eligible_for_paper": false,
+  "failure_type": "auth_error",
+  "infra_error": {
+    "status": "infra_error",
+    "failure_type": "auth_error",
+    "message": "RuntimeError: SIMULATED HTTP 401 Unauthorized: invalid_refresh_token",
+    "stage": "target_codegen",
+    "model": "",
+    "details": {
+      "returncode": null,
+      "task_id": "0"
+    },
+    "evidence_dir": ""
+  },
+  "context": {
+    "config": {
+      "out_root": "C:\\CAM-SkillOpt\\SkillOpt\\outputs\\recovery_validation\\simulated_401_bounded_reconnect",
+      "simulation": true
+    },
+    "token_summary": {
+      "_total": {
+        "calls": 0,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      }
+    }
+  },
+  "hard": null,
+  "soft": null,
+  "baseline_selection_hard": null,
+  "best_selection_hard": null,
+  "final_selection_hard": null,
+  "final_selection_soft": null,
+  "baseline_test_hard": null,
+  "baseline_test_soft": null,
+  "test_hard": null,
+  "test_soft": null,
+  "final_test_hard": null,
+  "final_test_soft": null,
+  "test_delta_hard": null,
+  "final_test_delta_hard": null,
+  "total_wall_time_s": 0.02,
+  "note": "Infrastructure failure aborted the run; completed task artifacts remain diagnostic evidence only."
+}

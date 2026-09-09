@@ -1,0 +1,20 @@
+{
+  "stage": "rollout",
+  "status": "completed",
+  "n_expected": 1,
+  "n_recorded": 1,
+  "n_scored": 1,
+  "n_not_run": 0,
+  "failure_types": {
+    "score_mismatch": 1
+  },
+  "phase_counts": {
+    "exec": 1
+  },
+  "llm_ok": 1,
+  "code_ok": 1,
+  "exec_ok": 1,
+  "hard": 0.0,
+  "soft": 0.0,
+  "wall_time_s": 31.342
+}

@@ -1,0 +1,13 @@
+{
+  "stage": "single",
+  "source_sha256": "524ca3716b4457a47f09c5baeb496a4f254d6b3852a01ec7e2bd01a66d6cadad",
+  "python": "C:\\CAM-SkillOpt\\SkillOpt\\.venv\\Scripts\\python.exe",
+  "auth_home": "C:\\CAM-SkillOpt\\codex-home",
+  "codex_bin": "C:/Users/hp/AppData/Local/OpenAI/Codex/bin/8e5b6932251c2c1c/codex.exe",
+  "target_reasoning": "none",
+  "started_at": "2026-09-09T15:29:22+0800",
+  "http_only": false,
+  "transport": "http",
+  "proxy_url": "http://127.0.0.1:7890",
+  "base_config_sha256": "f3374b0ad13a6fac347655bf012b92069601553b62fb92f528b95f8f55eb1fb9"
+}

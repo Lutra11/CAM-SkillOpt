@@ -1,0 +1,45 @@
+{
+  "stage": "single",
+  "status": "passed",
+  "checks": {
+    "llm_ok": true,
+    "code_ok": true,
+    "exec_ok": true,
+    "conversation_exists": true,
+    "optimizer_called": true,
+    "patch_generated": true
+  },
+  "id": "47766",
+  "hard": 0,
+  "soft": 0.0,
+  "patch_count": 1,
+  "analyst_calls": 1,
+  "usage": {
+    "analyst": {
+      "calls": 1,
+      "prompt_tokens": 16213,
+      "completion_tokens": 677,
+      "total_tokens": 16890
+    },
+    "_total": {
+      "calls": 1,
+      "prompt_tokens": 16213,
+      "completion_tokens": 677,
+      "total_tokens": 16890
+    }
+  },
+  "manifest": {
+    "stage": "single",
+    "source_sha256": "cf58ca1ef6b2f831280f14dd469d835394d924190e012886154031f9c4d37689",
+    "python": "C:\\CAM-SkillOpt\\SkillOpt\\.venv\\Scripts\\python.exe",
+    "auth_home": "C:\\CAM-SkillOpt\\codex-home",
+    "codex_bin": "C:/Users/hp/AppData/Local/OpenAI/Codex/bin/8e5b6932251c2c1c/codex.exe",
+    "target_reasoning": "none",
+    "started_at": "2026-09-09T15:11:11+0800",
+    "http_only": false,
+    "transport": "http",
+    "proxy_url": "http://127.0.0.1:7890",
+    "base_config_sha256": "f3374b0ad13a6fac347655bf012b92069601553b62fb92f528b95f8f55eb1fb9"
+  },
+  "wall_seconds": 77.031
+}

@@ -1,0 +1,1059 @@
+{
+  "audit_schema": 2,
+  "captured_at": "2026-09-09T07:23:22.758739+00:00",
+  "run_name": "p0_http_02",
+  "observation_status": "invalid_infrastructure",
+  "study_scope": "exploratory_four_sample_P0_not_formal_ablation",
+  "paper_formal_eligible": false,
+  "configuration": {
+    "train_size": 4,
+    "batch_size": 4,
+    "sel_env_num": 4,
+    "test_env_num": 4,
+    "num_epochs": 1,
+    "steps_per_epoch": 1,
+    "accumulation": 1,
+    "limit": 4,
+    "seed": 42,
+    "split_seed": 42,
+    "workers": 1,
+    "analyst_workers": 1,
+    "exec_timeout": 420,
+    "edit_budget": 4,
+    "cam_min_budget": 2,
+    "cam_max_budget": 8
+  },
+  "manifest_source_sha256": "dc10def1a9f509dd25ec0dcaca9cdcd07facd82a0baee63e3c01f8283bf463da",
+  "current_source_matches_manifest": false,
+  "summary_metrics": {
+    "baseline_selection_hard": null,
+    "best_selection_hard": null,
+    "final_selection_hard": null,
+    "final_selection_soft": null,
+    "baseline_test_hard": null,
+    "baseline_test_soft": null,
+    "test_hard": null,
+    "test_soft": null,
+    "final_test_hard": null,
+    "final_test_soft": null,
+    "total_wall_time_s": 241.969
+  },
+  "task_stage_counts": {
+    "completed_task_attempts": 6,
+    "n_scored": 6,
+    "infra_error_attempts": 1,
+    "failure_counts": {
+      "none": 2,
+      "score_mismatch": 4,
+      "network_error": 1
+    },
+    "note": "Repeated tasks across stages are separate attempts, not independent test samples."
+  },
+  "stages": [
+    {
+      "stage": "selection_eval_baseline",
+      "expected": 4,
+      "n_recorded": 4,
+      "n_unique_ids": 4,
+      "n_scored": 4,
+      "complete_scored_artifacts": true,
+      "n_assistant_observed": 4,
+      "n_conversation_files": 4,
+      "n_raw_trace_files": 4,
+      "failure_counts": {
+        "none": 2,
+        "score_mismatch": 2
+      },
+      "completed_task_hard": 0.5,
+      "completed_task_soft": 0.5,
+      "stage_score_for_comparison": false
+    },
+    {
+      "stage": "steps/step_0001/rollout",
+      "expected": 4,
+      "n_recorded": 3,
+      "n_unique_ids": 3,
+      "n_scored": 2,
+      "complete_scored_artifacts": false,
+      "n_assistant_observed": 2,
+      "n_conversation_files": 3,
+      "n_raw_trace_files": 3,
+      "failure_counts": {
+        "score_mismatch": 2,
+        "network_error": 1
+      },
+      "completed_task_hard": 0.0,
+      "completed_task_soft": 0.0,
+      "stage_score_for_comparison": false
+    }
+  ],
+  "per_task_metrics": [
+    {
+      "stage": "selection_eval_baseline",
+      "task_id": "45635",
+      "status": "completed",
+      "failure_type": "none",
+      "hard": 1,
+      "soft": 1.0,
+      "scored": true,
+      "llm_ok": true,
+      "code_ok": true,
+      "exec_ok": true,
+      "n_cases": 1,
+      "n_exec_pass": 1,
+      "n_pass": 1,
+      "conversation_file": true,
+      "assistant_observed": true,
+      "raw_trace_file": true,
+      "raw_trace_nonempty": true,
+      "wall_seconds": 30.352
+    },
+    {
+      "stage": "selection_eval_baseline",
+      "task_id": "560-12",
+      "status": "completed",
+      "failure_type": "none",
+      "hard": 1,
+      "soft": 1.0,
+      "scored": true,
+      "llm_ok": true,
+      "code_ok": true,
+      "exec_ok": true,
+      "n_cases": 1,
+      "n_exec_pass": 1,
+      "n_pass": 1,
+      "conversation_file": true,
+      "assistant_observed": true,
+      "raw_trace_file": true,
+      "raw_trace_nonempty": true,
+      "wall_seconds": 36.393
+    },
+    {
+      "stage": "selection_eval_baseline",
+      "task_id": "55049",
+      "status": "completed",
+      "failure_type": "score_mismatch",
+      "hard": 0,
+      "soft": 0.0,
+      "scored": true,
+      "llm_ok": true,
+      "code_ok": true,
+      "exec_ok": true,
+      "n_cases": 1,
+      "n_exec_pass": 1,
+      "n_pass": 0,
+      "conversation_file": true,
+      "assistant_observed": true,
+      "raw_trace_file": true,
+      "raw_trace_nonempty": true,
+      "wall_seconds": 32.855
+    },
+    {
+      "stage": "selection_eval_baseline",
+      "task_id": "9569",
+      "status": "completed",
+      "failure_type": "score_mismatch",
+      "hard": 0,
+      "soft": 0.0,
+      "scored": true,
+      "llm_ok": true,
+      "code_ok": true,
+      "exec_ok": true,
+      "n_cases": 1,
+      "n_exec_pass": 1,
+      "n_pass": 0,
+      "conversation_file": true,
+      "assistant_observed": true,
+      "raw_trace_file": true,
+      "raw_trace_nonempty": true,
+      "wall_seconds": 29.657
+    },
+    {
+      "stage": "steps/step_0001/rollout",
+      "task_id": "47766",
+      "status": "completed",
+      "failure_type": "score_mismatch",
+      "hard": 0,
+      "soft": 0.0,
+      "scored": true,
+      "llm_ok": true,
+      "code_ok": true,
+      "exec_ok": true,
+      "n_cases": 1,
+      "n_exec_pass": 1,
+      "n_pass": 0,
+      "conversation_file": true,
+      "assistant_observed": true,
+      "raw_trace_file": true,
+      "raw_trace_nonempty": true,
+      "wall_seconds": 47.403
+    },
+    {
+      "stage": "steps/step_0001/rollout",
+      "task_id": "48365",
+      "status": "completed",
+      "failure_type": "score_mismatch",
+      "hard": 0,
+      "soft": 0.0,
+      "scored": true,
+      "llm_ok": true,
+      "code_ok": true,
+      "exec_ok": true,
+      "n_cases": 1,
+      "n_exec_pass": 1,
+      "n_pass": 0,
+      "conversation_file": true,
+      "assistant_observed": true,
+      "raw_trace_file": true,
+      "raw_trace_nonempty": true,
+      "wall_seconds": 30.64
+    },
+    {
+      "stage": "steps/step_0001/rollout",
+      "task_id": "32438",
+      "status": "infra_error",
+      "failure_type": "network_error",
+      "hard": null,
+      "soft": null,
+      "scored": false,
+      "llm_ok": false,
+      "code_ok": false,
+      "exec_ok": false,
+      "n_cases": 1,
+      "n_exec_pass": 0,
+      "n_pass": 0,
+      "conversation_file": true,
+      "assistant_observed": false,
+      "raw_trace_file": true,
+      "raw_trace_nonempty": true,
+      "wall_seconds": 112.587
+    }
+  ],
+  "reflection": {
+    "groups_with_patch_artifact_or_request": 0,
+    "groups_with_observed_optimizer_call": 0,
+    "groups_with_payload": 0,
+    "payload_edits": 0,
+    "groups_with_payload_and_completed_request": 0,
+    "patch_yield_per_attempted_group": null,
+    "actual_analyst_request_artifacts": 0,
+    "completed_analyst_request_artifacts": 0,
+    "groups": []
+  },
+  "mechanisms": {
+    "steps": [],
+    "cam_gate_used_count": 0,
+    "adaptive_budget_computations": 0,
+    "budget_transitions": [],
+    "rejected_memory": {
+      "file_present": false,
+      "stored_items": 0,
+      "observed_write_events": 0,
+      "reported_items_added": 0,
+      "write_records": [],
+      "retrieval_wiring": "no_trainer_retrieve_call",
+      "retrieval_calls": null,
+      "retrieval_hits": null,
+      "note": "Missing retrieval instrumentation is null, not zero measured hits. Step-buffer context is distinct from persistent rejected-memory retrieval. Initialization is not activation."
+    }
+  },
+  "cost": {
+    "target_canonical_raw_usage": {
+      "completed_turn_events": 6,
+      "input_tokens": 78517,
+      "cached_input_tokens": 0,
+      "output_tokens": 1250,
+      "request_artifacts": 7,
+      "canonical_files": 7,
+      "files_with_usage": 6,
+      "usage_events_with_missing_fields": 0,
+      "input_plus_output_tokens": 79767,
+      "coverage": "partial_or_unavailable"
+    },
+    "optimizer_canonical_raw_usage": {
+      "completed_turn_events": 0,
+      "input_tokens": 0,
+      "cached_input_tokens": 0,
+      "output_tokens": 0,
+      "request_artifacts": 0,
+      "canonical_files": 0,
+      "files_with_usage": 0,
+      "usage_events_with_missing_fields": 0,
+      "input_plus_output_tokens": null,
+      "coverage": "partial_or_unavailable"
+    },
+    "target_request_trace_files": 7,
+    "optimizer_request_artifact_counts": {},
+    "completed_optimizer_request_counts": {},
+    "incomplete_optimizer_requests": 0,
+    "target_usage_by_attempt": [
+      {
+        "raw_file_present": true,
+        "completed_turn_events": 1,
+        "input_tokens": 11969,
+        "cached_input_tokens": 0,
+        "output_tokens": 193,
+        "error_event_types": {},
+        "usage_observed": true,
+        "usage_complete": true,
+        "usage_events_with_complete_fields": 1,
+        "usage_events_with_missing_fields": 0,
+        "input_plus_output_tokens": 12162,
+        "stage": "selection_eval_baseline",
+        "task_id": "45635",
+        "source": "selection_eval_baseline/predictions/45635/codex_raw.txt"
+      },
+      {
+        "raw_file_present": true,
+        "completed_turn_events": 1,
+        "input_tokens": 11957,
+        "cached_input_tokens": 0,
+        "output_tokens": 312,
+        "error_event_types": {},
+        "usage_observed": true,
+        "usage_complete": true,
+        "usage_events_with_complete_fields": 1,
+        "usage_events_with_missing_fields": 0,
+        "input_plus_output_tokens": 12269,
+        "stage": "selection_eval_baseline",
+        "task_id": "560-12",
+        "source": "selection_eval_baseline/predictions/560-12/codex_raw.txt"
+      },
+      {
+        "raw_file_present": true,
+        "completed_turn_events": 1,
+        "input_tokens": 13632,
+        "cached_input_tokens": 0,
+        "output_tokens": 123,
+        "error_event_types": {},
+        "usage_observed": true,
+        "usage_complete": true,
+        "usage_events_with_complete_fields": 1,
+        "usage_events_with_missing_fields": 0,
+        "input_plus_output_tokens": 13755,
+        "stage": "selection_eval_baseline",
+        "task_id": "55049",
+        "source": "selection_eval_baseline/predictions/55049/codex_raw.txt"
+      },
+      {
+        "raw_file_present": true,
+        "completed_turn_events": 1,
+        "input_tokens": 13647,
+        "cached_input_tokens": 0,
+        "output_tokens": 167,
+        "error_event_types": {},
+        "usage_observed": true,
+        "usage_complete": true,
+        "usage_events_with_complete_fields": 1,
+        "usage_events_with_missing_fields": 0,
+        "input_plus_output_tokens": 13814,
+        "stage": "selection_eval_baseline",
+        "task_id": "9569",
+        "source": "selection_eval_baseline/predictions/9569/codex_raw.txt"
+      },
+      {
+        "raw_file_present": true,
+        "completed_turn_events": 1,
+        "input_tokens": 13758,
+        "cached_input_tokens": 0,
+        "output_tokens": 327,
+        "error_event_types": {},
+        "usage_observed": true,
+        "usage_complete": true,
+        "usage_events_with_complete_fields": 1,
+        "usage_events_with_missing_fields": 0,
+        "input_plus_output_tokens": 14085,
+        "stage": "steps/step_0001/rollout",
+        "task_id": "47766",
+        "source": "steps/step_0001/rollout/predictions/47766/codex_raw.txt"
+      },
+      {
+        "raw_file_present": true,
+        "completed_turn_events": 1,
+        "input_tokens": 13554,
+        "cached_input_tokens": 0,
+        "output_tokens": 128,
+        "error_event_types": {},
+        "usage_observed": true,
+        "usage_complete": true,
+        "usage_events_with_complete_fields": 1,
+        "usage_events_with_missing_fields": 0,
+        "input_plus_output_tokens": 13682,
+        "stage": "steps/step_0001/rollout",
+        "task_id": "48365",
+        "source": "steps/step_0001/rollout/predictions/48365/codex_raw.txt"
+      },
+      {
+        "raw_file_present": true,
+        "completed_turn_events": 0,
+        "input_tokens": 0,
+        "cached_input_tokens": 0,
+        "output_tokens": 0,
+        "error_event_types": {
+          "network_error": 2
+        },
+        "usage_observed": false,
+        "usage_complete": false,
+        "usage_events_with_complete_fields": 0,
+        "usage_events_with_missing_fields": 0,
+        "input_plus_output_tokens": null,
+        "stage": "steps/step_0001/rollout",
+        "task_id": "32438",
+        "source": "steps/step_0001/rollout/predictions/32438/codex_raw.txt"
+      }
+    ],
+    "optimizer_usage_by_request": [],
+    "tracker_summary_as_recorded": {},
+    "monetary_cost": null,
+    "note": "No price assumed. Prefer canonical raw events: target tracker records zero tokens; Codex and Claude expose the same common tracker and the trainer sums both, potentially doubling optimizer counters. No blanket correction factor applied. Cached input is a subset, never added twice. Raw event counts are observed turns, not billed-request counts."
+  },
+  "completeness": {
+    "required_selection_test_stages": {
+      "selection_eval_baseline": true,
+      "test_eval_baseline": false,
+      "test_eval": false
+    },
+    "all_task_transcript_and_trace_files_present": false,
+    "core_probe_evidence_pass": false,
+    "core_checks": {
+      "training_summary_present": false,
+      "recovery_summary_completed": false,
+      "no_infrastructure_errors": false,
+      "exact_four_sample_protocol": true,
+      "matching_frozen_source": false,
+      "complete_single_training_step": false,
+      "all_task_stages_complete": false,
+      "required_selection_test_stages_complete": false,
+      "candidate_selection_evidence_verified": false,
+      "final_selection_evidence_verified": false,
+      "final_test_evidence_verified": false,
+      "summary_scores_match_artifacts": false,
+      "nonempty_assistant_transcripts_and_raw_files": false,
+      "no_orphan_target_request_traces": true,
+      "completed_optimizer_request": false,
+      "patch_from_completed_reflection": false,
+      "no_parse_issues": true
+    },
+    "evaluation_provenance": {
+      "candidate_selection": [],
+      "final_selection": {
+        "verified": false,
+        "kind": "missing_or_unproven",
+        "source": null
+      },
+      "final_test": {
+        "verified": false,
+        "kind": "missing_or_unproven",
+        "source": null
+      },
+      "current_best_skill_hashes_match": false
+    },
+    "boot_process_continuity": "requires_external_start_end_snapshots",
+    "final_selection_metric_present": false,
+    "final_test_metric_present": false,
+    "conditional_reuse_note": "Reuse requires matching local skill fingerprints, matching scores and source task artifacts; final-test reuse additionally requires its persisted summary marker. Missing or unproven reuse fails the core gate. Reuse adds no independent samples.",
+    "formal_prerequisite": "Persistent rejected-memory retrieval must be wired and observed before claiming CAM-Full/No-Memory formal activation; do not infer from config."
+  },
+  "source_evidence": {
+    "rejected_memory_initialization": {
+      "file": "skillopt/engine/trainer.py",
+      "lines": [
+        1016
+      ]
+    },
+    "rejected_memory_write_call": {
+      "file": "skillopt/engine/trainer.py",
+      "lines": [
+        1734
+      ]
+    },
+    "rejected_memory_retrieve_call": {
+      "file": "skillopt/engine/trainer.py",
+      "lines": []
+    },
+    "separate_step_buffer_context": {
+      "file": "skillopt/engine/trainer.py",
+      "lines": [
+        1189
+      ]
+    },
+    "budget_computation": {
+      "file": "skillopt/engine/trainer.py",
+      "lines": [
+        1338
+      ]
+    },
+    "memory_write_stat": {
+      "file": "skillopt/engine/trainer.py",
+      "lines": [
+        1747
+      ]
+    },
+    "memory_retrieve_definition": {
+      "file": "skillopt/cam/rejected_memory.py",
+      "lines": [
+        128
+      ]
+    },
+    "codex_tracker_summary_added": {
+      "file": "skillopt/model/__init__.py",
+      "lines": [
+        362
+      ]
+    },
+    "claude_tracker_summary_added": {
+      "file": "skillopt/model/__init__.py",
+      "lines": [
+        373
+      ]
+    },
+    "target_tracker_zero_tokens": {
+      "file": "skillopt/model/codex_harness.py",
+      "lines": [
+        983
+      ]
+    },
+    "current_source_sha256": "a3d28e26f47c70d65e87adebfba727cc566462ef976d73450013409d8faa6cee"
+  },
+  "parse_issues": [],
+  "privacy": "Allowlisted aggregate/per-task metrics only; no task instructions, workbook contents, prompts, responses, credentials, raw trace text or memory content exported.",
+  "historical_reference": {
+    "run_name": "spreadsheetbench_terra_cam_full_P0_w1_a1_fix1",
+    "summary_metrics": {
+      "baseline_selection_hard": 0.25,
+      "best_selection_hard": 0.5,
+      "final_selection_hard": 0.5,
+      "final_selection_soft": 0.5,
+      "baseline_test_hard": 0.25,
+      "baseline_test_soft": 0.25,
+      "test_hard": 0.25,
+      "test_soft": 0.25,
+      "final_test_hard": 0.25,
+      "final_test_soft": 0.25,
+      "total_wall_time_s": 915.1
+    },
+    "reflection": {
+      "groups_with_patch_artifact_or_request": 2,
+      "groups_with_observed_optimizer_call": 0,
+      "groups_with_payload": 2,
+      "payload_edits": 3,
+      "groups_with_payload_and_completed_request": 0,
+      "patch_yield_per_attempted_group": null,
+      "actual_analyst_request_artifacts": 0,
+      "completed_analyst_request_artifacts": 0,
+      "groups": [
+        {
+          "source": "steps/step_0001/patches/minibatch_fail_000.json",
+          "payload_edits": 2,
+          "request_meta_present": false,
+          "optimizer_called": false,
+          "status": "historical_uninstrumented"
+        },
+        {
+          "source": "steps/step_0001/patches/minibatch_fail_001.json",
+          "payload_edits": 1,
+          "request_meta_present": false,
+          "optimizer_called": false,
+          "status": "historical_uninstrumented"
+        }
+      ]
+    },
+    "mechanisms": {
+      "steps": [
+        {
+          "step": 1,
+          "patches": 2,
+          "action": "cam_re_evaluate",
+          "cam_gate_used": true,
+          "gate": {
+            "mean_improvement": 0.25,
+            "lower_confidence_bound": -0.5,
+            "upper_confidence_bound": 1.0,
+            "n_pairs": 4,
+            "bootstrap_samples": 10000
+          },
+          "gate_action": "re_evaluate",
+          "adaptive_budget_observed": true,
+          "edit_budget": 3,
+          "failure_confidence": {
+            "confidence": 0.18872187554086717,
+            "entropy": 0.5623351446188083,
+            "normalized_entropy": 0.8112781244591328,
+            "total_failures": 4
+          },
+          "n_edits_merged": 3,
+          "n_edits_ranked": 3,
+          "wall_seconds": 451.2
+        }
+      ],
+      "cam_gate_used_count": 1,
+      "adaptive_budget_computations": 1,
+      "budget_transitions": [
+        {
+          "step": 1,
+          "previous_or_configured_budget": 4,
+          "chosen_budget": 3,
+          "changed": true,
+          "baseline_kind": "configured_initial_not_previous_observation"
+        }
+      ],
+      "rejected_memory": {
+        "file_present": false,
+        "stored_items": 0,
+        "observed_write_events": 0,
+        "reported_items_added": 0,
+        "write_records": [],
+        "retrieval_wiring": "no_trainer_retrieve_call",
+        "retrieval_calls": null,
+        "retrieval_hits": null,
+        "note": "Missing retrieval instrumentation is null, not zero measured hits. Step-buffer context is distinct from persistent rejected-memory retrieval. Initialization is not activation."
+      }
+    },
+    "cost": {
+      "target_canonical_raw_usage": {
+        "completed_turn_events": 0,
+        "input_tokens": 0,
+        "cached_input_tokens": 0,
+        "output_tokens": 0,
+        "request_artifacts": 24,
+        "canonical_files": 24,
+        "files_with_usage": 0,
+        "usage_events_with_missing_fields": 0,
+        "input_plus_output_tokens": null,
+        "coverage": "partial_or_unavailable"
+      },
+      "optimizer_canonical_raw_usage": {
+        "completed_turn_events": 0,
+        "input_tokens": 0,
+        "cached_input_tokens": 0,
+        "output_tokens": 0,
+        "request_artifacts": 0,
+        "canonical_files": 0,
+        "files_with_usage": 0,
+        "usage_events_with_missing_fields": 0,
+        "input_plus_output_tokens": null,
+        "coverage": "partial_or_unavailable"
+      },
+      "target_request_trace_files": 24,
+      "optimizer_request_artifact_counts": {},
+      "completed_optimizer_request_counts": {},
+      "incomplete_optimizer_requests": 0,
+      "target_usage_by_attempt": [
+        {
+          "raw_file_present": true,
+          "completed_turn_events": 0,
+          "input_tokens": 0,
+          "cached_input_tokens": 0,
+          "output_tokens": 0,
+          "error_event_types": {},
+          "usage_observed": false,
+          "usage_complete": false,
+          "usage_events_with_complete_fields": 0,
+          "usage_events_with_missing_fields": 0,
+          "input_plus_output_tokens": null,
+          "stage": "final_selection_eval",
+          "task_id": "45635",
+          "source": "final_selection_eval/predictions/45635/codex_raw.txt"
+        },
+        {
+          "raw_file_present": true,
+          "completed_turn_events": 0,
+          "input_tokens": 0,
+          "cached_input_tokens": 0,
+          "output_tokens": 0,
+          "error_event_types": {},
+          "usage_observed": false,
+          "usage_complete": false,
+          "usage_events_with_complete_fields": 0,
+          "usage_events_with_missing_fields": 0,
+          "input_plus_output_tokens": null,
+          "stage": "final_selection_eval",
+          "task_id": "560-12",
+          "source": "final_selection_eval/predictions/560-12/codex_raw.txt"
+        },
+        {
+          "raw_file_present": true,
+          "completed_turn_events": 0,
+          "input_tokens": 0,
+          "cached_input_tokens": 0,
+          "output_tokens": 0,
+          "error_event_types": {},
+          "usage_observed": false,
+          "usage_complete": false,
+          "usage_events_with_complete_fields": 0,
+          "usage_events_with_missing_fields": 0,
+          "input_plus_output_tokens": null,
+          "stage": "final_selection_eval",
+          "task_id": "55049",
+          "source": "final_selection_eval/predictions/55049/codex_raw.txt"
+        },
+        {
+          "raw_file_present": true,
+          "completed_turn_events": 0,
+          "input_tokens": 0,
+          "cached_input_tokens": 0,
+          "output_tokens": 0,
+          "error_event_types": {},
+          "usage_observed": false,
+          "usage_complete": false,
+          "usage_events_with_complete_fields": 0,
+          "usage_events_with_missing_fields": 0,
+          "input_plus_output_tokens": null,
+          "stage": "final_selection_eval",
+          "task_id": "9569",
+          "source": "final_selection_eval/predictions/9569/codex_raw.txt"
+        },
+        {
+          "raw_file_present": true,
+          "completed_turn_events": 0,
+          "input_tokens": 0,
+          "cached_input_tokens": 0,
+          "output_tokens": 0,
+          "error_event_types": {},
+          "usage_observed": false,
+          "usage_complete": false,
+          "usage_events_with_complete_fields": 0,
+          "usage_events_with_missing_fields": 0,
+          "input_plus_output_tokens": null,
+          "stage": "selection_eval_baseline",
+          "task_id": "45635",
+          "source": "selection_eval_baseline/predictions/45635/codex_raw.txt"
+        },
+        {
+          "raw_file_present": true,
+          "completed_turn_events": 0,
+          "input_tokens": 0,
+          "cached_input_tokens": 0,
+          "output_tokens": 0,
+          "error_event_types": {},
+          "usage_observed": false,
+          "usage_complete": false,
+          "usage_events_with_complete_fields": 0,
+          "usage_events_with_missing_fields": 0,
+          "input_plus_output_tokens": null,
+          "stage": "selection_eval_baseline",
+          "task_id": "560-12",
+          "source": "selection_eval_baseline/predictions/560-12/codex_raw.txt"
+        },
+        {
+          "raw_file_present": true,
+          "completed_turn_events": 0,
+          "input_tokens": 0,
+          "cached_input_tokens": 0,
+          "output_tokens": 0,
+          "error_event_types": {},
+          "usage_observed": false,
+          "usage_complete": false,
+          "usage_events_with_complete_fields": 0,
+          "usage_events_with_missing_fields": 0,
+          "input_plus_output_tokens": null,
+          "stage": "selection_eval_baseline",
+          "task_id": "55049",
+          "source": "selection_eval_baseline/predictions/55049/codex_raw.txt"
+        },
+        {
+          "raw_file_present": true,
+          "completed_turn_events": 0,
+          "input_tokens": 0,
+          "cached_input_tokens": 0,
+          "output_tokens": 0,
+          "error_event_types": {},
+          "usage_observed": false,
+          "usage_complete": false,
+          "usage_events_with_complete_fields": 0,
+          "usage_events_with_missing_fields": 0,
+          "input_plus_output_tokens": null,
+          "stage": "selection_eval_baseline",
+          "task_id": "9569",
+          "source": "selection_eval_baseline/predictions/9569/codex_raw.txt"
+        },
+        {
+          "raw_file_present": true,
+          "completed_turn_events": 0,
+          "input_tokens": 0,
+          "cached_input_tokens": 0,
+          "output_tokens": 0,
+          "error_event_types": {},
+          "usage_observed": false,
+          "usage_complete": false,
+          "usage_events_with_complete_fields": 0,
+          "usage_events_with_missing_fields": 0,
+          "input_plus_output_tokens": null,
+          "stage": "steps/step_0001/rollout",
+          "task_id": "47766",
+          "source": "steps/step_0001/rollout/predictions/47766/codex_raw.txt"
+        },
+        {
+          "raw_file_present": true,
+          "completed_turn_events": 0,
+          "input_tokens": 0,
+          "cached_input_tokens": 0,
+          "output_tokens": 0,
+          "error_event_types": {},
+          "usage_observed": false,
+          "usage_complete": false,
+          "usage_events_with_complete_fields": 0,
+          "usage_events_with_missing_fields": 0,
+          "input_plus_output_tokens": null,
+          "stage": "steps/step_0001/rollout",
+          "task_id": "48365",
+          "source": "steps/step_0001/rollout/predictions/48365/codex_raw.txt"
+        },
+        {
+          "raw_file_present": true,
+          "completed_turn_events": 0,
+          "input_tokens": 0,
+          "cached_input_tokens": 0,
+          "output_tokens": 0,
+          "error_event_types": {},
+          "usage_observed": false,
+          "usage_complete": false,
+          "usage_events_with_complete_fields": 0,
+          "usage_events_with_missing_fields": 0,
+          "input_plus_output_tokens": null,
+          "stage": "steps/step_0001/rollout",
+          "task_id": "32438",
+          "source": "steps/step_0001/rollout/predictions/32438/codex_raw.txt"
+        },
+        {
+          "raw_file_present": true,
+          "completed_turn_events": 0,
+          "input_tokens": 0,
+          "cached_input_tokens": 0,
+          "output_tokens": 0,
+          "error_event_types": {},
+          "usage_observed": false,
+          "usage_complete": false,
+          "usage_events_with_complete_fields": 0,
+          "usage_events_with_missing_fields": 0,
+          "input_plus_output_tokens": null,
+          "stage": "steps/step_0001/rollout",
+          "task_id": "398-14",
+          "source": "steps/step_0001/rollout/predictions/398-14/codex_raw.txt"
+        },
+        {
+          "raw_file_present": true,
+          "completed_turn_events": 0,
+          "input_tokens": 0,
+          "cached_input_tokens": 0,
+          "output_tokens": 0,
+          "error_event_types": {},
+          "usage_observed": false,
+          "usage_complete": false,
+          "usage_events_with_complete_fields": 0,
+          "usage_events_with_missing_fields": 0,
+          "input_plus_output_tokens": null,
+          "stage": "steps/step_0001/selection_eval",
+          "task_id": "45635",
+          "source": "steps/step_0001/selection_eval/predictions/45635/codex_raw.txt"
+        },
+        {
+          "raw_file_present": true,
+          "completed_turn_events": 0,
+          "input_tokens": 0,
+          "cached_input_tokens": 0,
+          "output_tokens": 0,
+          "error_event_types": {},
+          "usage_observed": false,
+          "usage_complete": false,
+          "usage_events_with_complete_fields": 0,
+          "usage_events_with_missing_fields": 0,
+          "input_plus_output_tokens": null,
+          "stage": "steps/step_0001/selection_eval",
+          "task_id": "560-12",
+          "source": "steps/step_0001/selection_eval/predictions/560-12/codex_raw.txt"
+        },
+        {
+          "raw_file_present": true,
+          "completed_turn_events": 0,
+          "input_tokens": 0,
+          "cached_input_tokens": 0,
+          "output_tokens": 0,
+          "error_event_types": {},
+          "usage_observed": false,
+          "usage_complete": false,
+          "usage_events_with_complete_fields": 0,
+          "usage_events_with_missing_fields": 0,
+          "input_plus_output_tokens": null,
+          "stage": "steps/step_0001/selection_eval",
+          "task_id": "55049",
+          "source": "steps/step_0001/selection_eval/predictions/55049/codex_raw.txt"
+        },
+        {
+          "raw_file_present": true,
+          "completed_turn_events": 0,
+          "input_tokens": 0,
+          "cached_input_tokens": 0,
+          "output_tokens": 0,
+          "error_event_types": {},
+          "usage_observed": false,
+          "usage_complete": false,
+          "usage_events_with_complete_fields": 0,
+          "usage_events_with_missing_fields": 0,
+          "input_plus_output_tokens": null,
+          "stage": "steps/step_0001/selection_eval",
+          "task_id": "9569",
+          "source": "steps/step_0001/selection_eval/predictions/9569/codex_raw.txt"
+        },
+        {
+          "raw_file_present": true,
+          "completed_turn_events": 0,
+          "input_tokens": 0,
+          "cached_input_tokens": 0,
+          "output_tokens": 0,
+          "error_event_types": {},
+          "usage_observed": false,
+          "usage_complete": false,
+          "usage_events_with_complete_fields": 0,
+          "usage_events_with_missing_fields": 0,
+          "input_plus_output_tokens": null,
+          "stage": "test_eval",
+          "task_id": "52532",
+          "source": "test_eval/predictions/52532/codex_raw.txt"
+        },
+        {
+          "raw_file_present": true,
+          "completed_turn_events": 0,
+          "input_tokens": 0,
+          "cached_input_tokens": 0,
+          "output_tokens": 0,
+          "error_event_types": {},
+          "usage_observed": false,
+          "usage_complete": false,
+          "usage_events_with_complete_fields": 0,
+          "usage_events_with_missing_fields": 0,
+          "input_plus_output_tokens": null,
+          "stage": "test_eval",
+          "task_id": "41-47",
+          "source": "test_eval/predictions/41-47/codex_raw.txt"
+        },
+        {
+          "raw_file_present": true,
+          "completed_turn_events": 0,
+          "input_tokens": 0,
+          "cached_input_tokens": 0,
+          "output_tokens": 0,
+          "error_event_types": {},
+          "usage_observed": false,
+          "usage_complete": false,
+          "usage_events_with_complete_fields": 0,
+          "usage_events_with_missing_fields": 0,
+          "input_plus_output_tokens": null,
+          "stage": "test_eval",
+          "task_id": "59794",
+          "source": "test_eval/predictions/59794/codex_raw.txt"
+        },
+        {
+          "raw_file_present": true,
+          "completed_turn_events": 0,
+          "input_tokens": 0,
+          "cached_input_tokens": 0,
+          "output_tokens": 0,
+          "error_event_types": {},
+          "usage_observed": false,
+          "usage_complete": false,
+          "usage_events_with_complete_fields": 0,
+          "usage_events_with_missing_fields": 0,
+          "input_plus_output_tokens": null,
+          "stage": "test_eval",
+          "task_id": "42515",
+          "source": "test_eval/predictions/42515/codex_raw.txt"
+        },
+        {
+          "raw_file_present": true,
+          "completed_turn_events": 0,
+          "input_tokens": 0,
+          "cached_input_tokens": 0,
+          "output_tokens": 0,
+          "error_event_types": {},
+          "usage_observed": false,
+          "usage_complete": false,
+          "usage_events_with_complete_fields": 0,
+          "usage_events_with_missing_fields": 0,
+          "input_plus_output_tokens": null,
+          "stage": "test_eval_baseline",
+          "task_id": "52532",
+          "source": "test_eval_baseline/predictions/52532/codex_raw.txt"
+        },
+        {
+          "raw_file_present": true,
+          "completed_turn_events": 0,
+          "input_tokens": 0,
+          "cached_input_tokens": 0,
+          "output_tokens": 0,
+          "error_event_types": {},
+          "usage_observed": false,
+          "usage_complete": false,
+          "usage_events_with_complete_fields": 0,
+          "usage_events_with_missing_fields": 0,
+          "input_plus_output_tokens": null,
+          "stage": "test_eval_baseline",
+          "task_id": "41-47",
+          "source": "test_eval_baseline/predictions/41-47/codex_raw.txt"
+        },
+        {
+          "raw_file_present": true,
+          "completed_turn_events": 0,
+          "input_tokens": 0,
+          "cached_input_tokens": 0,
+          "output_tokens": 0,
+          "error_event_types": {},
+          "usage_observed": false,
+          "usage_complete": false,
+          "usage_events_with_complete_fields": 0,
+          "usage_events_with_missing_fields": 0,
+          "input_plus_output_tokens": null,
+          "stage": "test_eval_baseline",
+          "task_id": "59794",
+          "source": "test_eval_baseline/predictions/59794/codex_raw.txt"
+        },
+        {
+          "raw_file_present": true,
+          "completed_turn_events": 0,
+          "input_tokens": 0,
+          "cached_input_tokens": 0,
+          "output_tokens": 0,
+          "error_event_types": {},
+          "usage_observed": false,
+          "usage_complete": false,
+          "usage_events_with_complete_fields": 0,
+          "usage_events_with_missing_fields": 0,
+          "input_plus_output_tokens": null,
+          "stage": "test_eval_baseline",
+          "task_id": "42515",
+          "source": "test_eval_baseline/predictions/42515/codex_raw.txt"
+        }
+      ],
+      "optimizer_usage_by_request": [],
+      "tracker_summary_as_recorded": {
+        "rollout": {
+          "calls": 24,
+          "prompt_tokens": 0,
+          "completion_tokens": 0,
+          "total_tokens": 0
+        },
+        "_total": {
+          "calls": 30,
+          "prompt_tokens": 106306,
+          "completion_tokens": 4424,
+          "total_tokens": 110730
+        },
+        "analyst": {
+          "calls": 4,
+          "prompt_tokens": 77078,
+          "completion_tokens": 2876,
+          "total_tokens": 79954
+        },
+        "merge": {
+          "calls": 2,
+          "prompt_tokens": 29228,
+          "completion_tokens": 1548,
+          "total_tokens": 30776
+        }
+      },
+      "monetary_cost": null,
+      "note": "No price assumed. Prefer canonical raw events: target tracker records zero tokens; Codex and Claude expose the same common tracker and the trainer sums both, potentially doubling optimizer counters. No blanket correction factor applied. Cached input is a subset, never added twice. Raw event counts are observed turns, not billed-request counts."
+    }
+  },
+  "historical_reference_note": "Historical probe is descriptive, not a paired treatment comparison; protocol/transport/source may differ. Uninstrumented analyst call counts remain unknown."
+}

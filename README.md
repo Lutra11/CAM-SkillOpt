@@ -97,14 +97,16 @@ Comparisons should hold the data splits, initial skill, target and optimizer mod
 
 ## Available experimental evidence
 
-The latest committed Stage 12 record covers a small-scale CAM-Full run on SpreadsheetBench with 16 training tasks, one epoch, batch size 4, seed 42, and a `gpt-5.6-terra` target. Both target and analyst concurrency were set to one, with a 420-second execution timeout. The four training steps completed without a usable patch, and the main training summary was not produced. The saved `best_skill.md` was therefore evaluated independently.
+The September 9 validity audit established that the recent Stage 12 CAM-Full runs, three ablations, P1/P2 probes, and supplementary evaluations were contaminated by Codex authentication failures. Their saved zero scores are **not valid benchmark measurements** and must not be interpreted as negative results for the method. CAM-Full is marked `invalid_auth`; the ablations retain the requested `validity_pending_diagnosis` tracking status with confirmed authentication-failure evidence and `paper_eligible=false`.
 
-| Supplementary evaluation | Tasks | Hard score | Soft score | Record |
-| --- | ---: | ---: | ---: | --- |
-| Selection (`valid_seen`) | 8 | 0.0000 | 0.0000 | [Evaluation summary](reports/stage12/eval_only_cam_full_fix2_best_valid_seen_8_w1_a1/eval_summary.json) |
-| Test (`valid_unseen`) | 8 | 0.0000 | 0.0000 | [Evaluation summary](reports/stage12/eval_only_cam_full_fix2_best_valid_unseen_8_w1_a1/eval_summary.json) |
+| Historical supplementary evaluation | Attempted tasks | Validity | Record (diagnostic only) |
+| --- | ---: | --- | --- |
+| Selection (`valid_seen`) | 8 | Invalid: authentication failure | [Original summary](reports/stage12/eval_only_cam_full_fix2_best_valid_seen_8_w1_a1/eval_summary.json) |
+| Test (`valid_unseen`) | 8 | Invalid: authentication failure | [Original summary](reports/stage12/eval_only_cam_full_fix2_best_valid_unseen_8_w1_a1/eval_summary.json) |
 
-These records document an unsuccessful update trajectory under this setting. They do not establish a performance advantage for CAM-SkillOpt. The [execution log](reports/stage12/STAGE12_NEXT_STEP_EXECUTION_LOG.md) retains the interrupted run, concurrency probes, and supplementary evaluation details; the [saved training history](reports/stage12/formal_cam_full_seed42_w1_a1_fix2_train/history.json) provides step-level evidence.
+The [validity correction](reports/stage12/recovery_20260909/VALIDITY_CORRECTION.md) preserves the audit evidence without rewriting raw historical results. The [recovery log](reports/stage12/recovery_20260909/RECOVERY_PROGRESS.md) records renewed authentication checks, simulated-401 fail-fast acceptance, and successful single-sample code/execution/reflection/patch checks. A complete fresh four-sample P0 has not yet passed; network interruptions and recovery-wrapper behavior are being diagnosed. No formal matrix or manuscript performance claim is supported yet.
+
+Before formal CAM-Full/No-Memory comparisons, persistent rejected-memory retrieval must also be wired into the training path and observed, rather than inferred from its configuration switch. The [recovery audit notes](reports/stage12/recovery_20260909/RECOVERY_AUDIT_HELPER.md) distinguish this pending mechanism work from the infrastructure recovery gates and document token-accounting limitations.
 
 ## Repository structure
 

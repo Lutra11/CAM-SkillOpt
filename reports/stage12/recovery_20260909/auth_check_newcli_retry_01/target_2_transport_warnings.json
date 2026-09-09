@@ -1,0 +1,10 @@
+{
+  "stage": "target_2",
+  "model": "gpt-5.6-terra",
+  "notice_count": 0,
+  "max_recovery_notices": 2,
+  "recovered": false,
+  "status": "completed",
+  "returncode": 0,
+  "notices": []
+}
