@@ -594,7 +594,13 @@ def main() -> None:
     # Build trainer and run
     from skillopt.engine.trainer import ReflACTTrainer
     trainer = ReflACTTrainer(cfg, adapter)
-    summary = trainer.train()
+    from skillopt.model.infra_errors import InfraError
+    try:
+        summary = trainer.train()
+    except InfraError as error:
+        print(f"  Experiment stopped: {error}", flush=True)
+        print(f"  Error summary: {os.path.join(cfg['out_root'], 'summary.json')}", flush=True)
+        raise SystemExit(2) from None
 
     print(f"\n  Output saved to: {cfg['out_root']}")
     if summary.get("test_hard") is not None:
