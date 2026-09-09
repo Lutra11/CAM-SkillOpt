@@ -1,0 +1,110 @@
+{
+  "schema_version": 1,
+  "stage": "cam_gate_offline_acceptance",
+  "evidence_type": "synthetic_offline_tests_not_spreadsheetbench_performance",
+  "created_at_utc": "2026-09-09T09:46:50.431802+00:00",
+  "status": "passed",
+  "tests_run": 40,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "wall_time_s": 1.269,
+  "external_model_calls": 0,
+  "source_sha256_by_file": {
+    "skillopt/engine/trainer.py": "2c063fca2ea17fd4864a22b525eef458d3f7abbe9616a2dea421228f9136ab9f",
+    "skillopt/cam/selection_guard.py": "635556e87b1237c3da0323f1901c10445f500886f513699c722262e953268a22",
+    "skillopt/cam/bootstrap_gate.py": "7b532902b290a9bd0c713f539277ff08ce0b28d41121724eee3f55dcd20125ed",
+    "tests/test_cam_selection_guard.py": "d3a60bb4d755977e2d54f24a2149727ef5adeca770b882d18b2b41b479441ca5",
+    "tests/test_cam_gate_trainer.py": "4e3b66595084a00731e5dadcfd91e05372e1a8955c726d0544ef0cc1fdebb470",
+    "scripts/check_cam_gate.py": "eb1a6df0afa0784451feda4cb3c16364a7305af6e1010d3f65acf9fa827685ca"
+  },
+  "synthetic_scenarios": {
+    "uncertain": {
+      "baseline_selection_hard": 0.25,
+      "best_selection_hard": 0.25,
+      "final_selection_hard": 0.25,
+      "best_step": 0,
+      "best_origin": "initial_skill",
+      "cam_selection_guard": {
+        "enabled": true,
+        "policy": "paired_selection_all_updates_v1",
+        "event_count": 1,
+        "accepted_promotions": 0,
+        "pending_transitions": 1,
+        "best_hash": "c2ec8121a8ed44b5",
+        "current_hash": "c2ec8121a8ed44b5",
+        "final_gate": {
+          "action": "reuse_accepted_best",
+          "promotion_authorized": false,
+          "candidate_hash": "c2ec8121a8ed44b5",
+          "selection_source": "selection_eval_baseline"
+        }
+      }
+    },
+    "slow": {
+      "baseline_selection_hard": 0.25,
+      "best_selection_hard": 0.25,
+      "final_selection_hard": 0.25,
+      "best_step": 0,
+      "best_origin": "initial_skill",
+      "cam_selection_guard": {
+        "enabled": true,
+        "policy": "paired_selection_all_updates_v1",
+        "event_count": 1,
+        "accepted_promotions": 0,
+        "pending_transitions": 1,
+        "best_hash": "c2ec8121a8ed44b5",
+        "current_hash": "c2ec8121a8ed44b5",
+        "final_gate": {
+          "action": "reuse_accepted_best",
+          "promotion_authorized": false,
+          "candidate_hash": "c2ec8121a8ed44b5",
+          "selection_source": "selection_eval_baseline"
+        }
+      }
+    },
+    "accept": {
+      "baseline_selection_hard": 0.0,
+      "best_selection_hard": 1.0,
+      "final_selection_hard": 1.0,
+      "best_step": 1,
+      "best_origin": "step_0001",
+      "cam_selection_guard": {
+        "enabled": true,
+        "policy": "paired_selection_all_updates_v1",
+        "event_count": 1,
+        "accepted_promotions": 1,
+        "pending_transitions": 0,
+        "best_hash": "22d26fd742a1edfd",
+        "current_hash": "22d26fd742a1edfd",
+        "final_gate": {
+          "action": "reuse_accepted_best",
+          "promotion_authorized": false,
+          "candidate_hash": "22d26fd742a1edfd",
+          "selection_source": "steps/step_0001/selection_eval"
+        }
+      }
+    }
+  },
+  "case_directories": {
+    "test_accepted_checkpoint_resume_restores_zero_scored_initial_baseline": "synthetic_evidence/ef8caf94d1",
+    "test_active_cam_cannot_disable_gate": "synthetic_evidence/acd1b838d9",
+    "test_appendix_only_skip_branch_requires_real_cam_acceptance": "synthetic_evidence/d11af59ce2",
+    "test_cam_off_retains_scalar_gate_and_force_accept_behavior": "synthetic_evidence/66d95f7131",
+    "test_certified_resume_does_not_replay_untrusted_slow_update_text": "synthetic_evidence/2530ddc714",
+    "test_certified_zero_score_resume_reuses_evidence_without_rollout": "synthetic_evidence/4954dd7fc1",
+    "test_corrupt_current_selection_cache_fails_before_any_resume_rollout": "synthetic_evidence/72ef4135b8",
+    "test_epoch_two_slow_update_obeys_cam_even_when_legacy_force_option_is_false": "synthetic_evidence/544dc985e5",
+    "test_existing_candidate_artifacts_require_matching_skill_identity": "synthetic_evidence/094a173bcf",
+    "test_four_requested_candidate_items_cannot_be_scored_from_three_results": "synthetic_evidence/f115332f0a",
+    "test_mismatched_candidate_ids_never_fall_back_to_scalar_acceptance": "synthetic_evidence/faa91e99a9",
+    "test_p0_uncertain_improvement_does_not_promote_placeholder_or_repeat_candidate": "synthetic_evidence/04743cf901",
+    "test_paired_gate_aligns_item_ids_instead_of_completion_order": "synthetic_evidence/2459fe37c7",
+    "test_refused_resume_preserves_completed_summary_config_and_initial_snapshot": "synthetic_evidence/0f6098ef93",
+    "test_significant_patch_is_accepted_by_real_bootstrap_gate": "synthetic_evidence/e80837e665",
+    "test_soft_and_mixed_gate_metrics_keep_raw_hard_scores_in_summary": "synthetic_evidence/e689ccb862",
+    "test_strict_cam_refuses_changed_skill_in_saved_checkpoint": "synthetic_evidence/cc055cd95f",
+    "test_strict_cam_refuses_legacy_unreviewed_resume": "synthetic_evidence/4693010abe"
+  },
+  "next_required_step": "Fix call/token accounting, then rerun fixed n=4 P0; require natural Memory write/hit/injection before n=8/16 or ablations"
+}

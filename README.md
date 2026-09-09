@@ -20,7 +20,7 @@ Built on [SkillOpt](https://github.com/microsoft/SkillOpt), CAM-SkillOpt introdu
 
 This repository contains the CAM implementation, baseline and ablation configurations, data-materialization scripts, and selected experiment records. The current empirical evidence consists of offline module checks and small-scale SpreadsheetBench runs. The broader benchmark comparison described below remains a research protocol, with performance gains yet to be established.
 
-Latest implementation checkpoint: [Persistent Memory integration and offline acceptance, 2026-09-09](reports/stage12/recovery_20260909/MEMORY_STEP1_REPORT.md). The CAM Gate/final-best and token-accounting fixes remain pending; no new live P0 or formal ablation was launched at this checkpoint.
+Latest implementation checkpoint: [Unified CAM Gate and final-best offline acceptance, 2026-09-09](reports/stage12/recovery_20260909/GATE_STEP2_REPORT.md), following [Persistent Memory integration](reports/stage12/recovery_20260909/MEMORY_STEP1_REPORT.md). Token-accounting repair remains pending. No new live P0 or formal ablation was launched at these checkpoints.
 
 ## Method
 
@@ -48,7 +48,7 @@ flowchart TD
     L --> N
 ```
 
-*The diagram summarizes the intended CAM path. Persistent Memory retrieval is now injected before training reflection and audited against actual optimizer prompts; this has passed synthetic offline tests, not a new live benchmark run. The previously identified final-best path outside CAM Gate remains a pending fix.*
+*The diagram summarizes the CAM path. Memory retrieval/injection and the unified current/best gate have passed synthetic offline tests, not a new live benchmark run. With CAM bootstrap enabled, patch, appendix, slow-update and final-best transitions require ID-paired selection evidence. Empty epoch-one placeholders no longer alter the skill.*
 
 ### Core components
 
@@ -62,7 +62,7 @@ For paired score differences $d_i = s_i^{\mathrm{candidate}} - s_i^{\mathrm{curr
 
 The adaptive budget uses failure concentration $c = 1 - H(p)/\log K$, where $p$ is the distribution over $K$ observed failure categories. It maps $c$ linearly to the configured integer budget range, using half-up rounding. An empty failure set gives $c = 0$; a single observed category gives $c = 1$.
 
-**Implementation scope.** In the current [trainer](skillopt/engine/trainer.py), an uncertain gate decision retains the current skill and records `cam_re_evaluate`; it does not automatically collect additional validation examples. If paired scores are unavailable or have unequal lengths, the trainer records a fallback to the baseline gate. Persistent memory is written on rejected updates and retrieved before later training reflection, using only strictly earlier global steps from the same benchmark. Retrieval, hits, request injection, and completed nonempty responses are recorded separately. These distinctions matter when interpreting a CAM-Full run or a memory ablation.
+**Implementation scope.** In the current [trainer](skillopt/engine/trainer.py), an uncertain gate decision preserves the affected current/best state and records a pending candidate; it does not automatically collect additional validation examples or retry until acceptance. Active CAM bootstrap rejects incomplete, nonmatching or invalid selection evidence instead of falling back to a scalar gate. Disabling the gate requires an explicit non-CAM-bootstrap configuration. Persistent memory is written on rejected step updates and retrieved before later training reflection, using only strictly earlier global steps from the same benchmark. Retrieval, hits, request injection, and completed nonempty responses are recorded separately. Before expanding the experiment, real runs must show natural Memory writes, subsequent hits, and actual prompt injection; synthetic tests do not satisfy that evidence requirement.
 
 ## Experimental design
 
