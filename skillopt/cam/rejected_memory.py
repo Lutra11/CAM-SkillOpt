@@ -13,7 +13,7 @@ import os
 import re
 from collections import Counter
 from dataclasses import asdict, dataclass
-from math import sqrt
+from math import isfinite, sqrt
 from pathlib import Path
 from typing import Callable, Iterable
 
@@ -86,12 +86,13 @@ class PersistentRejectedEditMemory:
         )
         os.replace(temporary_path, self.path)
 
-    def add(self, item: RejectedEditMemoryItem) -> None:
+    def add(self, item: RejectedEditMemoryItem) -> bool:
         """Append a rejected update once, keyed by its stable memory identifier."""
         if any(existing.memory_id == item.memory_id for existing in self.items):
-            return
+            return False
         self.items.append(item)
         self.save()
+        return True
 
     def add_rejected_step(
         self,
@@ -121,18 +122,40 @@ class PersistentRejectedEditMemory:
                 epoch=int(epoch),
                 step=int(step),
             )
-            self.add(item)
-            stored.append(item)
+            if self.add(item):
+                stored.append(item)
         return stored
 
-    def retrieve(self, failure_pattern: str, *, top_k: int = 3) -> list[RetrievedRejectedEdit]:
+    def scoped_items(self, *, benchmark: str | None = None,
+                     before_step: int | None = None,
+                     through_epoch: int | None = None) -> list[RejectedEditMemoryItem]:
+        """Select the same benchmark's strictly historical records, when scoped."""
+        return [item for item in self.items
+                if (benchmark is None or item.benchmark == benchmark)
+                and (before_step is None or item.step < before_step)
+                and (through_epoch is None or item.epoch <= through_epoch)]
+
+    def retrieve(self, failure_pattern: str, *, top_k: int = 3,
+                 benchmark: str | None = None, before_step: int | None = None,
+                 through_epoch: int | None = None,
+                 min_similarity: float = 0.0) -> list[RetrievedRejectedEdit]:
         """Rank historical failures by similarity times observed damage magnitude."""
         if top_k < 1:
             return []
+        if not isfinite(min_similarity) or not 0 <= min_similarity <= 1:
+            raise ValueError("Memory min_similarity must be finite and between 0 and 1")
         query = self.embedder(failure_pattern)
+        if not query:
+            return []
         retrieved = []
-        for item in self.items:
+        for item in self.scoped_items(benchmark=benchmark, before_step=before_step,
+                                      through_epoch=through_epoch):
             similarity = cosine_similarity(query, self.embedder(item.failure_pattern))
+            # Returning top-k unrelated entries is not evidence of a memory hit.
+            if not isfinite(similarity) or similarity <= min_similarity:
+                continue
+            if not isfinite(item.score_change):
+                raise ValueError("Memory score_change must be finite")
             retrieved.append(
                 RetrievedRejectedEdit(
                     item=item,

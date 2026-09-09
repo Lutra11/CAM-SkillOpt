@@ -1135,6 +1135,15 @@ class ReflACTTrainer:
                     "step_in_epoch": step_in_epoch,
                     "timing": {},
                     "tokens": {},
+                    "persistent_memory": {
+                        "enabled": cam_memory is not None,
+                        "reflection_batches": 0, "instrumented_batches": 0,
+                        "partially_instrumented_batches": 0,
+                        "retrieval_calls": 0, "hit_count": 0,
+                        "injected_groups": 0, "injected_items": 0,
+                        "completed_injected_groups": 0,
+                        "write_calls": 0, "items_added": 0,
+                    },
                 }
 
                 # ── Accumulation: Rollout + Reflect ──────────────────────
@@ -1194,7 +1203,28 @@ class ReflACTTrainer:
                         random_seed=batch_seed,
                         step_buffer_context=step_buffer_context,
                         meta_skill_context=active_meta_skill,
+                        persistent_memory=cam_memory,
+                        memory_scope={"benchmark": str(cfg.get("env", "unknown")),
+                                      "epoch": epoch, "step": global_step,
+                                      "top_k": cfg.get("cam_memory_top_k", 3),
+                                      "source_split": "train"},
                     )
+                    # Journal totals retain previous real requests on resume;
+                    # cache reuse creates no new request or injection count.
+                    memory_stats = step_rec["persistent_memory"]
+                    memory_stats["reflection_batches"] += 1
+                    reflect_stats_path = os.path.join(patches_dir, "stage_stats.json")
+                    if os.path.exists(reflect_stats_path):
+                        with open(reflect_stats_path, encoding="utf-8") as handle:
+                            stage_memory_stats = json.load(handle)
+                        observed = stage_memory_stats.get("cumulative_persistent_memory")
+                        if isinstance(observed, dict):
+                            memory_stats["instrumented_batches"] += 1
+                            if stage_memory_stats.get("memory_coverage") != "complete":
+                                memory_stats["partially_instrumented_batches"] += 1
+                            for key in ("retrieval_calls", "hit_count", "injected_groups",
+                                        "injected_items", "completed_injected_groups"):
+                                memory_stats[key] += int(observed.get(key, 0))
                     failure_patches, success_patches = _normalise_patches(
                         raw_patches,
                         update_mode=update_mode,
@@ -1745,6 +1775,17 @@ class ReflACTTrainer:
                             step=global_step,
                         )
                         buf_entry["cam_memory_items_added"] = len(stored_memory)
+                        step_rec["persistent_memory"]["write_calls"] += 1
+                        step_rec["persistent_memory"]["items_added"] += len(stored_memory)
+                        with open(os.path.join(step_dir, "memory_write.json"), "w", encoding="utf-8") as handle:
+                            json.dump({"stage": "rejected_update", "epoch": epoch,
+                                       "step": global_step, "source_split": "train",
+                                       "score_source": "selection_aggregate_delta",
+                                       "score_change": cand_gate_score - prev_current,
+                                       "items_added": len(stored_memory),
+                                       "memory_ids": [item.memory_id for item in stored_memory],
+                                       "stored_item_count": len(cam_memory.items)},
+                                      handle, ensure_ascii=False, indent=2)
 
                 step_buffer.append(buf_entry)
 
@@ -2494,6 +2535,23 @@ class ReflACTTrainer:
                     "current_score_at_epoch_end": epoch_records[-1].get("current_score", 0.0),
                 })
 
+        memory_records = [h["persistent_memory"] for h in history
+                          if isinstance(h.get("persistent_memory"), dict)]
+        memory_summary = {
+            "enabled": cam_memory is not None,
+            "history_steps": len(history), "instrumented_steps": len(memory_records),
+            "coverage": "complete" if len(memory_records) == len(history) and all(
+                r.get("reflection_batches", 0) == r.get("instrumented_batches", 0)
+                and r.get("partially_instrumented_batches", 0) == 0
+                for r in memory_records) else "partial",
+            "counting_scope": "recorded_training_step_journals; cached_requests_not_recounted",
+            "stored_item_count": len(cam_memory.items) if cam_memory is not None else 0,
+            "retrieval_path": "training_reflection_minibatch",
+        }
+        for key in ("retrieval_calls", "hit_count", "injected_groups", "injected_items",
+                    "completed_injected_groups", "write_calls", "items_added"):
+            memory_summary[key] = sum(r.get(key, 0) for r in memory_records)
+
         summary = {
             "version": "skillopt-0.1.0",
             "config": _redact_cfg(cfg),
@@ -2529,6 +2587,7 @@ class ReflACTTrainer:
             ),
             "total_wall_time_s": round(total_wall, 1),
             "token_summary": token_summary,
+            "persistent_memory": memory_summary,
         }
         with open(os.path.join(out_root, "summary.json"), "w") as f:
             json.dump(summary, f, indent=2, ensure_ascii=False)

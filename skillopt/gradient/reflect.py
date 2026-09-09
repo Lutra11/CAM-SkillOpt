@@ -22,6 +22,7 @@ Public API
 from __future__ import annotations
 
 import json
+import hashlib
 import os
 import random
 import time
@@ -51,19 +52,27 @@ from skillopt.prompts import load_prompt
 from skillopt.utils import extract_json
 
 
-def _analyst_request(*, artifact_dir: str = "", **kwargs):
+def _analyst_request(*, artifact_dir: str = "", persistent_memory_context: str = "", **kwargs):
     """Record the actual optimizer request/response, including failed attempts."""
     started = time.time()
     messages = [{"role": "system", "content": kwargs["system"]},
                 {"role": "user", "content": kwargs["user"]}]
-    meta = {"stage": "reflect", "optimizer_called": True, "status": "running"}
+    ctx = persistent_memory_context or ""
+    meta = {
+        "stage": "reflect", "optimizer_called": True, "status": "running",
+        "context_injected": bool(ctx and ctx in kwargs["user"]),
+        "context_sha256": hashlib.sha256(ctx.encode("utf-8")).hexdigest() if ctx else "",
+        "context_chars": len(ctx),
+    }
     if artifact_dir:
         write_json(os.path.join(artifact_dir, "conversation.json"), messages)
         write_json(os.path.join(artifact_dir, "request_meta.json"), meta)
     try:
         response, usage = chat_optimizer(**kwargs)
         messages.append({"role": "assistant", "content": response})
-        meta.update(status="completed", failure_type="none", wall_time_s=time.time() - started)
+        nonempty = isinstance(response, str) and bool(response.strip())
+        meta.update(status="completed", response_nonempty=nonempty,
+                    failure_type="none" if nonempty else "empty_response", wall_time_s=time.time() - started)
         if artifact_dir:
             write_json(os.path.join(artifact_dir, "conversation.json"), messages)
             with open(os.path.join(artifact_dir, "raw_trace.txt"), "w", encoding="utf-8") as handle:
@@ -306,6 +315,7 @@ def run_error_analyst_minibatch(
     update_mode: str = "patch",
     skill_aware_reflection: bool = False,
     artifact_dir: str = "",
+    persistent_memory_context: str = "",
 ) -> dict | None:
     """Analyze a minibatch of failed trajectories in one optimizer call.
 
@@ -368,11 +378,14 @@ def run_error_analyst_minibatch(
     optimizer_ctx = format_meta_skill_context(meta_skill_context)
     if optimizer_ctx:
         user += optimizer_ctx + "\n\n"
+    if persistent_memory_context:
+        user += f"## Persistent Rejected-Edit Memory\n{persistent_memory_context}\n\n"
     user += f"## Failed Trajectories ({len(items)} total)\n{trajectories_text}"
 
     try:
         response, _ = _analyst_request(
             artifact_dir=artifact_dir,
+            persistent_memory_context=persistent_memory_context,
             system=actual_system, user=user,
             max_completion_tokens=64000 if is_full_rewrite_minibatch_mode(mode) else 16384,
             retries=3,
@@ -421,6 +434,7 @@ def run_success_analyst_minibatch(
     skill_aware_reflection: bool = False,
     emit_appendix_notes: bool = True,
     artifact_dir: str = "",
+    persistent_memory_context: str = "",
 ) -> dict | None:
     """Analyze a minibatch of successful trajectories in one optimizer call.
 
@@ -470,11 +484,14 @@ def run_success_analyst_minibatch(
     optimizer_ctx = format_meta_skill_context(meta_skill_context)
     if optimizer_ctx:
         user += optimizer_ctx + "\n\n"
+    if persistent_memory_context:
+        user += f"## Persistent Rejected-Edit Memory\n{persistent_memory_context}\n\n"
     user += f"## Successful Trajectories ({len(items)} total)\n{trajectories_text}"
 
     try:
         response, _ = _analyst_request(
             artifact_dir=artifact_dir,
+            persistent_memory_context=persistent_memory_context,
             system=actual_system, user=user,
             max_completion_tokens=64000 if is_full_rewrite_minibatch_mode(mode) else 16384,
             retries=3,
@@ -538,6 +555,8 @@ def run_minibatch_reflect(
     update_mode: str = "patch",
     skill_aware_reflection: bool | None = None,
     skill_aware_appendix_source: str | None = None,
+    persistent_memory=None,
+    memory_scope: dict | None = None,
 ) -> list[dict | None]:
     """Full minibatch reflect stage: group → parallel optimizer calls → patches.
 
@@ -604,6 +623,8 @@ def run_minibatch_reflect(
     )
 
     raw_patches: list[dict | None] = []
+    cached_groups = 0
+    cached_tags = []
 
     # Resume support: check for already-done minibatch patches
     pending_fail: list[tuple[int, list[dict]]] = []
@@ -612,6 +633,8 @@ def run_minibatch_reflect(
         if os.path.exists(path):
             with open(path, encoding="utf-8") as f:
                 raw_patches.append(json.load(f))
+            cached_groups += 1
+            cached_tags.append(f"minibatch_fail_{idx:03d}")
         else:
             pending_fail.append((idx, batch))
 
@@ -621,11 +644,36 @@ def run_minibatch_reflect(
         if os.path.exists(path):
             with open(path, encoding="utf-8") as f:
                 raw_patches.append(json.load(f))
+            cached_groups += 1
+            cached_tags.append(f"minibatch_succ_{idx:03d}")
         else:
             pending_succ.append((idx, batch))
 
     # ── Worker functions ──────────────────────────────────────────────────
+    def _prepare_worker_memory(tag: str, batch: list[dict]) -> str:
+        from skillopt.cam.memory_context import prepare_memory_context
+
+        scope = memory_scope or {}
+        artifact_dir = os.path.join(patches_dir, tag)
+        # A prior interrupted request must not count as injection in this
+        # attempt if trajectory validation prevents a fresh optimizer call.
+        write_json(os.path.join(artifact_dir, "request_meta.json"), {
+            "stage": "reflect", "optimizer_called": False, "status": "not_requested",
+            "context_injected": False, "context_sha256": "", "context_chars": 0,
+        })
+        context, audit = prepare_memory_context(
+            persistent_memory, batch,
+            benchmark=scope.get("benchmark", ""),
+            epoch=scope.get("epoch", 0),
+            step=scope.get("step", 0),
+            top_k=scope.get("top_k", 3),
+            source_split=scope.get("source_split", "train"),
+        )
+        write_json(os.path.join(artifact_dir, "memory_retrieval.json"), audit)
+        return context
+
     def _do_fail(idx: int, batch: list[dict]) -> tuple[str, dict | None]:
+        memory_context = _prepare_worker_memory(f"minibatch_fail_{idx:03d}", batch)
         patch = run_error_analyst_minibatch(
             skill_content, batch, prediction_dir,
             edit_budget=edit_budget,
@@ -638,10 +686,12 @@ def run_minibatch_reflect(
             update_mode=update_mode,
             skill_aware_reflection=skill_aware_reflection,
             artifact_dir=os.path.join(patches_dir, f"minibatch_fail_{idx:03d}"),
+            persistent_memory_context=memory_context,
         )
         return f"minibatch_fail_{idx:03d}", patch
 
     def _do_succ(idx: int, batch: list[dict]) -> tuple[str, dict | None]:
+        memory_context = _prepare_worker_memory(f"minibatch_succ_{idx:03d}", batch)
         patch = run_success_analyst_minibatch(
             skill_content, batch, prediction_dir,
             edit_budget=edit_budget,
@@ -653,6 +703,7 @@ def run_minibatch_reflect(
             skill_aware_reflection=skill_aware_reflection,
             emit_appendix_notes=(skill_aware_appendix_source != "failure_only"),
             artifact_dir=os.path.join(patches_dir, f"minibatch_succ_{idx:03d}"),
+            persistent_memory_context=memory_context,
         )
         return f"minibatch_succ_{idx:03d}", patch
 
@@ -664,13 +715,37 @@ def run_minibatch_reflect(
 
     started = time.time()
     stage_records = []
+    prior_records = []
+    journal_path = os.path.join(patches_dir, "results.jsonl")
+    if os.path.exists(journal_path):
+        with open(journal_path, encoding="utf-8") as handle:
+            prior_records = [json.loads(line) for line in handle if line.strip()]
+    memory_keys = ("retrieval_calls", "hit_count", "injected_groups", "injected_items",
+                   "completed_injected_groups")
+
     def save_stats(status):
+        all_records = prior_records + stage_records
+        recorded_tags = {r.get("id") for r in all_records}
+        memory_coverage = "complete" if all(
+            isinstance(r.get("persistent_memory"), dict) for r in all_records
+        ) and all(tag in recorded_tags for tag in cached_tags) else "partial"
         write_json(os.path.join(patches_dir, "stage_stats.json"), {
             "stage": "reflect", "status": status, "n_groups": len(all_pending),
+            "cached_groups": cached_groups,
             "n_completed_groups": len(stage_records),
             "analyst_calls": sum(bool(r.get("optimizer_called")) for r in stage_records),
             "patches_with_payload": sum(r.get("n_edits", 0) > 0 for r in stage_records),
             "wall_time_s": round(time.time() - started, 3),
+            "persistent_memory": {
+                key: sum(r.get("persistent_memory", {}).get(key, 0) for r in stage_records)
+                for key in memory_keys
+            },
+            "memory_counting_scope": "persistent_memory=current_invocation; cumulative_persistent_memory=stage_journal",
+            "memory_coverage": memory_coverage,
+            "cumulative_persistent_memory": {
+                key: sum(r.get("persistent_memory", {}).get(key, 0) for r in all_records)
+                for key in memory_keys
+            },
         })
 
     def record(kind, idx, batch_len, patch=None, error=None):
@@ -680,11 +755,33 @@ def run_minibatch_reflect(
         if os.path.exists(meta_path):
             with open(meta_path, encoding="utf-8") as handle:
                 meta = json.load(handle)
+        memory_audit_path = os.path.join(patches_dir, tag, "memory_retrieval.json")
+        memory_audit = {}
+        if os.path.exists(memory_audit_path):
+            with open(memory_audit_path, encoding="utf-8") as handle:
+                memory_audit = json.load(handle)
+        injected = bool(meta.get("optimizer_called") and meta.get("context_injected")
+                        and memory_audit.get("context_prepared")
+                        and memory_audit.get("context_sha256")
+                        and meta.get("context_sha256") == memory_audit.get("context_sha256")
+                        and meta.get("context_chars") == memory_audit.get("context_chars"))
+        memory_counts = {
+            "retrieval_calls": int(memory_audit.get("retrieval_calls", 0)),
+            "hit_count": int(memory_audit.get("hit_count", 0)),
+            "injected_groups": int(injected),
+            "injected_items": int(memory_audit.get("hit_count", 0)) if injected else 0,
+            "completed_injected_groups": int(injected and meta.get("status") == "completed"
+                                             and meta.get("response_nonempty")),
+        }
         n_edits = len(get_payload_items(patch.get("patch", {}) if patch else {}, update_mode))
         row = {"id": tag, "n_trajectories": batch_len, "n_edits": n_edits,
                "optimizer_called": bool(meta.get("optimizer_called")),
-               "status": "infra_error" if error else "completed",
-               "failure_type": error.failure_type if error else ("none" if patch else "no_patch")}
+               "status": "infra_error" if error else (
+                   "optimizer_error" if meta.get("status") == "optimizer_error" else "completed"),
+               "persistent_memory": memory_counts,
+               "failure_type": error.failure_type if error else (
+                   meta.get("failure_type") if meta.get("failure_type") not in (None, "none")
+                   else ("none" if patch else "no_patch"))}
         if error:
             row["infra_error"] = error.to_dict()
             write_json(os.path.join(patches_dir, "infra_error.json"), error.to_dict())

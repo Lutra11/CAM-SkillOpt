@@ -268,6 +268,8 @@ class EnvAdapter(ABC):
             success_system=self.get_success_minibatch_prompt(),
             step_buffer_context=kwargs.get("step_buffer_context", ""),
             meta_skill_context=kwargs.get("meta_skill_context", ""),
+            persistent_memory=kwargs.get("persistent_memory"),
+            memory_scope=kwargs.get("memory_scope"),
             update_mode=getattr(self, "_cfg", {}).get("skill_update_mode", "patch"),
         )
 

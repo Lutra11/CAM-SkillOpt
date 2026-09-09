@@ -289,6 +289,7 @@ def source_evidence(source_root: Path) -> dict:
             "rejected_memory_initialization": "cam_memory = (",
             "rejected_memory_write_call": "cam_memory.add_rejected_step(",
             "rejected_memory_retrieve_call": "cam_memory.retrieve(",
+            "rejected_memory_reflection_argument": "persistent_memory=cam_memory",
             "separate_step_buffer_context": "step_buffer_context = _format_step_buffer(step_buffer)",
             "budget_computation": "edit_budget = compute_adaptive_budget(",
             "memory_write_stat": 'buf_entry["cam_memory_items_added"]',
@@ -299,6 +300,9 @@ def source_evidence(source_root: Path) -> dict:
         "scripts/cam_recovery.py": {"wrapper_wall_timer_start": "started = time.monotonic()",
             "wrapper_wall_timer_end": "summary.update(manifest=manifest, wall_seconds="},
         "skillopt/cam/rejected_memory.py": {"memory_retrieve_definition": "def retrieve("},
+        "skillopt/envs/base.py": {"rejected_memory_adapter_forward": 'persistent_memory=kwargs.get("persistent_memory")'},
+        "skillopt/gradient/reflect.py": {"rejected_memory_prepare_call": "context, audit = prepare_memory_context("},
+        "skillopt/cam/memory_context.py": {"rejected_memory_context_retrieve_call": "matches = memory.retrieve("},
         "skillopt/model/__init__.py": {"codex_tracker_summary_added": "codex_summary = _codex.get_token_summary()", "claude_tracker_summary_added": "claude_summary = _claude.get_token_summary()"},
         "skillopt/model/codex_harness.py": {"target_tracker_zero_tokens": '_openai.tracker.record("rollout", 0, 0)'},
     }
@@ -316,6 +320,124 @@ def source_evidence(source_root: Path) -> dict:
             digest.update(path.read_bytes())
         found["current_source_sha256"] = digest.hexdigest()
     return found
+
+
+def _memory_id(value):
+    return value if isinstance(value, str) and re.fullmatch(r"[A-Za-z][A-Za-z0-9_-]{0,60}:e\d+:s\d+:r\d+", value) else None
+
+
+def _sha256(value):
+    return value if isinstance(value, str) and re.fullmatch(r"[0-9a-f]{64}", value) else None
+
+
+def _count(value):
+    return value if isinstance(value, int) and not isinstance(value, bool) and value >= 0 else None
+
+
+def _verify_memory_in_prompt(conversation, context_hash, context_chars, hit_ids):
+    """Inspect local prompt evidence, returning only booleans, never its content."""
+    if not isinstance(conversation, list) or not context_hash or not context_chars:
+        return False
+    marker = "## Persistent Rejected-Edit Memory\n"
+    for message in conversation:
+        if not isinstance(message, dict) or message.get("role") != "user" or not isinstance(message.get("content"), str):
+            continue
+        user = message["content"]
+        offset = 0
+        while (index := user.find(marker, offset)) >= 0:
+            start = index + len(marker)
+            context = user[start:start + context_chars]
+            offset = start
+            if hashlib.sha256(context.encode("utf-8")).hexdigest() != context_hash:
+                continue
+            if not re.match(r"\n\n## (?:Failed|Successful) Trajectories\b", user[start + context_chars:]):
+                continue
+            try:
+                entries = json.loads(context.partition("\n")[2])
+            except ValueError:
+                continue
+            if isinstance(entries, list) and [mapping(item).get("memory_id") for item in entries] == hit_ids:
+                return True
+    return False
+
+
+def memory_runtime_evidence(run: Path, groups: list, issues: list) -> dict:
+    """Audit canonical per-minibatch files, not resumable stage counter totals.
+
+    Historical uninstrumented groups remain unknown. Preparation/hits do not
+    establish actual injection without matching request metadata and prompt.
+    """
+    paths = {run / row["source"] for row in groups}
+    directories = {path.with_suffix("") for path in paths}
+    directories.update(path.parent for path in run.glob("**/patches/minibatch_*/memory_retrieval.json"))
+    records = []
+    for directory in sorted(directories):
+        path = directory / "memory_retrieval.json"
+        present = path.is_file()
+        retrieval = read_json(path, issues, {})
+        meta = read_json(directory / "request_meta.json", issues, {})
+        has_meta = bool(meta)
+        calls, count = _count(retrieval.get("retrieval_calls")), _count(retrieval.get("hit_count"))
+        raw_ids = retrieval.get("hit_ids")
+        ids = [_memory_id(value) for value in raw_ids] if isinstance(raw_ids, list) else None
+        valid_ids = ids is not None and None not in ids and len(set(ids)) == len(ids)
+        hit_records = retrieval.get("hits")
+        consistent = (present and retrieval.get("schema_version") == 1
+            and isinstance(retrieval.get("enabled"), bool) and calls in (0, 1)
+            and count is not None and valid_ids and len(ids) == count
+            and isinstance(hit_records, list) and [mapping(item).get("memory_id") for item in hit_records] == ids
+            and retrieval.get("source_split") == "train"
+            and (not count or (retrieval.get("enabled") is True and calls == 1 and retrieval.get("status") == "hit"))
+            and (retrieval.get("enabled") is not False or (calls == 0 and count == 0 and retrieval.get("status") == "disabled")))
+        ctx_hash = _sha256(retrieval.get("context_sha256"))
+        chars = _count(retrieval.get("context_chars"))
+        prepared = retrieval.get("context_prepared") is True
+        consistent = bool(consistent and ((count > 0 and prepared and ctx_hash and chars)
+            or (count == 0 and not prepared and chars == 0)))
+        requested = meta.get("optimizer_called") is True
+        status = label(meta.get("status"), {"completed", "running", "infra_error", "optimizer_error", "not_requested"})
+        claimed = meta.get("context_injected") if isinstance(meta.get("context_injected"), bool) else None
+        conversation = read_json(directory / "conversation.json", issues, [])
+        metadata_match = bool(consistent and count > 0 and claimed is True and requested
+            and _sha256(meta.get("context_sha256")) == ctx_hash and _count(meta.get("context_chars")) == chars)
+        injection = metadata_match and _verify_memory_in_prompt(conversation, ctx_hash, chars, ids)
+        completed_injection = injection and status == "completed" and assistant_observed(conversation)
+        no_injection = bool(consistent and has_meta and claimed is False and _count(meta.get("context_chars")) == 0
+            and (count == 0 or (meta.get("optimizer_called") is False and status == "not_requested")))
+        injection_known = injection or no_injection
+        record = {"source": directory.relative_to(run).as_posix(), "retrieval_file_present": present,
+            "retrieval_status": label(retrieval.get("status"), {"disabled", "hit", "empty_history", "no_match", "no_failure_evidence", "top_k_disabled"}, "historical_uninstrumented" if not present else "unknown"),
+            "retrieval_evidence_consistent": consistent,
+            "retrieval_calls": calls if consistent else None, "hit_count": count if consistent else None,
+            "hit_ids": ids if valid_ids else None, "context_sha256": ctx_hash,
+            "context_prepared": prepared if present else None,
+            "optimizer_called": requested if has_meta else None, "request_status": status,
+            "context_injection_claimed": claimed, "actual_injection_verified": bool(injection) if present else None,
+            "completed_injection_verified": bool(completed_injection) if present else None,
+            "injection_measurement_complete": bool(injection_known),
+            "verification": "completed_request_prompt_hash_and_ids_match" if completed_injection
+                else "attempted_request_prompt_hash_and_ids_match" if injection
+                else "measured_no_injection" if no_injection
+                else "missing_or_inconsistent_evidence" if present else "historical_uninstrumented"}
+        records.append(record)
+    observed = [row for row in records if row["retrieval_evidence_consistent"]]
+    coverage = "complete" if records and len(observed) == len(records) else "partial" if observed else "unavailable"
+    injection_complete = bool(records) and all(row["injection_measurement_complete"] for row in records)
+    observed_calls = sum(row["retrieval_calls"] for row in observed)
+    observed_hits = sum(row["hit_count"] for row in observed)
+    injected = sum(row["actual_injection_verified"] is True for row in records)
+    completed = sum(row["completed_injection_verified"] is True for row in records)
+    return {"retrieval_coverage": coverage, "request_groups": len(records), "instrumented_groups": len(observed),
+        "retrieval_calls": observed_calls if coverage == "complete" else None,
+        "retrieval_hits": observed_hits if coverage == "complete" else None,
+        "observed_retrieval_calls": observed_calls if observed else None,
+        "observed_retrieval_hits": observed_hits if observed else None,
+        "actual_injection_groups": injected if injection_complete else None,
+        "completed_injection_groups": completed if injection_complete else None,
+        "verified_injection_groups_lower_bound": injected if observed else None,
+        "verified_completed_injection_groups_lower_bound": completed if observed else None,
+        "activation_observed": True if completed else False if injection_complete else None,
+        "request_records": records}
 
 
 def skill_fingerprint(path: Path | None, run: Path):
@@ -539,7 +661,11 @@ def audit(run: Path, source_root: Path) -> dict:
     memory = read_json(run / "cam_rejected_memory.json", issues, {})
     memory_items = memory.get("items", []) if isinstance(memory, dict) else []
     memory_items = memory_items if isinstance(memory_items, list) else []
-    retrieve_wired = bool(evidence["rejected_memory_retrieve_call"]["lines"])
+    retrieve_wired = bool(mapping(evidence.get("rejected_memory_retrieve_call")).get("lines"))
+    reflection_memory_wired = all(mapping(evidence.get(key)).get("lines") for key in (
+        "rejected_memory_reflection_argument", "rejected_memory_adapter_forward",
+        "rejected_memory_prepare_call", "rejected_memory_context_retrieve_call"))
+    memory_runtime = memory_runtime_evidence(run, groups, issues)
     transitions = []
     previous_budget = number(cfg.get("edit_budget"))
     for step in steps:
@@ -620,9 +746,10 @@ def audit(run: Path, source_root: Path) -> dict:
             "rejected_memory": {"file_present": (run / "cam_rejected_memory.json").exists(), "stored_items": len(memory_items),
                 "observed_write_events": sum((record["items_added"] or 0) > 0 for record in digest_counts),
                 "reported_items_added": sum(record["items_added"] or 0 for record in digest_counts), "write_records": digest_counts,
-                "retrieval_wiring": "trainer_call_present" if retrieve_wired else "no_trainer_retrieve_call",
-                "retrieval_calls": None, "retrieval_hits": None,
-                "note": "Missing retrieval instrumentation is null, not zero measured hits. Step-buffer context is distinct from persistent rejected-memory retrieval. Initialization is not activation."}},
+                "retrieval_wiring": "trainer_reflection_context_retrieve_chain_present" if reflection_memory_wired
+                    else "trainer_call_present" if retrieve_wired else "no_verified_static_retrieve_path",
+                **memory_runtime,
+                "note": "Static wiring is current-source evidence only, never activation. Runtime retrieval is audited once per canonical minibatch artifact, not summed resumed stage counters. Missing/partial instrumentation leaves totals null; verified observed lower bounds remain separate. Activation requires context hash/IDs matched to the actual user prompt plus a completed optimizer conversation. Step-buffer context is distinct."}},
         "cost": {"target_canonical_raw_usage": sum_usage(target_usage), "optimizer_canonical_raw_usage": sum_usage(optimizer_usage),
             "combined_canonical_raw_usage": sum_usage(transport_records),
             "wall_time": {"wrapper_wall_seconds": nonnegative(recovery.get("wall_seconds")),
