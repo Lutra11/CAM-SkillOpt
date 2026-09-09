@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-09-09T14:05:40.4429947+08:00",
+  "evidence": "historical_validity_audit.json",
+  "preserves_original_outputs": true,
+  "runs": [
+    {
+      "run": "formal_cam/spreadsheetbench_terra_cam_full_seed42_w1_a1_fix1",
+      "status": "invalid_auth",
+      "diagnosis": "confirmed_auth_failure",
+      "paper_eligible": false,
+      "reason": "Infrastructure-contaminated results, no valid task performance or ablation comparison.",
+      "auth_raw_trace_files": 52,
+      "raw_trace_files": 52,
+      "conversations": 0,
+      "patches": 0,
+      "cam_gate_used_steps": 0
+    },
+    {
+      "run": "formal_cam/spreadsheetbench_terra_cam_full_seed42_w1_a1_fix2",
+      "status": "invalid_auth",
+      "diagnosis": "confirmed_auth_failure",
+      "paper_eligible": false,
+      "reason": "Infrastructure-contaminated results, no valid task performance or ablation comparison.",
+      "auth_raw_trace_files": 26,
+      "raw_trace_files": 26,
+      "conversations": 0,
+      "patches": 0,
+      "cam_gate_used_steps": 0
+    },
+    {
+      "run": "eval_only/cam_full_fix2_best_valid_seen_8_w1_a1",
+      "status": "invalid_auth",
+      "diagnosis": "confirmed_auth_failure",
+      "paper_eligible": false,
+      "reason": "Infrastructure-contaminated results, no valid task performance or ablation comparison.",
+      "auth_raw_trace_files": 8,
+      "raw_trace_files": 8,
+      "conversations": 0,
+      "patches": 0,
+      "cam_gate_used_steps": 0
+    },
+    {
+      "run": "eval_only/cam_full_fix2_best_valid_unseen_8_w1_a1",
+      "status": "invalid_auth",
+      "diagnosis": "confirmed_auth_failure",
+      "paper_eligible": false,
+      "reason": "Infrastructure-contaminated results, no valid task performance or ablation comparison.",
+      "auth_raw_trace_files": 8,
+      "raw_trace_files": 8,
+      "conversations": 0,
+      "patches": 0,
+      "cam_gate_used_steps": 0
+    },
+    {
+      "run": "formal_cam/spreadsheetbench_terra_cam_no_bootstrap_seed42_w1_a1_fix1",
+      "status": "validity_pending_diagnosis",
+      "diagnosis": "confirmed_auth_failure",
+      "paper_eligible": false,
+      "reason": "Infrastructure-contaminated results, no valid task performance or ablation comparison.",
+      "auth_raw_trace_files": 56,
+      "raw_trace_files": 56,
+      "conversations": 0,
+      "patches": 0,
+      "cam_gate_used_steps": 0
+    },
+    {
+      "run": "formal_cam/spreadsheetbench_terra_cam_no_adaptive_budget_seed42_w1_a1_fix1",
+      "status": "validity_pending_diagnosis",
+      "diagnosis": "confirmed_auth_failure",
+      "paper_eligible": false,
+      "reason": "Infrastructure-contaminated results, no valid task performance or ablation comparison.",
+      "auth_raw_trace_files": 56,
+      "raw_trace_files": 56,
+      "conversations": 0,
+      "patches": 0,
+      "cam_gate_used_steps": 0
+    },
+    {
+      "run": "formal_cam/spreadsheetbench_terra_cam_no_memory_seed42_w1_a1_fix1",
+      "status": "validity_pending_diagnosis",
+      "diagnosis": "confirmed_auth_failure",
+      "paper_eligible": false,
+      "reason": "Infrastructure-contaminated results, no valid task performance or ablation comparison.",
+      "auth_raw_trace_files": 56,
+      "raw_trace_files": 56,
+      "conversations": 0,
+      "patches": 0,
+      "cam_gate_used_steps": 0
+    },
+    {
+      "run": "stage12_probe/spreadsheetbench_terra_cam_full_P0_w1_a1_fix1",
+      "status": "historical_probe_auth_screen_pass",
+      "diagnosis": "no_auth_signature_detected_in_audited_artifacts",
+      "paper_eligible": false,
+      "reason": "Small historical probe only; current authentication and full matched formal matrix not established.",
+      "auth_raw_trace_files": 0,
+      "raw_trace_files": 24,
+      "conversations": 24,
+      "patches": 2,
+      "cam_gate_used_steps": 1
+    },
+    {
+      "run": "stage12_probe/spreadsheetbench_terra_cam_full_P1_w4_a1_fix2",
+      "status": "invalid_auth",
+      "diagnosis": "confirmed_auth_failure",
+      "paper_eligible": false,
+      "reason": "Infrastructure-contaminated results, no valid task performance or ablation comparison.",
+      "auth_raw_trace_files": 24,
+      "raw_trace_files": 24,
+      "conversations": 0,
+      "patches": 0,
+      "cam_gate_used_steps": 0
+    },
+    {
+      "run": "stage12_probe/spreadsheetbench_terra_cam_full_P2_w4_a2_fix2",
+      "status": "invalid_auth",
+      "diagnosis": "confirmed_auth_failure",
+      "paper_eligible": false,
+      "reason": "Infrastructure-contaminated results, no valid task performance or ablation comparison.",
+      "auth_raw_trace_files": 24,
+      "raw_trace_files": 24,
+      "conversations": 0,
+      "patches": 0,
+      "cam_gate_used_steps": 0
+    }
+  ]
+}

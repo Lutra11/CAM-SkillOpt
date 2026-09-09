@@ -1,0 +1,21 @@
+{
+  "stage": "selection_eval_baseline",
+  "status": "completed",
+  "n_expected": 4,
+  "n_recorded": 4,
+  "n_scored": 4,
+  "n_not_run": 0,
+  "failure_types": {
+    "none": 2,
+    "score_mismatch": 2
+  },
+  "phase_counts": {
+    "exec": 4
+  },
+  "llm_ok": 4,
+  "code_ok": 4,
+  "exec_ok": 4,
+  "hard": 0.5,
+  "soft": 0.5,
+  "wall_time_s": 129.532
+}

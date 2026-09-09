@@ -1,0 +1,9 @@
+{
+  "stage": "reflect",
+  "status": "completed",
+  "n_groups": 1,
+  "n_completed_groups": 1,
+  "analyst_calls": 1,
+  "patches_with_payload": 1,
+  "wall_time_s": 56.556
+}

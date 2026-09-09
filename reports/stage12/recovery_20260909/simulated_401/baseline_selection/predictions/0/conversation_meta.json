@@ -1,0 +1,7 @@
+{
+  "status": "infra_error",
+  "partial": true,
+  "assistant_response_observed": false,
+  "failure_type": "auth_error",
+  "note": "Only observed messages are stored; an empty list means no response was captured."
+}

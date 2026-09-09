@@ -1,0 +1,12 @@
+{
+  "stage": "single",
+  "source_sha256": "dc10def1a9f509dd25ec0dcaca9cdcd07facd82a0baee63e3c01f8283bf463da",
+  "python": "C:\\CAM-SkillOpt\\SkillOpt\\.venv\\Scripts\\python.exe",
+  "auth_home": "C:\\CAM-SkillOpt\\codex-home",
+  "codex_bin": "C:\\CAM-SkillOpt\\codex-cli\\node_modules\\@openai\\codex-win32-x64\\vendor\\x86_64-pc-windows-msvc\\bin\\codex.exe",
+  "target_reasoning": "none",
+  "started_at": "2026-09-09T14:38:42+0800",
+  "http_only": false,
+  "transport": "http",
+  "base_config_sha256": "f3374b0ad13a6fac347655bf012b92069601553b62fb92f528b95f8f55eb1fb9"
+}

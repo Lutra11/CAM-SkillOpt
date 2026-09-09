@@ -76,8 +76,8 @@ class SpreadsheetInfraFailfastTests(unittest.TestCase):
         assert stats["n_not_run"] == 3
         assert stats["n_scored"] == 0
         assert stats["hard"] is None
-    
-    
+
+
     def test_network_and_unavailable_model_are_not_zero_scores(self):
         tmp_path = self.tmp_path
         monkeypatch = self
@@ -93,8 +93,8 @@ class SpreadsheetInfraFailfastTests(unittest.TestCase):
             assert caught.exception.failure_type == expected
             row = json.loads((output / "out" / "results.jsonl").read_text(encoding="utf-8"))
             assert row["hard"] is None
-    
-    
+
+
     def test_retry_helper_never_retries_auth(self):
         tmp_path = self.tmp_path
         monkeypatch = self
@@ -106,8 +106,8 @@ class SpreadsheetInfraFailfastTests(unittest.TestCase):
         with self.assertRaises(InfraError):
             codegen_agent._llm_call_with_retry(call, retries=5)
         assert len(attempts) == 1
-    
-    
+
+
     def test_optimizer_401_aborts_after_one_analyst_request(self):
         tmp_path = self.tmp_path
         monkeypatch = self
@@ -134,8 +134,8 @@ class SpreadsheetInfraFailfastTests(unittest.TestCase):
         assert stats["status"] == "infra_error" and stats["analyst_calls"] == 1
         conversation = json.loads((patches / "minibatch_fail_000" / "conversation.json").read_text(encoding="utf-8"))
         assert all(message["role"] != "assistant" for message in conversation)
-    
-    
+
+
     def test_partial_resume_processes_only_missing_ids(self):
         tmp_path = self.tmp_path
         monkeypatch = self
@@ -154,16 +154,16 @@ class SpreadsheetInfraFailfastTests(unittest.TestCase):
         assert calls == ["1"]
         assert len(result) == 2 and all(row["hard"] == 0 for row in result)
         assert json.loads((out / "stage_stats.json").read_text(encoding="utf-8"))["hard"] == 0
-    
-    
+
+
     def test_missing_conversation_is_not_no_patches(self):
         tmp_path = self.tmp_path
         monkeypatch = self
         adapter = object.__new__(SpreadsheetBenchAdapter)
         with self.assertRaisesRegex(InfraError, "artifact_missing"):
             adapter.reflect([{"id": "0", "hard": 0, "soft": 0}], "# Skill", str(tmp_path))
-    
-    
+
+
     def test_cached_legacy_auth_failure_is_rejected(self):
         tmp_path = self.tmp_path
         monkeypatch = self

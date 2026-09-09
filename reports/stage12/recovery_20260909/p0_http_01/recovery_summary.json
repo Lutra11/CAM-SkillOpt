@@ -1,0 +1,32 @@
+{
+  "status": "infra_error",
+  "stage": "p0",
+  "error": {
+    "status": "infra_error",
+    "failure_type": "network_error",
+    "message": "{\"type\": \"error\", \"message\": \"stream disconnected before completion: error sending request for url (https://chatgpt.com/backend-api/codex/responses)\"}",
+    "stage": "target",
+    "model": "gpt-5.6-terra",
+    "details": {
+      "returncode": 1,
+      "elapsed_s": 31.860000000000582,
+      "task_id": "398-14"
+    },
+    "evidence_dir": "C:\\CAM-SkillOpt\\SkillOpt\\outputs\\recovery_20260909\\p0_http_01\\steps\\step_0001\\rollout\\predictions\\398-14"
+  },
+  "hard": null,
+  "soft": null,
+  "manifest": {
+    "stage": "p0",
+    "source_sha256": "dc10def1a9f509dd25ec0dcaca9cdcd07facd82a0baee63e3c01f8283bf463da",
+    "python": "C:\\CAM-SkillOpt\\SkillOpt\\.venv\\Scripts\\python.exe",
+    "auth_home": "C:\\CAM-SkillOpt\\codex-home",
+    "codex_bin": "C:\\CAM-SkillOpt\\codex-cli\\node_modules\\@openai\\codex-win32-x64\\vendor\\x86_64-pc-windows-msvc\\bin\\codex.exe",
+    "target_reasoning": "none",
+    "started_at": "2026-09-09T14:41:43+0800",
+    "http_only": false,
+    "transport": "http",
+    "base_config_sha256": "f3374b0ad13a6fac347655bf012b92069601553b62fb92f528b95f8f55eb1fb9"
+  },
+  "wall_seconds": 266.719
+}

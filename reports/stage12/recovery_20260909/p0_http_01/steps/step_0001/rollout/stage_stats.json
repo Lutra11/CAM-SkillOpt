@@ -1,0 +1,22 @@
+{
+  "stage": "rollout",
+  "status": "infra_error",
+  "n_expected": 4,
+  "n_recorded": 4,
+  "n_scored": 3,
+  "n_not_run": 0,
+  "failure_types": {
+    "score_mismatch": 3,
+    "network_error": 1
+  },
+  "phase_counts": {
+    "exec": 3,
+    "llm": 1
+  },
+  "llm_ok": 3,
+  "code_ok": 3,
+  "exec_ok": 3,
+  "hard": null,
+  "soft": null,
+  "wall_time_s": 135.98
+}

@@ -1,0 +1,10 @@
+{
+  "simulation": true,
+  "external_api_calls": 0,
+  "simulated_model_requests": 1,
+  "expected_exit_code": 2,
+  "acceptance_passed": true,
+  "failure_type": "auth_error",
+  "summary_path": "C:\\CAM-SkillOpt\\SkillOpt\\outputs\\recovery_validation\\simulated_401_first_request_v2\\summary.json",
+  "results_path": "C:\\CAM-SkillOpt\\SkillOpt\\outputs\\recovery_validation\\simulated_401_first_request_v2\\baseline_selection\\results.jsonl"
+}

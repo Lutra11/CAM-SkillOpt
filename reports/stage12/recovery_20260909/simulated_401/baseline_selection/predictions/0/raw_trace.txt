@@ -1,0 +1,1 @@
+{"status": "infra_error", "failure_type": "auth_error", "message": "RuntimeError: SIMULATED HTTP 401 Unauthorized: invalid_refresh_token", "stage": "target_codegen", "model": "", "details": {"returncode": null, "task_id": "0"}, "evidence_dir": ""}

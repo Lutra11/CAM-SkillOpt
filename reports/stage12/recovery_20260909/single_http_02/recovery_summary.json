@@ -1,0 +1,44 @@
+{
+  "stage": "single",
+  "status": "passed",
+  "checks": {
+    "llm_ok": true,
+    "code_ok": true,
+    "exec_ok": true,
+    "conversation_exists": true,
+    "optimizer_called": true,
+    "patch_generated": true
+  },
+  "id": "47766",
+  "hard": 0,
+  "soft": 0.0,
+  "patch_count": 1,
+  "analyst_calls": 1,
+  "usage": {
+    "analyst": {
+      "calls": 1,
+      "prompt_tokens": 16291,
+      "completion_tokens": 879,
+      "total_tokens": 17170
+    },
+    "_total": {
+      "calls": 1,
+      "prompt_tokens": 16291,
+      "completion_tokens": 879,
+      "total_tokens": 17170
+    }
+  },
+  "manifest": {
+    "stage": "single",
+    "source_sha256": "dc10def1a9f509dd25ec0dcaca9cdcd07facd82a0baee63e3c01f8283bf463da",
+    "python": "C:\\CAM-SkillOpt\\SkillOpt\\.venv\\Scripts\\python.exe",
+    "auth_home": "C:\\CAM-SkillOpt\\codex-home",
+    "codex_bin": "C:\\CAM-SkillOpt\\codex-cli\\node_modules\\@openai\\codex-win32-x64\\vendor\\x86_64-pc-windows-msvc\\bin\\codex.exe",
+    "target_reasoning": "none",
+    "started_at": "2026-09-09T14:38:42+0800",
+    "http_only": false,
+    "transport": "http",
+    "base_config_sha256": "f3374b0ad13a6fac347655bf012b92069601553b62fb92f528b95f8f55eb1fb9"
+  },
+  "wall_seconds": 100.281
+}

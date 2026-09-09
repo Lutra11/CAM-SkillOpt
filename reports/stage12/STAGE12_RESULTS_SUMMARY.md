@@ -1,67 +1,76 @@
-# Stage 12 SpreadsheetBench Results Summary
+# Stage 12 SpreadsheetBench Results Summary — validity correction
 
-Date: 2026-09-09  
-Dataset: SpreadsheetBench verified split  
-Target model: gpt-5.6-terra via Codex exec  
-Optimizer model: gpt-5.6-sol via Codex CLI  
-Formal setting: train_size=16, selection=8, test=8, seed=42, exec_timeout=420s
+Updated: 2026-09-09 (Asia/Shanghai)
 
-## 1. Concurrency probe
+Dataset: SpreadsheetBench verified split
 
-| Run | workers | analyst_workers | selection hard | test hard | wall time | status |
-|---|---:|---:|---:|---:|---:|---|
-| P0 fix1 | 1 | 1 | 0.5000 | 0.2500 | 915.1s | completed |
-| P1 fix1 | 4 | 1 | 0.0000 | 0.0000 | 173.9s | completed, but no patch |
-| P2 | 4 | 2 | 0.0000 | 0.0000 | 157.7s | completed, but no patch |
+Historical target: gpt-5.6-terra via Codex exec
 
-Selected formal concurrency:
+Historical optimizer: gpt-5.6-sol via Codex CLI
 
-```text
-workers = 1
-analyst_workers = 1
-```
+Historical formal setting: train_size=16, selection=8, test=8, seed=42, exec_timeout=420s
 
-Rationale: P1/P2 were faster and technically stable, but both collapsed to zero success and produced no usable patches. P0 fix1 was slower but preserved non-zero selection/test signal.
+## 1. Correction that supersedes the previous interpretation
 
-## 2. Formal CAM ablation results
+The previously reported formal all-zero scores are **not valid negative scientific results**. A read-only audit of the original per-request results and raw traces confirms HTTP 401 / invalid_refresh_token failures before target code generation. No conversation.json was produced in the affected formal runs or CAM-Full supplementation evaluations. All four training steps were skipped with no patches, and the CAM gate was not used.
 
-| Method | Source of final metric | selection hard | test hard | test soft | steps | skips | wall time | status |
-|---|---|---:|---:|---:|---:|---:|---:|---|
-| CAM-Full | eval_only supplementation | 0.0000 | 0.0000 | 0.0000 | 4 | 4 | n/a | completed via supplementation |
-| CAM-No-Bootstrap | train summary | 0.0000 | 0.0000 | 0.0000 | 4 | 4 | 3201.3s | completed |
-| CAM-No-Adaptive-Budget | train summary | 0.0000 | 0.0000 | 0.0000 | 4 | 4 | 2534.1s | completed |
-| CAM-No-Memory | train summary | 0.0000 | 0.0000 | 0.0000 | 4 | 4 | 2633.9s | completed |
+Therefore, previous descriptions such as “all four methods completed”, “negative but informative result”, and “P1/P2 were technically stable and faster” must not be used as claims about experimental validity. Reaching a training-loop endpoint or writing a summary does not establish model execution, optimization, or a fair ablation.
 
-## 3. Reference baseline
+Original files under SkillOpt/outputs are preserved. The corrected status and audit are additive records; recorded hard/soft=0 values remain in historical raw files only and are excluded from paper result tables and comparisons.
 
-| Reference | Split | n | hard | soft | Note |
-|---|---|---:|---:|---:|---|
-| CAM-Off best skill eval | valid_unseen | 8 | 0.1250 | 0.1250 | independent eval_only supplementation |
-| P0 fix1 CAM-Full probe | valid_unseen | 4 | 0.2500 | 0.2500 | small probe, not formal-size result |
+## 2. Formal run validity
 
-## 4. Interpretation for paper draft
+| Method / artifact | Status requested for tracking | Audit diagnosis | 401 raw traces / raw traces | conversation.json | Patches | CAM gate used | Eligible for paper |
+|---|---|---|---:|---:|---:|---:|---|
+| CAM-Full fix1 | invalid_auth | confirmed_auth_failure | 52/52 | 0 | 0 | 0 | No |
+| CAM-Full fix2 | invalid_auth | confirmed_auth_failure | 26/26 | 0 | 0 | 0 | No |
+| CAM-Full fix2 valid_seen supplementation | invalid_auth | confirmed_auth_failure | 8/8 | 0 | n/a | n/a | No |
+| CAM-Full fix2 valid_unseen supplementation | invalid_auth | confirmed_auth_failure | 8/8 | 0 | n/a | n/a | No |
+| CAM-No-Bootstrap fix1 | validity_pending_diagnosis | confirmed_auth_failure | 56/56 | 0 | 0 | 0 | No |
+| CAM-No-Adaptive-Budget fix1 | validity_pending_diagnosis | confirmed_auth_failure | 56/56 | 0 | 0 | 0 | No |
+| CAM-No-Memory fix1 | validity_pending_diagnosis | confirmed_auth_failure | 56/56 | 0 | 0 | 0 | No |
 
-The current formal SpreadsheetBench run is a negative but informative result. Under the Codex target-execution setting, all four CAM variants completed their training loops, but every training step produced `skip_no_patches`. This means the reflection/update chain did not receive usable edits from the optimizer side, so CAM gating variants could not express meaningful differences.
+The three ablations retain the user's provisional tracking label. Independent per-run evidence now confirms authentication contamination in each, so the provisional label does **not** mean scientifically valid. Each of their 56 raw traces contains both 401 and invalid_refresh_token. A fresh valid run is required; these scores cannot be repaired by simply re-labeling the zero outcomes.
 
-The most defensible paper claim is therefore not that CAM improves SpreadsheetBench in the current setting. The defensible claim is that CAM-SkillOpt can be instrumented and evaluated on real SpreadsheetBench tasks, but the current Codex-based target execution exposes a boundary condition: when target-side spreadsheet code generation fails systematically, confidence-aware skill updating has little material to optimize.
+Raw trace file counts are artifact counts, not unique task counts or API request counts. Some aborted runs contain trace files without completed results rows. Error strings in results rows can be truncated; classification must also inspect the raw trace.
 
-Recommended reporting:
+## 3. Concurrency probe correction
 
-- Keep the P0 fix1 probe as evidence that the repaired direct-code path can produce non-zero signal.
-- Report the formal ablation table honestly as all-zero under the present seed/configuration.
-- Discuss the bottleneck as a target-execution / patch-yield limitation rather than a pure CAM gate failure.
-- Treat CAM-Off valid_unseen=0.1250 as a reference result, not a directly dominant full formal baseline, because it was obtained through a different completed run and later eval-only supplementation.
+| Historical probe | workers / analyst_workers | 401 traces | Conversations | Patches | Reported analyst calls | CAM gate used | Interpretation |
+|---|---|---:|---:|---:|---:|---:|---|
+| P0 fix1 | 1 / 1 | 0/24 | 24 | 2 | 4 | 1 | Retain as historical small probe; selection hard=0.50, test hard=0.25 |
+| P1 fix1 (directory suffix fix2) | 4 / 1 | 24/24 | 0 | 0 | unavailable in summary | 0 | invalid_auth; zero scores and 173.9s wall time cannot assess concurrency quality |
+| P2 fix2 | 4 / 2 | 24/24 | 0 | 0 | unavailable in summary | 0 | invalid_auth; zero scores and 157.7s wall time cannot assess concurrency quality |
 
-## 5. Artifacts
+P0 fix1 demonstrates a historical successful target/reflection/patch/gate path on a small sample, not current authentication health or formal CAM effectiveness. Its 24 result rows are repeated evaluations of a four-sample probe protocol, not 24 independent test samples.
 
-Key records are under:
+Recovery uses workers=1 and analyst_workers=1 as requested. No claim is made that this setting is empirically superior to concurrency 4, because the earlier concurrent runs were confounded by authentication failure.
 
-```text
-reports/stage12/STAGE12_NEXT_STEP_EXECUTION_LOG.md
-reports/stage12/formal_cam_full_seed42_w1_a1_fix2_train/
-reports/stage12/eval_only_cam_full_fix2_best_valid_seen_8_w1_a1/
-reports/stage12/eval_only_cam_full_fix2_best_valid_unseen_8_w1_a1/
-reports/stage12/formal_cam_no_bootstrap_seed42_w1_a1_fix1/
-reports/stage12/formal_cam_no_adaptive_budget_seed42_w1_a1_fix1/
-reports/stage12/formal_cam_no_memory_seed42_w1_a1_fix1/
-```
+## 4. Reference baseline and paper boundary
+
+The historical CAM-Off eval_only reference records valid_unseen n=8, hard=0.125 and soft=0.125. This audit did not revalidate its per-request artifacts or establish a matched protocol with the formal CAM runs. It remains an archival reference, not a fair superiority comparison.
+
+There is currently no validated formal CAM ablation table from this batch. Do not compute method differences, paired confidence intervals, patch-yield effectiveness, or performance conclusions from the invalid/pending runs. Their authentication incident counts can be reported as engineering diagnostics if clearly separated from task scores.
+
+A publishable matrix requires fresh matched Static, CAM-Off, CAM-Full and ablation runs after the low-cost recovery gates succeed, with actual optimizer calls, patches, CAM gate/budget/memory evidence and complete selection/test artifacts. Start with seed=42; expand seeds only after validity is established.
+
+## 5. Recovery gates for tasks 1–5
+
+1. Verify the target and optimizer Codex environments with two consecutive minimal requests per role: normal exit, correct observed model, and no authentication errors.
+2. Fail fast on infra_error; inject a 401 and verify termination within the first one or two requests with an error summary.
+3. Persist per-stage results.jsonl, failure type, conversation artifact, raw trace and stage statistics, including failed stages. Do not fabricate a successful model conversation for failed authentication.
+4. Run a one-sample end-to-end preflight that proves llm_ok, code_ok, exec_ok, scoring, real optimizer invocation and patch production.
+5. Run the fixed four-sample P0 probe with workers=1 / analyst_workers=1. Require no infrastructure errors, at least one patch, analyst_calls>0, complete selection/test results and intact process/boot continuity. If authentication works but no patch is generated, compare target reasoning none vs low on the same four samples while holding every other parameter fixed.
+
+Formal ablations and paper result construction remain downstream of these gates.
+
+## 6. Evidence and independent Windows diagnostics
+
+- [Historical audit, including per-stage counts](recovery_20260909/historical_validity_audit.json)
+- [Audit method and Chinese correction note](recovery_20260909/VALIDITY_CORRECTION.md)
+- [Read-only audit script](recovery_20260909/audit_historical_runs.ps1)
+- [Windows diagnostic snapshot](recovery_20260909/windows_health_snapshot.json)
+- [Windows diagnostic interpretation](recovery_20260909/WINDOWS_DIAGNOSTICS.md)
+- [Read-only Windows snapshot script](../../scripts/cam_windows_health.ps1)
+
+The original chronological execution log and copied run summaries are retained as historical records. If they describe the affected zero scores as completed valid results, this correction takes precedence. Restart evidence and authentication failures are tracked separately; neither proves the other caused it.

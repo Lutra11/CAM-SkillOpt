@@ -1,0 +1,1230 @@
+{
+  "captured_at": "2026-09-09T14:05:40.4429947+08:00",
+  "audit_type": "read_only_sanitized_historical_evidence",
+  "source_root": "C:\\CAM-SkillOpt\\SkillOpt\\outputs",
+  "auth_count_note": "Counts match explicit authentication signatures in error fields and codex_raw.txt. Occurrences include repeated retries; they are not request counts. Null analyst_calls_reported means absent in summary, not proof of zero calls.",
+  "runs": [
+    {
+      "run": "formal_cam/spreadsheetbench_terra_cam_full_seed42_w1_a1_fix1",
+      "summary_present": false,
+      "eval_summary_present": false,
+      "results_files": 8,
+      "result_rows": 48,
+      "auth_error_rows": 48,
+      "raw_trace_files": 52,
+      "auth_error_raw_files": 52,
+      "auth_error_raw_occurrences": 2804,
+      "auth_signature_file_counts": {
+        "http_401": 52,
+        "refresh_token_reused": 0,
+        "invalid_refresh_token": 51
+      },
+      "conversation_files": 0,
+      "steps": 4,
+      "skip_no_patches_steps": 4,
+      "patches": 0,
+      "cam_gate_used_steps": 0,
+      "analyst_calls_reported": null,
+      "stages": [
+        {
+          "stage": "final_selection_eval",
+          "result_rows": 8,
+          "auth_error_rows": 8,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 8
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 8
+          }
+        },
+        {
+          "stage": "selection_eval_baseline",
+          "result_rows": 8,
+          "auth_error_rows": 8,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 8
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 8
+          }
+        },
+        {
+          "stage": "steps/step_0001/rollout",
+          "result_rows": 4,
+          "auth_error_rows": 4,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 4
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 4
+          }
+        },
+        {
+          "stage": "steps/step_0002/rollout",
+          "result_rows": 4,
+          "auth_error_rows": 4,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 4
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 4
+          }
+        },
+        {
+          "stage": "steps/step_0003/rollout",
+          "result_rows": 4,
+          "auth_error_rows": 4,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 4
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 4
+          }
+        },
+        {
+          "stage": "steps/step_0004/rollout",
+          "result_rows": 4,
+          "auth_error_rows": 4,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 4
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 4
+          }
+        },
+        {
+          "stage": "test_eval",
+          "result_rows": 8,
+          "auth_error_rows": 8,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 8
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 8
+          }
+        },
+        {
+          "stage": "test_eval_baseline",
+          "result_rows": 8,
+          "auth_error_rows": 8,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 8
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 8
+          }
+        }
+      ]
+    },
+    {
+      "run": "formal_cam/spreadsheetbench_terra_cam_full_seed42_w1_a1_fix2",
+      "summary_present": false,
+      "eval_summary_present": false,
+      "results_files": 5,
+      "result_rows": 24,
+      "auth_error_rows": 20,
+      "raw_trace_files": 26,
+      "auth_error_raw_files": 26,
+      "auth_error_raw_occurrences": 1182,
+      "auth_signature_file_counts": {
+        "http_401": 26,
+        "refresh_token_reused": 0,
+        "invalid_refresh_token": 25
+      },
+      "conversation_files": 0,
+      "steps": 4,
+      "skip_no_patches_steps": 4,
+      "patches": 0,
+      "cam_gate_used_steps": 0,
+      "analyst_calls_reported": null,
+      "stages": [
+        {
+          "stage": "selection_eval_baseline",
+          "result_rows": 8,
+          "auth_error_rows": 6,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 8
+          },
+          "derived_failure_type_counts": {
+            "llm_failure_unclassified_requires_raw_trace": 2,
+            "infra_auth_error": 6
+          }
+        },
+        {
+          "stage": "steps/step_0001/rollout",
+          "result_rows": 4,
+          "auth_error_rows": 3,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 4
+          },
+          "derived_failure_type_counts": {
+            "llm_failure_unclassified_requires_raw_trace": 1,
+            "infra_auth_error": 3
+          }
+        },
+        {
+          "stage": "steps/step_0002/rollout",
+          "result_rows": 4,
+          "auth_error_rows": 4,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 4
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 4
+          }
+        },
+        {
+          "stage": "steps/step_0003/rollout",
+          "result_rows": 4,
+          "auth_error_rows": 4,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 4
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 4
+          }
+        },
+        {
+          "stage": "steps/step_0004/rollout",
+          "result_rows": 4,
+          "auth_error_rows": 3,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 4
+          },
+          "derived_failure_type_counts": {
+            "llm_failure_unclassified_requires_raw_trace": 1,
+            "infra_auth_error": 3
+          }
+        }
+      ]
+    },
+    {
+      "run": "eval_only/cam_full_fix2_best_valid_seen_8_w1_a1",
+      "summary_present": false,
+      "eval_summary_present": true,
+      "results_files": 1,
+      "result_rows": 8,
+      "auth_error_rows": 8,
+      "raw_trace_files": 8,
+      "auth_error_raw_files": 8,
+      "auth_error_raw_occurrences": 438,
+      "auth_signature_file_counts": {
+        "http_401": 8,
+        "refresh_token_reused": 0,
+        "invalid_refresh_token": 8
+      },
+      "conversation_files": 0,
+      "steps": 0,
+      "skip_no_patches_steps": 0,
+      "patches": 0,
+      "cam_gate_used_steps": 0,
+      "analyst_calls_reported": null,
+      "stages": [
+        {
+          "stage": ".",
+          "result_rows": 8,
+          "auth_error_rows": 8,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 8
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 8
+          }
+        }
+      ]
+    },
+    {
+      "run": "eval_only/cam_full_fix2_best_valid_unseen_8_w1_a1",
+      "summary_present": false,
+      "eval_summary_present": true,
+      "results_files": 1,
+      "result_rows": 8,
+      "auth_error_rows": 8,
+      "raw_trace_files": 8,
+      "auth_error_raw_files": 8,
+      "auth_error_raw_occurrences": 434,
+      "auth_signature_file_counts": {
+        "http_401": 8,
+        "refresh_token_reused": 0,
+        "invalid_refresh_token": 8
+      },
+      "conversation_files": 0,
+      "steps": 0,
+      "skip_no_patches_steps": 0,
+      "patches": 0,
+      "cam_gate_used_steps": 0,
+      "analyst_calls_reported": null,
+      "stages": [
+        {
+          "stage": ".",
+          "result_rows": 8,
+          "auth_error_rows": 8,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 8
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 8
+          }
+        }
+      ]
+    },
+    {
+      "run": "formal_cam/spreadsheetbench_terra_cam_no_bootstrap_seed42_w1_a1_fix1",
+      "summary_present": true,
+      "eval_summary_present": false,
+      "results_files": 9,
+      "result_rows": 56,
+      "auth_error_rows": 53,
+      "raw_trace_files": 56,
+      "auth_error_raw_files": 56,
+      "auth_error_raw_occurrences": 2662,
+      "auth_signature_file_counts": {
+        "http_401": 56,
+        "refresh_token_reused": 0,
+        "invalid_refresh_token": 56
+      },
+      "conversation_files": 0,
+      "steps": 4,
+      "skip_no_patches_steps": 4,
+      "patches": 0,
+      "cam_gate_used_steps": 0,
+      "analyst_calls_reported": null,
+      "stages": [
+        {
+          "stage": "final_selection_eval",
+          "result_rows": 8,
+          "auth_error_rows": 8,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 8
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 8
+          }
+        },
+        {
+          "stage": "selection_eval_baseline",
+          "result_rows": 8,
+          "auth_error_rows": 8,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 8
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 8
+          }
+        },
+        {
+          "stage": "steps/step_0001/rollout",
+          "result_rows": 4,
+          "auth_error_rows": 4,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 4
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 4
+          }
+        },
+        {
+          "stage": "steps/step_0002/rollout",
+          "result_rows": 4,
+          "auth_error_rows": 4,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 4
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 4
+          }
+        },
+        {
+          "stage": "steps/step_0003/rollout",
+          "result_rows": 4,
+          "auth_error_rows": 4,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 4
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 4
+          }
+        },
+        {
+          "stage": "steps/step_0004/rollout",
+          "result_rows": 4,
+          "auth_error_rows": 3,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 4
+          },
+          "derived_failure_type_counts": {
+            "llm_failure_unclassified_requires_raw_trace": 1,
+            "infra_auth_error": 3
+          }
+        },
+        {
+          "stage": "test_eval",
+          "result_rows": 8,
+          "auth_error_rows": 7,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 8
+          },
+          "derived_failure_type_counts": {
+            "llm_failure_unclassified_requires_raw_trace": 1,
+            "infra_auth_error": 7
+          }
+        },
+        {
+          "stage": "test_eval_baseline",
+          "result_rows": 8,
+          "auth_error_rows": 8,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 8
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 8
+          }
+        },
+        {
+          "stage": "test_eval_final",
+          "result_rows": 8,
+          "auth_error_rows": 7,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 8
+          },
+          "derived_failure_type_counts": {
+            "llm_failure_unclassified_requires_raw_trace": 1,
+            "infra_auth_error": 7
+          }
+        }
+      ]
+    },
+    {
+      "run": "formal_cam/spreadsheetbench_terra_cam_no_adaptive_budget_seed42_w1_a1_fix1",
+      "summary_present": true,
+      "eval_summary_present": false,
+      "results_files": 9,
+      "result_rows": 56,
+      "auth_error_rows": 55,
+      "raw_trace_files": 56,
+      "auth_error_raw_files": 56,
+      "auth_error_raw_occurrences": 2748,
+      "auth_signature_file_counts": {
+        "http_401": 56,
+        "refresh_token_reused": 0,
+        "invalid_refresh_token": 56
+      },
+      "conversation_files": 0,
+      "steps": 4,
+      "skip_no_patches_steps": 4,
+      "patches": 0,
+      "cam_gate_used_steps": 0,
+      "analyst_calls_reported": null,
+      "stages": [
+        {
+          "stage": "final_selection_eval",
+          "result_rows": 8,
+          "auth_error_rows": 7,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 8
+          },
+          "derived_failure_type_counts": {
+            "llm_failure_unclassified_requires_raw_trace": 1,
+            "infra_auth_error": 7
+          }
+        },
+        {
+          "stage": "selection_eval_baseline",
+          "result_rows": 8,
+          "auth_error_rows": 8,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 8
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 8
+          }
+        },
+        {
+          "stage": "steps/step_0001/rollout",
+          "result_rows": 4,
+          "auth_error_rows": 4,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 4
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 4
+          }
+        },
+        {
+          "stage": "steps/step_0002/rollout",
+          "result_rows": 4,
+          "auth_error_rows": 4,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 4
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 4
+          }
+        },
+        {
+          "stage": "steps/step_0003/rollout",
+          "result_rows": 4,
+          "auth_error_rows": 4,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 4
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 4
+          }
+        },
+        {
+          "stage": "steps/step_0004/rollout",
+          "result_rows": 4,
+          "auth_error_rows": 4,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 4
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 4
+          }
+        },
+        {
+          "stage": "test_eval",
+          "result_rows": 8,
+          "auth_error_rows": 8,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 8
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 8
+          }
+        },
+        {
+          "stage": "test_eval_baseline",
+          "result_rows": 8,
+          "auth_error_rows": 8,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 8
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 8
+          }
+        },
+        {
+          "stage": "test_eval_final",
+          "result_rows": 8,
+          "auth_error_rows": 8,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 8
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 8
+          }
+        }
+      ]
+    },
+    {
+      "run": "formal_cam/spreadsheetbench_terra_cam_no_memory_seed42_w1_a1_fix1",
+      "summary_present": true,
+      "eval_summary_present": false,
+      "results_files": 9,
+      "result_rows": 56,
+      "auth_error_rows": 53,
+      "raw_trace_files": 56,
+      "auth_error_raw_files": 56,
+      "auth_error_raw_occurrences": 2660,
+      "auth_signature_file_counts": {
+        "http_401": 56,
+        "refresh_token_reused": 0,
+        "invalid_refresh_token": 56
+      },
+      "conversation_files": 0,
+      "steps": 4,
+      "skip_no_patches_steps": 4,
+      "patches": 0,
+      "cam_gate_used_steps": 0,
+      "analyst_calls_reported": null,
+      "stages": [
+        {
+          "stage": "final_selection_eval",
+          "result_rows": 8,
+          "auth_error_rows": 8,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 8
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 8
+          }
+        },
+        {
+          "stage": "selection_eval_baseline",
+          "result_rows": 8,
+          "auth_error_rows": 7,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 8
+          },
+          "derived_failure_type_counts": {
+            "llm_failure_unclassified_requires_raw_trace": 1,
+            "infra_auth_error": 7
+          }
+        },
+        {
+          "stage": "steps/step_0001/rollout",
+          "result_rows": 4,
+          "auth_error_rows": 3,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 4
+          },
+          "derived_failure_type_counts": {
+            "llm_failure_unclassified_requires_raw_trace": 1,
+            "infra_auth_error": 3
+          }
+        },
+        {
+          "stage": "steps/step_0002/rollout",
+          "result_rows": 4,
+          "auth_error_rows": 3,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 4
+          },
+          "derived_failure_type_counts": {
+            "llm_failure_unclassified_requires_raw_trace": 1,
+            "infra_auth_error": 3
+          }
+        },
+        {
+          "stage": "steps/step_0003/rollout",
+          "result_rows": 4,
+          "auth_error_rows": 4,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 4
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 4
+          }
+        },
+        {
+          "stage": "steps/step_0004/rollout",
+          "result_rows": 4,
+          "auth_error_rows": 4,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 4
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 4
+          }
+        },
+        {
+          "stage": "test_eval",
+          "result_rows": 8,
+          "auth_error_rows": 8,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 8
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 8
+          }
+        },
+        {
+          "stage": "test_eval_baseline",
+          "result_rows": 8,
+          "auth_error_rows": 8,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 8
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 8
+          }
+        },
+        {
+          "stage": "test_eval_final",
+          "result_rows": 8,
+          "auth_error_rows": 8,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 8
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 8
+          }
+        }
+      ]
+    },
+    {
+      "run": "stage12_probe/spreadsheetbench_terra_cam_full_P0_w1_a1_fix1",
+      "summary_present": true,
+      "eval_summary_present": false,
+      "results_files": 6,
+      "result_rows": 24,
+      "auth_error_rows": 0,
+      "raw_trace_files": 24,
+      "auth_error_raw_files": 0,
+      "auth_error_raw_occurrences": 0,
+      "auth_signature_file_counts": {
+        "http_401": 0,
+        "refresh_token_reused": 0,
+        "invalid_refresh_token": 0
+      },
+      "conversation_files": 24,
+      "steps": 1,
+      "skip_no_patches_steps": 0,
+      "patches": 2,
+      "cam_gate_used_steps": 1,
+      "analyst_calls_reported": 4,
+      "stages": [
+        {
+          "stage": "final_selection_eval",
+          "result_rows": 4,
+          "auth_error_rows": 0,
+          "network_error_rows": 0,
+          "llm_ok": 4,
+          "code_ok": 4,
+          "exec_ok": 4,
+          "recorded_hard_successes": 2,
+          "fail_reason_counts": {
+            "(empty)": 2,
+            "(non-code reason redacted)": 2
+          },
+          "derived_failure_type_counts": {
+            "scored_task_success": 2,
+            "scored_task_failure": 2
+          }
+        },
+        {
+          "stage": "selection_eval_baseline",
+          "result_rows": 4,
+          "auth_error_rows": 0,
+          "network_error_rows": 0,
+          "llm_ok": 4,
+          "code_ok": 4,
+          "exec_ok": 3,
+          "recorded_hard_successes": 1,
+          "fail_reason_counts": {
+            "(empty)": 1,
+            "(non-code reason redacted)": 3
+          },
+          "derived_failure_type_counts": {
+            "execution_failure": 1,
+            "scored_task_success": 1,
+            "scored_task_failure": 2
+          }
+        },
+        {
+          "stage": "steps/step_0001/rollout",
+          "result_rows": 4,
+          "auth_error_rows": 0,
+          "network_error_rows": 0,
+          "llm_ok": 4,
+          "code_ok": 4,
+          "exec_ok": 3,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 4
+          },
+          "derived_failure_type_counts": {
+            "execution_failure": 1,
+            "scored_task_failure": 3
+          }
+        },
+        {
+          "stage": "steps/step_0001/selection_eval",
+          "result_rows": 4,
+          "auth_error_rows": 0,
+          "network_error_rows": 0,
+          "llm_ok": 4,
+          "code_ok": 4,
+          "exec_ok": 4,
+          "recorded_hard_successes": 2,
+          "fail_reason_counts": {
+            "(empty)": 2,
+            "(non-code reason redacted)": 2
+          },
+          "derived_failure_type_counts": {
+            "scored_task_success": 2,
+            "scored_task_failure": 2
+          }
+        },
+        {
+          "stage": "test_eval",
+          "result_rows": 4,
+          "auth_error_rows": 0,
+          "network_error_rows": 0,
+          "llm_ok": 4,
+          "code_ok": 4,
+          "exec_ok": 4,
+          "recorded_hard_successes": 1,
+          "fail_reason_counts": {
+            "(empty)": 1,
+            "(non-code reason redacted)": 3
+          },
+          "derived_failure_type_counts": {
+            "scored_task_success": 1,
+            "scored_task_failure": 3
+          }
+        },
+        {
+          "stage": "test_eval_baseline",
+          "result_rows": 4,
+          "auth_error_rows": 0,
+          "network_error_rows": 0,
+          "llm_ok": 4,
+          "code_ok": 4,
+          "exec_ok": 4,
+          "recorded_hard_successes": 1,
+          "fail_reason_counts": {
+            "(empty)": 1,
+            "(non-code reason redacted)": 3
+          },
+          "derived_failure_type_counts": {
+            "scored_task_success": 1,
+            "scored_task_failure": 3
+          }
+        }
+      ]
+    },
+    {
+      "run": "stage12_probe/spreadsheetbench_terra_cam_full_P1_w4_a1_fix2",
+      "summary_present": true,
+      "eval_summary_present": false,
+      "results_files": 6,
+      "result_rows": 24,
+      "auth_error_rows": 24,
+      "raw_trace_files": 24,
+      "auth_error_raw_files": 24,
+      "auth_error_raw_occurrences": 1370,
+      "auth_signature_file_counts": {
+        "http_401": 24,
+        "refresh_token_reused": 0,
+        "invalid_refresh_token": 24
+      },
+      "conversation_files": 0,
+      "steps": 1,
+      "skip_no_patches_steps": 1,
+      "patches": 0,
+      "cam_gate_used_steps": 0,
+      "analyst_calls_reported": null,
+      "stages": [
+        {
+          "stage": "final_selection_eval",
+          "result_rows": 4,
+          "auth_error_rows": 4,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 4
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 4
+          }
+        },
+        {
+          "stage": "selection_eval_baseline",
+          "result_rows": 4,
+          "auth_error_rows": 4,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 4
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 4
+          }
+        },
+        {
+          "stage": "steps/step_0001/rollout",
+          "result_rows": 4,
+          "auth_error_rows": 4,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 4
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 4
+          }
+        },
+        {
+          "stage": "test_eval",
+          "result_rows": 4,
+          "auth_error_rows": 4,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 4
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 4
+          }
+        },
+        {
+          "stage": "test_eval_baseline",
+          "result_rows": 4,
+          "auth_error_rows": 4,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 4
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 4
+          }
+        },
+        {
+          "stage": "test_eval_final",
+          "result_rows": 4,
+          "auth_error_rows": 4,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 4
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 4
+          }
+        }
+      ]
+    },
+    {
+      "run": "stage12_probe/spreadsheetbench_terra_cam_full_P2_w4_a2_fix2",
+      "summary_present": true,
+      "eval_summary_present": false,
+      "results_files": 6,
+      "result_rows": 24,
+      "auth_error_rows": 24,
+      "raw_trace_files": 24,
+      "auth_error_raw_files": 24,
+      "auth_error_raw_occurrences": 1321,
+      "auth_signature_file_counts": {
+        "http_401": 24,
+        "refresh_token_reused": 0,
+        "invalid_refresh_token": 24
+      },
+      "conversation_files": 0,
+      "steps": 1,
+      "skip_no_patches_steps": 1,
+      "patches": 0,
+      "cam_gate_used_steps": 0,
+      "analyst_calls_reported": null,
+      "stages": [
+        {
+          "stage": "final_selection_eval",
+          "result_rows": 4,
+          "auth_error_rows": 4,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 4
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 4
+          }
+        },
+        {
+          "stage": "selection_eval_baseline",
+          "result_rows": 4,
+          "auth_error_rows": 4,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 4
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 4
+          }
+        },
+        {
+          "stage": "steps/step_0001/rollout",
+          "result_rows": 4,
+          "auth_error_rows": 4,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 4
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 4
+          }
+        },
+        {
+          "stage": "test_eval",
+          "result_rows": 4,
+          "auth_error_rows": 4,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 4
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 4
+          }
+        },
+        {
+          "stage": "test_eval_baseline",
+          "result_rows": 4,
+          "auth_error_rows": 4,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 4
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 4
+          }
+        },
+        {
+          "stage": "test_eval_final",
+          "result_rows": 4,
+          "auth_error_rows": 4,
+          "network_error_rows": 0,
+          "llm_ok": 0,
+          "code_ok": 0,
+          "exec_ok": 0,
+          "recorded_hard_successes": 0,
+          "fail_reason_counts": {
+            "(non-code reason redacted)": 4
+          },
+          "derived_failure_type_counts": {
+            "infra_auth_error": 4
+          }
+        }
+      ]
+    }
+  ]
+}
