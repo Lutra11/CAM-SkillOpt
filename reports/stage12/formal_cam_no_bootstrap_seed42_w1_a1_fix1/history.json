@@ -1,0 +1,134 @@
+[
+  {
+    "step": 1,
+    "epoch": 1,
+    "step_in_epoch": 0,
+    "timing": {
+      "rollout_s": 237.6,
+      "reflect_s": 0.0
+    },
+    "tokens": {},
+    "rollout_hard": 0.0,
+    "rollout_soft": 0.0,
+    "rollout_n": 4,
+    "accumulation_batches": [
+      {
+        "batch_idx": 0,
+        "batch_seed": 1043,
+        "n_envs": 4,
+        "hard": 0.0,
+        "soft": 0.0,
+        "n_failure_patches": 0,
+        "n_success_patches": 0
+      }
+    ],
+    "n_patches": 0,
+    "n_failure_patches": 0,
+    "n_success_patches": 0,
+    "action": "skip_no_patches",
+    "current_score": 0.0,
+    "best_score": 0.0,
+    "best_step": 0,
+    "skill_len": 1594,
+    "wall_time_s": 237.6
+  },
+  {
+    "step": 2,
+    "epoch": 1,
+    "step_in_epoch": 1,
+    "timing": {
+      "rollout_s": 238.1,
+      "reflect_s": 0.0
+    },
+    "tokens": {},
+    "rollout_hard": 0.0,
+    "rollout_soft": 0.0,
+    "rollout_n": 4,
+    "accumulation_batches": [
+      {
+        "batch_idx": 0,
+        "batch_seed": 1044,
+        "n_envs": 4,
+        "hard": 0.0,
+        "soft": 0.0,
+        "n_failure_patches": 0,
+        "n_success_patches": 0
+      }
+    ],
+    "n_patches": 0,
+    "n_failure_patches": 0,
+    "n_success_patches": 0,
+    "action": "skip_no_patches",
+    "current_score": 0.0,
+    "best_score": 0.0,
+    "best_step": 0,
+    "skill_len": 1594,
+    "wall_time_s": 238.1
+  },
+  {
+    "step": 3,
+    "epoch": 1,
+    "step_in_epoch": 2,
+    "timing": {
+      "rollout_s": 179.2,
+      "reflect_s": 0.0
+    },
+    "tokens": {},
+    "rollout_hard": 0.0,
+    "rollout_soft": 0.0,
+    "rollout_n": 4,
+    "accumulation_batches": [
+      {
+        "batch_idx": 0,
+        "batch_seed": 1045,
+        "n_envs": 4,
+        "hard": 0.0,
+        "soft": 0.0,
+        "n_failure_patches": 0,
+        "n_success_patches": 0
+      }
+    ],
+    "n_patches": 0,
+    "n_failure_patches": 0,
+    "n_success_patches": 0,
+    "action": "skip_no_patches",
+    "current_score": 0.0,
+    "best_score": 0.0,
+    "best_step": 0,
+    "skill_len": 1594,
+    "wall_time_s": 179.2
+  },
+  {
+    "step": 4,
+    "epoch": 1,
+    "step_in_epoch": 3,
+    "timing": {
+      "rollout_s": 513.6,
+      "reflect_s": 0.0
+    },
+    "tokens": {},
+    "rollout_hard": 0.0,
+    "rollout_soft": 0.0,
+    "rollout_n": 4,
+    "accumulation_batches": [
+      {
+        "batch_idx": 0,
+        "batch_seed": 1046,
+        "n_envs": 4,
+        "hard": 0.0,
+        "soft": 0.0,
+        "n_failure_patches": 0,
+        "n_success_patches": 0
+      }
+    ],
+    "n_patches": 0,
+    "n_failure_patches": 0,
+    "n_success_patches": 0,
+    "action": "skip_no_patches",
+    "current_score": 0.0,
+    "best_score": 0.0,
+    "best_step": 0,
+    "skill_len": 1594,
+    "wall_time_s": 513.6
+  }
+]
