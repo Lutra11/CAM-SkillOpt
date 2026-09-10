@@ -978,11 +978,8 @@ def _run_codex_cli_exec(
                 raw = f.read()
         _persist_codex_artifacts(work_dir, raw, "")
         raise
-    try:
-        from skillopt.model import azure_openai as _openai
-        _openai.tracker.record("rollout", 0, 0)
-    except Exception:
-        pass
+    # run_cli_failfast persists real terminal usage for this invocation. Never
+    # synthesize zero-token calls here or count the same request a second time.
     stdout = proc.stdout or ""
     stderr = proc.stderr or ""
     last_message = ""
@@ -1002,6 +999,15 @@ def _run_codex_cli_exec(
                 last_message = str(item.get("text", "") or last_message)
     raw = "COMMAND_JSON: " + json.dumps(cmd, ensure_ascii=False) + "\n"
     raw += "CWD: " + str(work_dir) + "\n"
+    usage_record = getattr(proc, "usage_record", None)
+    if usage_record is not None:
+        raw += "ACCOUNTING_REQUEST_ID: " + usage_record["request_id"] + "\n"
+        # A reference copy joins prediction/conversation artifacts to the single
+        # canonical ledger entry. Copies are not additional model invocations.
+        usage_path = os.path.join(os.path.dirname(work_dir.rstrip(os.sep)),
+                                  "usage_" + usage_record["request_id"] + ".json")
+        with open(usage_path, "w", encoding="utf-8") as handle:
+            json.dump(usage_record, handle, ensure_ascii=False, indent=2)
     raw += stdout
     if stderr:
         raw = f"{raw}\n[stderr]\n{stderr}" if raw else stderr

@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
+import os
 from typing import Any
+
+from skillopt.model.usage_accounting import UsageLedger, configure_usage_accounting, summarize_usage
 
 from skillopt.model import azure_openai as _openai
 from skillopt.model import claude_backend as _claude
@@ -358,74 +361,37 @@ def chat_with_deployment(
 
 
 def get_token_summary() -> dict:
-    summary = _openai.get_token_summary()
-    codex_summary = _codex.get_token_summary()
-    for stage, values in codex_summary.items():
-        if stage == "_total":
-            continue
-        if stage not in summary:
-            summary[stage] = values
-            continue
-        summary[stage]["calls"] += values["calls"]
-        summary[stage]["prompt_tokens"] += values["prompt_tokens"]
-        summary[stage]["completion_tokens"] += values["completion_tokens"]
-        summary[stage]["total_tokens"] += values["total_tokens"]
-    claude_summary = _claude.get_token_summary()
-    for stage, values in claude_summary.items():
-        if stage == "_total":
-            continue
-        if stage not in summary:
-            summary[stage] = values
-            continue
-        summary[stage]["calls"] += values["calls"]
-        summary[stage]["prompt_tokens"] += values["prompt_tokens"]
-        summary[stage]["completion_tokens"] += values["completion_tokens"]
-        summary[stage]["total_tokens"] += values["total_tokens"]
-    qwen_summary = _qwen.get_token_summary()
-    for stage, values in qwen_summary.items():
-        if stage == "_total":
-            continue
-        if stage not in summary:
-            summary[stage] = values
-            continue
-        summary[stage]["calls"] += values["calls"]
-        summary[stage]["prompt_tokens"] += values["prompt_tokens"]
-        summary[stage]["completion_tokens"] += values["completion_tokens"]
-        summary[stage]["total_tokens"] += values["total_tokens"]
-    minimax_summary = _minimax.get_token_summary()
-    for stage, values in minimax_summary.items():
-        if stage == "_total":
-            continue
-        if stage not in summary:
-            summary[stage] = values
-            continue
-        summary[stage]["calls"] += values["calls"]
-        summary[stage]["prompt_tokens"] += values["prompt_tokens"]
-        summary[stage]["completion_tokens"] += values["completion_tokens"]
-        summary[stage]["total_tokens"] += values["total_tokens"]
-    total = {
-        "calls": 0,
-        "prompt_tokens": 0,
-        "completion_tokens": 0,
-        "total_tokens": 0,
-    }
-    for stage, values in summary.items():
-        if stage == "_total":
-            continue
-        total["calls"] += values["calls"]
-        total["prompt_tokens"] += values["prompt_tokens"]
-        total["completion_tokens"] += values["completion_tokens"]
-        total["total_tokens"] += values["total_tokens"]
-    summary["_total"] = total
-    return summary
+    """Merge shared objects once and request IDs once across processes and RAM."""
+    requests, legacy = [], []
+    root = os.environ.get("SKILLOPT_USAGE_ROOT")
+    if root:
+        requests.extend(UsageLedger(root).records())
+    persisted_ids = {record["request_id"] for record in requests}
+    for tracker in _unique_trackers():
+        if hasattr(tracker, "records") and hasattr(tracker, "legacy_summary"):
+            # An active ledger is the run boundary. Old RAM records from another
+            # run cannot enter it; same-ID copies still undergo conflict checks.
+            requests.extend(record for record in tracker.records()
+                            if not root or record["request_id"] in persisted_ids)
+            legacy.append(tracker.legacy_summary())
+        else:
+            legacy.append(tracker.summary())
+    return summarize_usage(requests, legacy_summaries=legacy)
+
+
+def _unique_trackers():
+    seen = set()
+    for backend in (_openai, _codex, _claude, _qwen, _minimax):
+        tracker = backend.tracker
+        if id(tracker) not in seen:
+            seen.add(id(tracker))
+            yield tracker
 
 
 def reset_token_tracker() -> None:
-    _openai.reset_token_tracker()
-    _codex.reset_token_tracker()
-    _claude.reset_token_tracker()
-    _qwen.reset_token_tracker()
-    _minimax.reset_token_tracker()
+    """Clear each in-process tracker once; persistent request history is retained."""
+    for tracker in _unique_trackers():
+        tracker.reset()
 
 
 def configure_azure_openai(

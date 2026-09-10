@@ -81,6 +81,7 @@ from skillopt.model import (
 )
 from skillopt.utils import compute_item_scores, compute_score, skill_hash
 from skillopt.model.infra_errors import InfraError
+from skillopt.model.usage_accounting import UsageLedger, summarize_usage
 from skillopt.engine.run_artifacts import write_invalid_summary
 from skillopt.cam.selection_guard import SelectionEvidenceError, decide_cam_update, indexed_scores
 from skillopt.engine.run_artifacts import write_json
@@ -631,13 +632,159 @@ class ReflACTTrainer:
         self.cfg = cfg
         self.adapter = adapter
 
+    def _model_backends(self) -> dict:
+        """One backend-default mapping for configuration and accounting."""
+        backend = self.cfg.get("model_backend", "azure_openai")
+        defaults = {
+            "claude": ("claude_chat", "claude_chat"),
+            "claude_chat": ("claude_chat", "claude_chat"),
+            "codex": ("openai_chat", "codex_exec"),
+            "codex_exec": ("openai_chat", "codex_exec"),
+            "claude_code_exec": ("openai_chat", "claude_code_exec"),
+            "qwen": ("openai_chat", "qwen_chat"),
+            "qwen_chat": ("openai_chat", "qwen_chat"),
+        }.get(backend, ("openai_chat", "openai_chat"))
+        return {role: self.cfg.get(f"{role}_backend") or default
+                for role, default in zip(("optimizer", "target"), defaults)}
+
+    def _usage_provenance(self, records=None, *, token_summary=None) -> dict:
+        """Describe observable CLI invocations, never inferred HTTP requests.
+
+        Disk records are authoritative across worker processes and resumes.
+        Legacy backends may still contribute to token_summary, but cannot
+        establish request-level coverage for this ledger.
+        """
+        if records is None:
+            records = self._usage_ledger.records()
+        records = sorted(records, key=lambda row: row["request_id"])
+        ledger_summary = summarize_usage(records)
+        totals = ledger_summary.get("_total", {})
+        backends = self._model_backends()
+        uncovered = {role: value for role, value in backends.items()
+                     if value not in {"codex_exec", "codex_cli"}}
+        # Auto may choose the uninstrumented SDK even when some optimizer
+        # requests reached the CLI. Those records do not prove full coverage.
+        exec_mode = str(self.cfg.get("codex_exec_use_sdk", "auto")).strip().lower()
+        cli_only = exec_mode in {"0", "false", "no", "off", "cli"}
+        uncovered_exec_modes = {role: exec_mode for role, value in backends.items()
+                                if value == "codex_exec" and not cli_only}
+        summary = token_summary if token_summary is not None else ledger_summary
+        total_calls = summary.get("_total", {}).get("calls")
+        untracked_calls = (max(total_calls - len(records), 0)
+                           if isinstance(total_calls, (int, float)) else None)
+        coverage = "complete"
+        if uncovered or uncovered_exec_modes or self._usage_historical_coverage != "complete" or untracked_calls:
+            coverage = "partial"
+        elif not records:
+            coverage = "no_observed_requests"
+
+        def digest(value):
+            return hashlib.sha256(json.dumps(
+                value, sort_keys=True, ensure_ascii=False, separators=(",", ":"),
+                allow_nan=False,
+            ).encode("utf-8")).hexdigest()
+
+        return {
+            "version": 1, "ledger_root": self._usage_root,
+            "counting_scope": "codex_cli_invocations",
+            "http_subrequest_count": None,
+            "request_ids": [row["request_id"] for row in records],
+            "record_count": len(records), "records_sha256": digest(records),
+            "summary_sha256": digest(summary),
+            "ledger_summary_sha256": digest(ledger_summary),
+            "coverage": coverage, "configured_backends": backends,
+            "uncovered_backends": uncovered,
+            "uncovered_exec_modes": uncovered_exec_modes,
+            "coverage_definition": "CLI-only; SDK and other backend requests are not request-ledger instrumented",
+            "historical_coverage": self._usage_historical_coverage,
+            "untracked_summary_calls": untracked_calls,
+            "ledger_usage_complete": bool(totals.get("usage_complete", False)),
+            "usage_complete": coverage == "complete" and bool(totals.get("usage_complete", False)),
+            "unknown_calls": totals.get("unknown_calls"),
+            "ledger_summary": ledger_summary,
+        }
+
+    def _begin_step_usage(self, step_rec: dict, step_dir: str) -> None:
+        self._active_usage_step = {
+            "record": step_rec, "directory": step_dir,
+            "attempt_id": str(time.time_ns()),
+            "before_ids": {row["request_id"] for row in self._usage_ledger.records()},
+        }
+
+    def _finish_step_usage(self, *, status="completed", failure_type=None) -> None:
+        active = self._active_usage_step
+        if active is None:
+            return
+        # A pre-existing unknown request must not poison a later known step;
+        # subtract request sets, not nullable cumulative token totals.
+        records = [row for row in self._usage_ledger.records()
+                   if row["request_id"] not in active["before_ids"]]
+        provenance = self._usage_provenance(records)
+        step_rec = active["record"]
+        step_rec["tokens"] = {
+            stage: values for stage, values in provenance["ledger_summary"].items()
+            if not stage.startswith("_") and isinstance(values, dict)
+        }
+        step_rec["token_accounting"] = provenance
+        attempt_path = os.path.join(active["directory"], "usage_attempts", active["attempt_id"] + ".json")
+        step_usage = {
+            **provenance, "step": step_rec["step"], "epoch": step_rec["epoch"],
+            "status": status, "failure_type": failure_type,
+            "selection_method": "request_id_set_difference",
+            "step_scope": "current_step_attempt; prior_attempts_retained_in_usage_attempts",
+            "attempt_id": active["attempt_id"], "attempt_path": os.path.abspath(attempt_path),
+            "before_request_ids": sorted(active["before_ids"]),
+        }
+        write_json(attempt_path, step_usage)
+        write_json(os.path.join(active["directory"], "step_usage.json"), step_usage)
+        if status != "completed":
+            # Do not append an interrupted step to history: that would make
+            # resume incorrectly skip unfinished training work.
+            step_rec.update({"status": status, "failure_type": failure_type})
+            write_json(os.path.join(active["directory"], "step_record.json"), step_rec)
+        self._active_usage_step = None
+
     def train(self) -> dict:
         """Execute the full ReflACT training loop. Returns summary dict."""
         started_at = time.time()
         self._validating_cam_resume = False
+        self._active_usage_step = None
+        self._usage_root = os.path.abspath(os.path.join(self.cfg["out_root"], "token_accounting"))
+        previous_usage_root = os.environ.get("SKILLOPT_USAGE_ROOT")
         try:
+            os.environ["SKILLOPT_USAGE_ROOT"] = self._usage_root
+            reset_token_tracker()  # process-local only; never erase resume evidence
+            self._usage_ledger = UsageLedger(self._usage_root)
+            scope_path = os.path.join(self._usage_root, "scope.json")
+            if os.path.exists(scope_path):
+                with open(scope_path, encoding="utf-8") as handle:
+                    self._usage_historical_coverage = json.load(handle).get("historical_coverage", "partial")
+            else:
+                has_prior_run = any(os.path.exists(os.path.join(self.cfg["out_root"], name))
+                                    for name in ("history.json", "summary.json", "runtime_state.json"))
+                self._usage_historical_coverage = "partial" if has_prior_run else "complete"
+                write_json(scope_path, {
+                    "version": 1, "counting_scope": "codex_cli_invocations",
+                    "historical_coverage": self._usage_historical_coverage,
+                })
+            prior_summary_path = os.path.join(self.cfg["out_root"], "summary.json")
+            if os.path.exists(prior_summary_path):
+                with open(prior_summary_path, encoding="utf-8") as handle:
+                    prior_coverage = json.load(handle).get("token_accounting", {}).get("coverage")
+                if prior_coverage != "complete":
+                    # A later CLI run cannot retroactively account for legacy
+                    # or SDK calls that already produced cached artifacts.
+                    self._usage_historical_coverage = "partial"
+                    write_json(scope_path, {
+                        "version": 1, "counting_scope": "codex_cli_invocations",
+                        "historical_coverage": "partial",
+                    })
             return self._train_impl()
         except Exception as exc:
+            self._finish_step_usage(
+                status="infra_error" if isinstance(exc, InfraError) else "failed",
+                failure_type=getattr(exc, "failure_type", type(exc).__name__),
+            )
             if isinstance(exc, SelectionEvidenceError):
                 if self._validating_cam_resume:
                     write_json(os.path.join(self.cfg["out_root"], "resume_validation_error.json"), {
@@ -653,17 +800,28 @@ class ReflACTTrainer:
                     "status": "invalid_selection_evidence", "eligible_for_paper": False,
                     "failure_type": "selection_evidence_error", "message": str(exc),
                     "best_selection_hard": None, "test_hard": None, "test_soft": None,
+                    "token_summary": get_token_summary(),
+                    "token_accounting": self._usage_provenance(token_summary=get_token_summary()),
                 })
                 raise
             infra = exc if isinstance(exc, InfraError) else None
             if infra is None:
                 raise
-            write_invalid_summary(
+            token_summary = get_token_summary()
+            summary = write_invalid_summary(
                 self.cfg["out_root"], infra, started_at=started_at,
-                context={"config": _redact_cfg(self.cfg), "token_summary": get_token_summary()},
+                context={"config": _redact_cfg(self.cfg), "token_summary": token_summary},
             )
+            summary.update({"token_summary": token_summary,
+                            "token_accounting": self._usage_provenance(token_summary=token_summary)})
+            write_json(os.path.join(self.cfg["out_root"], "summary.json"), summary)
             print(f"\n  [ABORTED infrastructure failure] {infra}", flush=True)
             raise infra from exc
+        finally:
+            if previous_usage_root is None:
+                os.environ.pop("SKILLOPT_USAGE_ROOT", None)
+            else:
+                os.environ["SKILLOPT_USAGE_ROOT"] = previous_usage_root
 
     def _train_impl(self) -> dict:
         """Training body; the public entrypoint persists fatal error evidence."""
@@ -763,21 +921,9 @@ class ReflACTTrainer:
         optimizer_backend = cfg.get("optimizer_backend")
         target_backend = cfg.get("target_backend")
         if not optimizer_backend or not target_backend:
-            if backend in {"claude", "claude_chat"}:
-                optimizer_backend = optimizer_backend or "claude_chat"
-                target_backend = target_backend or "claude_chat"
-            elif backend in {"codex", "codex_exec"}:
-                optimizer_backend = optimizer_backend or "openai_chat"
-                target_backend = target_backend or "codex_exec"
-            elif backend == "claude_code_exec":
-                optimizer_backend = optimizer_backend or "openai_chat"
-                target_backend = target_backend or "claude_code_exec"
-            elif backend in {"qwen", "qwen_chat"}:
-                optimizer_backend = optimizer_backend or "openai_chat"
-                target_backend = target_backend or "qwen_chat"
-            else:
-                optimizer_backend = optimizer_backend or "openai_chat"
-                target_backend = target_backend or "openai_chat"
+            resolved_backends = self._model_backends()
+            optimizer_backend = resolved_backends["optimizer"]
+            target_backend = resolved_backends["target"]
             cfg["optimizer_backend"] = optimizer_backend
             cfg["target_backend"] = target_backend
         set_optimizer_backend(optimizer_backend)
@@ -1332,8 +1478,6 @@ class ReflACTTrainer:
                 step_dir = os.path.join(out_root, "steps", f"step_{global_step:04d}")
                 os.makedirs(step_dir, exist_ok=True)
 
-                tokens_before = get_token_summary()
-
                 print(
                     f"\n  [STEP {global_step}/{total_steps}] "
                     f"epoch={epoch} step_in_epoch={step_in_epoch} "
@@ -1356,6 +1500,7 @@ class ReflACTTrainer:
                         "write_calls": 0, "items_added": 0,
                     },
                 }
+                self._begin_step_usage(step_rec, step_dir)
 
                 # ── Accumulation: Rollout + Reflect ──────────────────────
                 all_failure_patches: list[dict] = []
@@ -1495,6 +1640,7 @@ class ReflACTTrainer:
                     if use_skill_aware:
                         _flush_appendix(all_raw_patches, step_rec, step_dir)
                     step_rec["action"] = "skip_no_patches"
+                    self._finish_step_usage()
                     step_rec["current_score"] = current_score
                     step_rec["best_score"] = best_score
                     step_rec["best_step"] = best_step
@@ -1719,6 +1865,7 @@ class ReflACTTrainer:
                     if use_skill_aware:
                         _flush_appendix(all_raw_patches, step_rec, step_dir)
                     step_rec["action"] = "skip_no_rewrite"
+                    self._finish_step_usage()
                     step_rec["current_score"] = current_score
                     step_rec["best_score"] = best_score
                     step_rec["best_step"] = best_step
@@ -1933,21 +2080,7 @@ class ReflACTTrainer:
                     json.dump(buf_entry, f, indent=2, ensure_ascii=False)
 
                 # ── Token snapshot ───────────────────────────────────────
-                tokens_after = get_token_summary()
-                step_tokens: dict = {}
-                for stage in tokens_after:
-                    if stage == "_total":
-                        continue
-                    after = tokens_after[stage]
-                    before = tokens_before.get(stage, {})
-                    step_tokens[stage] = {
-                        "calls": after.get("calls", 0) - before.get("calls", 0),
-                        "prompt_tokens": after.get("prompt_tokens", 0)
-                        - before.get("prompt_tokens", 0),
-                        "completion_tokens": after.get("completion_tokens", 0)
-                        - before.get("completion_tokens", 0),
-                    }
-                step_rec["tokens"] = step_tokens
+                self._finish_step_usage()
 
                 # ── Save state ───────────────────────────────────────────
                 step_rec["current_score"] = current_score
@@ -2780,6 +2913,7 @@ class ReflACTTrainer:
             ),
             "total_wall_time_s": round(total_wall, 1),
             "token_summary": token_summary,
+            "token_accounting": self._usage_provenance(token_summary=token_summary),
             "persistent_memory": memory_summary,
             "cam_selection_guard": {
                 "enabled": strict_cam, "policy": cam_policy if strict_cam else "baseline_or_explicit_no_gate",
@@ -2825,10 +2959,12 @@ class ReflACTTrainer:
             )
         if token_summary.get("_total"):
             t = token_summary["_total"]
+            def token_display(value):
+                return "unknown" if value is None else f"{value:,}"
             print(
-                f"  total tokens: {t['total_tokens']:,} "
-                f"(prompt={t['prompt_tokens']:,} "
-                f"completion={t['completion_tokens']:,} "
+                f"  total tokens: {token_display(t.get('total_tokens'))} "
+                f"(prompt={token_display(t.get('prompt_tokens'))} "
+                f"completion={token_display(t.get('completion_tokens'))} "
                 f"calls={t['calls']})"
             )
 

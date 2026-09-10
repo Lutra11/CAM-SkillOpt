@@ -279,6 +279,89 @@ def run_cli_failfast(
     stage: str, model: str, cwd: str | None = None,
     evidence_dir: str | Path | None = None,
 ) -> subprocess.CompletedProcess:
+    """Account once at the CLI invocation boundary, including failed attempts.
+
+    This is an observable CLI invocation, not an inferred count of HTTP requests
+    inside Codex. Reconnect notices and copied traces never create extra calls.
+    Independent per-request files survive worker exits and avoid JSONL append
+    races between Windows processes. No prompt is copied into the usage ledger.
+    """
+    from skillopt.model.common import tracker
+    from skillopt.model.usage_accounting import UsageLedger
+
+    # Reject configuration errors before creating a model-request placeholder.
+    deadline = float(timeout if timeout is not None else os.environ.get("SKILLOPT_CODEX_TIMEOUT_SECONDS", "420"))
+    if not math.isfinite(deadline) or deadline <= 0:
+        raise ValueError("Codex model timeout must be finite and positive")
+    default_root = Path(evidence_dir or os.environ.get("SKILLOPT_INFRA_ARTIFACT_DIR", "outputs/model_calls")) / "token_accounting"
+    ledger = UsageLedger(os.environ.get("SKILLOPT_USAGE_ROOT") or default_root)
+    request_id = ledger.start(stage=stage, backend="codex_cli", model=model)
+    destination = Path(evidence_dir) if evidence_dir is not None else ledger.request_dir(request_id)
+    result = None
+    failure = None
+    raw = ""
+    warning_count = 0
+    try:
+        result = _run_cli_failfast_impl(
+            command, prompt=prompt, timeout=deadline, stage=stage, model=model,
+            cwd=cwd, evidence_dir=destination,
+        )
+        raw = f"[stdout]\n{result.stdout}\n[stderr]\n{result.stderr}"
+        # Both experiment Codex call sites require a nonempty final message.
+        # Validate that contract before finalizing the ledger, so exit=0 with
+        # an empty provider response is not mislabeled as a successful request.
+        if "--output-last-message" in command:
+            message_path = Path(command[command.index("--output-last-message") + 1])
+            answer = message_path.read_text(encoding="utf-8").strip() if message_path.exists() else ""
+            for line in result.stdout.splitlines():
+                try:
+                    event = json.loads(line)
+                except (ValueError, TypeError):
+                    continue
+                if not isinstance(event, dict):
+                    continue
+                item = event.get("item") or {}
+                if event.get("type") == "item.completed" and isinstance(item, dict) and item.get("type") == "agent_message":
+                    answer = answer or str(item.get("text") or "").strip()
+            if not answer:
+                raise persist_infra_error(
+                    InfraError("provider_error", "Codex returned an empty final message", stage=stage, model=model),
+                    raw=raw, evidence_dir=destination,
+                )
+        return result
+    except BaseException as exc:
+        failure = exc
+        failure_dir = Path(exc.evidence_dir) if isinstance(exc, InfraError) and exc.evidence_dir else destination
+        trace = failure_dir / "infra_raw_trace.txt"
+        raw = trace.read_text(encoding="utf-8") if trace.exists() else str(exc)
+        raise
+    finally:
+        warning_file = destination / "transport_warnings.json"
+        if warning_file.exists():
+            warning_data = json.loads(warning_file.read_text(encoding="utf-8"))
+            if warning_data.get("recovered") and failure is None:
+                warning_count = int(warning_data.get("notice_count", 0))
+        record = ledger.finish(
+            request_id, raw=sanitize_details(raw),
+            status="completed" if failure is None else "infra_error" if isinstance(failure, InfraError) else "error",
+            failure_type=getattr(failure, "failure_type", None),
+            recovered_warning_count=warning_count,
+        )
+        tracker.record_request(record)
+        if result is not None:
+            result.usage_record = record
+        if isinstance(failure, InfraError):
+            failure.details.update({"request_id": request_id, "usage_raw_trace": record["raw_trace"]})
+            # Refresh the summary, preserving the original error-channel trace.
+            error_file = Path(failure.evidence_dir) / "infra_error.json"
+            error_file.write_text(json.dumps(failure.to_dict(), ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def _run_cli_failfast_impl(
+    command: list[str], *, prompt: str, timeout: int | float | None,
+    stage: str, model: str, cwd: str | None = None,
+    evidence_dir: str | Path | None = None,
+) -> subprocess.CompletedProcess:
     """Read both pipes and stop on terminal failure or bounded recovery exhaustion.
 
     Codex's internal reconnect loop can otherwise spend minutes retrying a 401.

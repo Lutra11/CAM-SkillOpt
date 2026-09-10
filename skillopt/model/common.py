@@ -6,6 +6,8 @@ import threading
 from dataclasses import dataclass, field
 from typing import Any
 
+from skillopt.model.usage_accounting import merge_request_records, summarize_usage
+
 
 _RESPONSES_API_MODELS = {
     "gpt-5.3-codex",
@@ -73,6 +75,7 @@ class TokenTracker:
     def __init__(self) -> None:
         self._lock = threading.Lock()
         self._data: dict[str, dict[str, int]] = {}
+        self._requests: dict[str, dict] = {}
 
     def record(self, stage: str, prompt_tokens: int, completion_tokens: int) -> None:
         with self._lock:
@@ -87,7 +90,18 @@ class TokenTracker:
             entry["prompt_tokens"] += prompt_tokens
             entry["completion_tokens"] += completion_tokens
 
-    def summary(self) -> dict[str, dict[str, int]]:
+    def record_request(self, record: dict) -> None:
+        """Keep a request once, allowing a running placeholder to become final."""
+        with self._lock:
+            merged = merge_request_records([*self._requests.values(), record])
+            self._requests = {item["request_id"]: item for item in merged}
+
+    def records(self) -> list[dict]:
+        with self._lock:
+            return merge_request_records(self._requests.values())
+
+    def legacy_summary(self) -> dict[str, dict[str, int]]:
+        """Legacy counters only; request-aware records are aggregated separately."""
         with self._lock:
             out: dict[str, dict[str, int]] = {}
             total_prompt = total_completion = total_calls = 0
@@ -111,9 +125,13 @@ class TokenTracker:
             }
             return out
 
+    def summary(self) -> dict:
+        return summarize_usage(self.records(), legacy_summaries=[self.legacy_summary()])
+
     def reset(self) -> None:
         with self._lock:
             self._data.clear()
+            self._requests.clear()
 
 
 tracker = TokenTracker()

@@ -295,14 +295,8 @@ def _materialize_attachments(
 
 
 def _usage_from_event(usage: dict[str, Any] | None) -> dict[str, int]:
-    usage = usage or {}
-    prompt_tokens = int(usage.get("input_tokens", 0) or 0)
-    completion_tokens = int(usage.get("output_tokens", 0) or 0)
-    return {
-        "prompt_tokens": prompt_tokens,
-        "completion_tokens": completion_tokens,
-        "total_tokens": prompt_tokens + completion_tokens,
-    }
+    from skillopt.model.usage_accounting import parse_codex_usage
+    return parse_codex_usage(json.dumps({"type": "turn.completed", "usage": usage}))
 
 
 def _extract_error(stdout: str, stderr: str) -> str:
@@ -394,7 +388,13 @@ def _run_codex_exec(
         raw = sanitize_details(proc.stdout + "\n[stderr]\n" + proc.stderr)
         (artifact_dir / "raw_trace.txt").write_text(raw, encoding="utf-8")
 
-        usage_info = {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0}
+        from skillopt.model.usage_accounting import parse_codex_usage
+        usage_info = parse_codex_usage(proc.stdout)
+        usage_record = getattr(proc, "usage_record", None)
+        if usage_record is not None:
+            request["request_id"] = usage_record["request_id"]
+            request["usage_raw_trace"] = usage_record["raw_trace"]
+            usage_info["request_id"] = usage_record["request_id"]
         fallback_text = ""
         for raw_line in proc.stdout.splitlines():
             line = raw_line.strip()
@@ -408,8 +408,6 @@ def _run_codex_exec(
                 item = payload.get("item", {}) or {}
                 if item.get("type") == "agent_message":
                     fallback_text = str(item.get("text", "") or fallback_text)
-            if payload.get("type") == "turn.completed":
-                usage_info = _usage_from_event(payload.get("usage"))
 
         last_message = ""
         if os.path.exists(output_path):
@@ -513,11 +511,8 @@ def _chat_messages_impl(
                 timeout=timeout,
                 stage=stage,
             )
-            tracker.record(
-                stage,
-                usage_info["prompt_tokens"],
-                usage_info["completion_tokens"],
-            )
+            # The lower CLI boundary owns accounting, including failed attempts.
+            # Parsing or validation retries must not record this invocation twice.
 
             if not structured_output:
                 return raw_text, usage_info
