@@ -22,6 +22,8 @@ This repository contains the CAM implementation, baseline and ablation configura
 
 Latest implementation checkpoint: [Request/token accounting acceptance, 2026-09-10](reports/stage12/recovery_20260909/TOKEN_ACCOUNTING_STEP3_REPORT.md): 220 offline tests passed; a read-only historical replay reconciled 27 CLI invocations and 384,380 tokens without changing the original evidence. This follows [Unified CAM Gate](reports/stage12/recovery_20260909/GATE_STEP2_REPORT.md) and [Persistent Memory integration](reports/stage12/recovery_20260909/MEMORY_STEP1_REPORT.md). No new live P0 or formal ablation was launched; the frozen-code n=4 P0 remains the next step.
 
+Latest live gate attempt: [Step 4 authentication gate, 2026-09-10](reports/stage12/recovery_20260910/STEP4_REPORT.md). The first target probe passed after a network recovery; the second timed out at the frozen 90-second deadline. Non-JSON `ERROR:`-prefixed reconnect notices were not counted by the existing parser. The run stopped before optimizer probes, single-sample validation, or P0; runtime code stayed frozen and no new benchmark score is claimed.
+
 ## Method
 
 ### Optimization workflow

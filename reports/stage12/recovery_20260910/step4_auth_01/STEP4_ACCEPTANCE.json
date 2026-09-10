@@ -1,0 +1,117 @@
+{
+  "schema_version": 1,
+  "step": 4,
+  "status": "blocked_at_auth_gate",
+  "stage4_passed": false,
+  "run": "recovery_20260910_step4_01",
+  "runtime_source_sha256": "b5dc39c846cedab48c0486a3d6b462eabfbafe80a7760c86b35020d31f1b0f8a",
+  "base_config_sha256": "f3374b0ad13a6fac347655bf012b92069601553b62fb92f528b95f8f55eb1fb9",
+  "implementation_commit": "2154488ff7ce117b18eb1502973318aaa37ffc5f",
+  "run_code_modified": false,
+  "protocol_modified": false,
+  "cli_version": "0.153.4",
+  "transport": "http",
+  "proxy_url": "http://127.0.0.1:7890",
+  "auth": {
+    "attempted_cli_invocations": 2,
+    "passed": 1,
+    "failed": 1,
+    "optimizer_invocations": 0,
+    "target_1": {
+      "status": "passed",
+      "wall_seconds": 37.422,
+      "model": "gpt-5.6-terra",
+      "reasoning": "none",
+      "marker_verified": true,
+      "audit_recovered_network_notices": 1,
+      "structured_transport_notice_count": 0
+    },
+    "target_2": {
+      "status": "infra_error",
+      "recorded_failure_type": "llm_timeout",
+      "deadline_seconds": 90,
+      "elapsed_seconds": 90.406,
+      "model": "gpt-5.6-terra",
+      "reasoning": "none",
+      "marker_received": false,
+      "auth_error_observed": false,
+      "audit_network_reconnect_notices": 4,
+      "structured_transport_notice_count": 0,
+      "diagnosis": "Network stream send failures followed by unrecognized ERROR-prefixed reconnect notices; frozen 90-second deadline terminated the invocation.",
+      "root_cause_scope": "Evidence does not distinguish local proxy upstream/network path/provider availability."
+    },
+    "total_wall_seconds": 128.625,
+    "audit_raw_network_reconnect_notices_total": 5,
+    "token_summary": {
+      "calls": 2,
+      "cli_invocations": 2,
+      "legacy_calls": 0,
+      "unknown_calls": 2,
+      "input_tokens": null,
+      "output_tokens": null,
+      "cached_input_tokens": null,
+      "reasoning_output_tokens": null,
+      "cache_write_input_tokens": null,
+      "known_tokens": 0,
+      "known_input_tokens": 0,
+      "known_cached_input_tokens": 0,
+      "known_output_tokens": 0,
+      "known_reasoning_output_tokens": 0,
+      "known_cache_write_input_tokens": 0,
+      "recovered_warning_count": 0,
+      "running_calls": 0,
+      "failed_calls": 1,
+      "successful_calls": 1,
+      "infra_error_calls": 1,
+      "failure_types": {
+        "llm_timeout": 1
+      },
+      "prompt_tokens": null,
+      "completion_tokens": null,
+      "total_tokens": null,
+      "usage_complete": false,
+      "cache_usage_complete": false,
+      "call_unit": "CLI_invocations_plus_separately_labeled_legacy_calls_not_HTTP_billing_requests",
+      "request_coverage": "complete",
+      "coverage": "partial_or_unavailable"
+    },
+    "token_note": "Non-JSON authentication probes have no complete input/output usage. Null is unknown, not zero cost. CLI invocations are not inferred HTTP billing request counts."
+  },
+  "single": {
+    "status": "not_started"
+  },
+  "p0": {
+    "status": "not_started"
+  },
+  "memory_probe": {
+    "status": "not_started"
+  },
+  "windows": {
+    "before": "2026-09-10T10:13:46.9113857+08:00",
+    "after": "2026-09-10T10:18:22.6384462+08:00",
+    "last_boot_before": "2026-09-09T00:43:44.5000000+08:00",
+    "last_boot_after": "2026-09-09T00:43:44.5000000+08:00",
+    "last_boot_unchanged": true,
+    "new_restart_events": [],
+    "restart_event_checks_available": true,
+    "temperature": "unavailable",
+    "pending_reboot_before": true,
+    "pending_reboot_after": true,
+    "owned_experiment_processes_after": 0
+  },
+  "recognition_reproduction": {
+    "offline_only": true,
+    "input": "ERROR: Reconnecting... waiting for network",
+    "error_channel_recognized": true,
+    "infra_classification": null,
+    "reconnect_notice_recognized": false,
+    "affects_successful_and_failed_probes": true
+  },
+  "preservation": {
+    "no_old_experiment_outputs_overwritten": true,
+    "no_original_failure_status_rewritten": true,
+    "raw_traces_local_only": true,
+    "no_benchmark_training_or_scoring_started": true
+  },
+  "next_action_requires_confirmation": "Fix non-JSON ERROR-prefixed reconnect recognition and add offline regression, re-freeze source, then restart authentication from a fresh directory. Do not proceed to single/P0 or Step5 using this failed gate."
+}
