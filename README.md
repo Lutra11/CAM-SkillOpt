@@ -8,6 +8,8 @@
 [![Framework](https://img.shields.io/badge/Built%20on-SkillOpt-555555.svg)](https://github.com/microsoft/SkillOpt)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
+**English** · [简体中文](README.zh-CN.md)
+
 [Overview](#overview) · [Method](#method) · [Experimental design](#experimental-design) · [Reproduction](#reproduction) · [License](#license)
 
 </div>
@@ -142,13 +144,70 @@ CAM-SkillOpt/
 
 Python 3.10 or later is required. Install this checkout to use the CAM implementation.
 
+### Option A: uv (recommended)
+
+[`uv.lock`](uv.lock) and [`.python-version`](.python-version) are committed, so [uv](https://docs.astral.sh/uv/) reproduces the environment in a single command. Install uv first:
+
+| Platform | Command |
+| --- | --- |
+| Windows PowerShell | `powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 \| iex"` |
+| Linux / macOS | `curl -LsSf https://astral.sh/uv/install.sh \| sh` |
+
+`pipx install uv` or `python -m pip install uv` work as well if you prefer a package manager.
+
+Then, from the repository root:
+
+```bash
+git clone https://github.com/Lutra11/CAM-SkillOpt.git
+cd CAM-SkillOpt
+uv sync
+```
+
+`uv sync` reads `.python-version` (3.12), downloads a matching interpreter when needed, creates `.venv`, and installs the CAM implementation in editable mode together with the locked core dependencies. The project already configures its PyPI mirror through `[tool.uv]` in [`pyproject.toml`](pyproject.toml).
+
+No activation is required — prefix commands with `uv run`:
+
+```bash
+uv run python -m experiments.cam_offline_sanity
+```
+
+Optional dependency groups are installed with `--extra`:
+
+```bash
+uv sync --extra dev       # ruff and pytest
+uv sync --all-extras      # every optional group
+```
+
+To use plain `pip` inside the uv-created environment instead of the lockfile:
+
+```bash
+uv venv
+uv pip install -e .
+```
+
+> **Windows: `Failed to hardlink files` warning.** uv hardlinks wheels from its cache into the environment. When the cache and the checkout live on different volumes — for example a cache on `C:` and this repository on `D:` — hardlinking is impossible and uv copies every wheel instead. The install still succeeds; it is only slower and uses more disk. Suppress the warning with:
+>
+> ```powershell
+> $env:UV_LINK_MODE = "copy"
+> ```
+>
+> or keep hardlinks by placing the cache on the same volume as the checkout:
+>
+> ```powershell
+> $env:UV_CACHE_DIR = "D:\uv-cache"
+> ```
+>
+> On Linux and macOS the same message appears when the cache lives on a different mount point; use `export UV_LINK_MODE=copy`, or point `export UV_CACHE_DIR=/path/on/the/same/mount` instead.
+
+### Option B: venv and pip
+
 ```bash
 git clone https://github.com/Lutra11/CAM-SkillOpt.git
 cd CAM-SkillOpt
 python -m venv .venv
 ```
 
-Activate the environment in your shell:
+Activate the environment in your shell (this table also applies to Option A if you prefer activating `.venv` over using `uv run`):
 
 | Shell | Command |
 | --- | --- |
@@ -164,7 +223,7 @@ The core dependencies include NumPy, PyYAML, openpyxl, and the model-client libr
 
 ## Reproduction
 
-Run the following commands from the repository root with the environment activated. Commands written on one line work in both PowerShell and Bash.
+Run the following commands from the repository root with the environment activated. Commands written on one line work in both PowerShell and Bash. With Option A, `uv run python ...` runs them inside the uv-managed environment and no activation is needed.
 
 ### 1. Verify the CAM modules offline
 
