@@ -1,0 +1,69 @@
+{
+  "status": "passed",
+  "stage": "single_independent_audit",
+  "checks": {
+    "llm_ok": true,
+    "code_ok": true,
+    "exec_ok": true,
+    "conversation_exists": true,
+    "optimizer_called": true,
+    "patch_generated": true
+  },
+  "sample_id": "47766",
+  "hard": 0,
+  "soft": 0,
+  "wall_seconds": 101.532,
+  "patches": [
+    {
+      "patch_index": 0,
+      "edit_count": 2,
+      "operations": [
+        "insert_after",
+        "replace"
+      ],
+      "application_statuses": [
+        "applied_insert_after",
+        "applied_replace"
+      ],
+      "initial_skill_sha256": "5c49d03008aea2c7151b134da20f2258a746c7323b76f0e49ec2c1ea8c131f26",
+      "candidate_skill_sha256": "b4b18ff154db01196e71352e91b3345af8aded968d03aff63affa4554d7c9f7d",
+      "skill_changed": true
+    }
+  ],
+  "analyst_calls": 1,
+  "cli_invocations": 2,
+  "input_tokens": 28301,
+  "output_tokens": 1650,
+  "cached_input_tokens": 0,
+  "total_tokens": 29951,
+  "raw_ledger_summary_match": true,
+  "source_matches_freeze": true,
+  "requests": [
+    {
+      "request_id": "c25f621b7f93423b96a5217b151ad442",
+      "stage": "analyst",
+      "model": "gpt-5.6-sol",
+      "status": "completed",
+      "input_tokens": 16205,
+      "output_tokens": 1400,
+      "cached_input_tokens": 0,
+      "total_tokens": 17605,
+      "raw_sha256": "8b377943d66d76fc7831963a734d9f85b83f6c4b2fff73f0ba0c9534654364d8",
+      "usage_complete": true,
+      "recovered_warning_count": 0
+    },
+    {
+      "request_id": "bd90b469aea24db2a0275701d5ce16f1",
+      "stage": "target",
+      "model": "gpt-5.6-terra",
+      "status": "completed",
+      "input_tokens": 12096,
+      "output_tokens": 250,
+      "cached_input_tokens": 0,
+      "total_tokens": 12346,
+      "raw_sha256": "8ee9a58e2ce6ef891a2e88d28b0b8616f8baa776a2b9182882bf574bbd1b16b0",
+      "usage_complete": true,
+      "recovered_warning_count": 0
+    }
+  ]
+}

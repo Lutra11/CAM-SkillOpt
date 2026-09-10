@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "stage": "step4",
+  "status": "not_passed",
+  "validity": "invalid_infra",
+  "eligible_for_paper": false,
+  "implementation_commit": "d01bf2bfa5932874ddcc6b479879bd96ec9020b4",
+  "source_sha256_before": "32a87a5303158b73e3dcdb8779ced7d5f6e9d37b4bf31f82ed2c25fc873d78ba",
+  "source_sha256_after": "32a87a5303158b73e3dcdb8779ced7d5f6e9d37b4bf31f82ed2c25fc873d78ba",
+  "base_config_sha256_before": "f3374b0ad13a6fac347655bf012b92069601553b62fb92f528b95f8f55eb1fb9",
+  "base_config_sha256_after": "f3374b0ad13a6fac347655bf012b92069601553b62fb92f528b95f8f55eb1fb9",
+  "checks": {
+    "offline_scoped_regressions_passed": true,
+    "four_auth_requests_passed": true,
+    "single_llm_code_exec_passed": true,
+    "single_patch_applicable": true,
+    "p0_completed": false,
+    "p0_without_infra_errors": false,
+    "selection_test_complete": false,
+    "legal_patch_generated": true,
+    "cam_gate_triggered": true,
+    "adaptive_budget_computed": true,
+    "best_gate_not_bypassed": true,
+    "persistent_memory_instrumentation_complete": true,
+    "memory_natural_write_hit_injection_observed": false,
+    "raw_ledger_summary_step_consistent": true,
+    "exact_p0_usage_complete": false,
+    "windows_continuity_verified": true,
+    "source_and_config_unchanged": true
+  },
+  "failed_at": {
+    "stage": "test_eval_baseline",
+    "sample_id": "41-47",
+    "sample_position": 2,
+    "failure_type": "network_error",
+    "reconnect_count": 3,
+    "abort_elapsed_seconds": 39.031,
+    "p0_wall_seconds": 635.719
+  },
+  "windows": {
+    "before": "2026-09-10T10:46:51.4955395+08:00",
+    "after": "2026-09-10T11:17:40.6060945+08:00",
+    "same_boot": true,
+    "system_events_unchanged": true,
+    "pending_reboot": {
+      "windows_update_reboot_required": true,
+      "servicing_reboot_pending": true
+    },
+    "temperature_available": false,
+    "experiment_processes_remaining": 0
+  },
+  "stage5_started": false,
+  "automatic_retry_started": false,
+  "next_step": "Investigate existing proxy/upstream network stability; obtain confirmation before another fresh Step 4 run. Do not increase deadlines or recovery allowance."
+}

@@ -1,0 +1,71 @@
+{
+  "audit_mode": "read_only",
+  "external_requests_started": 0,
+  "runtime_files_modified": 0,
+  "mechanism_audit": {
+    "legal_patch_groups": 2,
+    "raw_edit_counts": [
+      2,
+      1
+    ],
+    "applied_edits": 3,
+    "candidate_reproduction_matches": true,
+    "pair_ids": [
+      "45635",
+      "55049",
+      "560-12",
+      "9569"
+    ],
+    "paired_deltas": [
+      0,
+      0,
+      1,
+      0
+    ],
+    "mean_improvement": 0.25,
+    "bootstrap_seed": 42,
+    "bootstrap_samples": 10000,
+    "recomputed_ci": [
+      0,
+      0.75
+    ],
+    "exact_256_resamples_ci": [
+      0,
+      0.75
+    ],
+    "promotion_authorized": false,
+    "current_best_equal_initial": true,
+    "final_action": "reuse_accepted_best",
+    "slow_update_action": "skip_empty_placeholder_cam",
+    "adaptive_budget": 8,
+    "confidence": 1,
+    "memory_retrieval_calls": 2,
+    "memory_hit_count": 0,
+    "memory_write_calls": 0,
+    "memory_injected_groups": 0,
+    "memory_prompt_metadata_consistent": true,
+    "memory_coverage": "complete"
+  },
+  "accounting_audit": {
+    "cross_checks_passed": 17,
+    "cross_checks_failed": 0,
+    "raw_hash_usage_valid": true,
+    "summary_ledger_step_history_consistent": true,
+    "latest_attempt_equals_step_usage": true,
+    "p0_calls": 17,
+    "p0_known_tokens": 237617,
+    "p0_total_tokens": null,
+    "p0_unknown_usage_calls": 1,
+    "step_calls": 11,
+    "step_total_tokens": 168200,
+    "raw_transport_notices": 6,
+    "sidecar_transport_notices": 6,
+    "recovered_transport_notices": 3,
+    "unrecovered_transport_notices": 3,
+    "raw_auth_failure_matches": 0,
+    "failed_conversation_messages": 0,
+    "failed_request_assistant_response_observed": false,
+    "failed_raw_trace_equal_after_crlf_normalization": true
+  },
+  "conclusion": "Completed step mechanisms are evidenced, but entire P0 remains invalid_infra; Step 4 not passed."
+}

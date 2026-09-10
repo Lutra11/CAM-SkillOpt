@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "stage": "step4_reconnect_fix1_freeze",
+  "frozen_at": "2026-09-10T10:46:33.9184717+08:00",
+  "implementation_commit": "d01bf2bfa5932874ddcc6b479879bd96ec9020b4",
+  "previous_implementation_commit": "2154488ff7ce117b18eb1502973318aaa37ffc5f",
+  "previous_source_sha256": "b5dc39c846cedab48c0486a3d6b462eabfbafe80a7760c86b35020d31f1b0f8a",
+  "source_sha256": "32a87a5303158b73e3dcdb8779ced7d5f6e9d37b4bf31f82ed2c25fc873d78ba",
+  "source_hash_definition": "scripts.cam_recovery.source_hash(): sorted skillopt/**/*.py plus scripts/train.py, eval_only.py, cam_recovery.py; relative POSIX path and raw bytes",
+  "base_config_sha256": "f3374b0ad13a6fac347655bf012b92069601553b62fb92f528b95f8f55eb1fb9",
+  "changed_runtime_files": [
+    "skillopt/model/infra_errors.py"
+  ],
+  "changed_runtime_file_sha256": "87aef43b08db07a51b367c49b7a55ce1ee3a787bfae53ffd6fa945154036bac4",
+  "new_test": "tests/test_codex_stderr_reconnect.py",
+  "new_test_sha256": "07f817a4721d49138655c91ac07fe48402784f89e7f57e9d0e19a6de8863962b",
+  "runtime_mirror_comparison": {
+    "file_count": 100,
+    "differences": []
+  },
+  "offline_acceptance": {
+    "status": "passed",
+    "tests_run": 236,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "new_tests": 16,
+    "previous_scoped_regressions": 220,
+    "wall_seconds": 18.125,
+    "external_model_calls": 0
+  },
+  "broad_mirror_check": {
+    "status": "preexisting_failures_unchanged",
+    "before_tests_run": 239,
+    "after_tests_run": 255,
+    "failures": 4,
+    "errors": 12,
+    "skipped": 1,
+    "nonpassing_test_id_and_error_class_lists_identical": true,
+    "note": "Not a full-repository clean bill; unrelated baseline dependency/plugin checks still fail."
+  },
+  "codex_cli_version": "0.153.4",
+  "route": {
+    "transport": "http",
+    "proxy_url": "http://127.0.0.1:7890",
+    "codex_bin": "C:/Users/hp/AppData/Local/OpenAI/Codex/bin/8e5b6932251c2c1c/codex.exe"
+  },
+  "target": {
+    "model": "gpt-5.6-terra",
+    "reasoning": "none"
+  },
+  "optimizer": {
+    "model": "gpt-5.6-sol",
+    "reasoning": "medium"
+  },
+  "fixed_config": {
+    "train_size": 4,
+    "batch_size": 4,
+    "num_epochs": 1,
+    "selection_size": 4,
+    "test_size": 4,
+    "workers": 1,
+    "analyst_workers": 1,
+    "seed": 42,
+    "split_seed": 42,
+    "exec_timeout": 420,
+    "auth_timeout": 90
+  },
+  "next_action": "Fresh auth -> single with offline patch applicability audit -> P0 pending full audit. Stop at first failed gate. No Step 5."
+}

@@ -1,0 +1,11 @@
+{
+  "captured_at": "2026-09-10T11:18:42.9384390+08:00",
+  "experiment_processes": [],
+  "proxy_listeners": [
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 7890,
+      "OwningProcess": 3392
+    }
+  ]
+}

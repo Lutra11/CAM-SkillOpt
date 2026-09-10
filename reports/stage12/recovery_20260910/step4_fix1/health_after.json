@@ -1,0 +1,304 @@
+{
+  "captured_at": "2026-09-10T11:17:40.6060945+08:00",
+  "lookback_start": "2026-09-08T11:17:40.6002792+08:00",
+  "read_only": true,
+  "last_boot": {
+    "status": "available",
+    "time": "2026-09-09T00:43:44.5000000+08:00"
+  },
+  "system_events": {
+    "status": "available",
+    "returned_count": 5,
+    "limit": 200,
+    "potentially_truncated": false,
+    "events": [
+      {
+        "time": "2026-09-09T00:43:58.9977964+08:00",
+        "id": 6005,
+        "provider": "EventLog",
+        "level": 4,
+        "diagnostic_fields": {}
+      },
+      {
+        "time": "2026-09-09T00:43:58.9972857+08:00",
+        "id": 6008,
+        "provider": "EventLog",
+        "level": 2,
+        "diagnostic_fields": {}
+      },
+      {
+        "time": "2026-09-09T00:42:35.2589804+08:00",
+        "id": 1074,
+        "provider": "User32",
+        "level": 2,
+        "diagnostic_fields": {
+          "process_basename": "wininit.exe",
+          "reason_code": "0x50006"
+        }
+      },
+      {
+        "time": "2026-09-08T18:37:40.5492633+08:00",
+        "id": 6005,
+        "provider": "EventLog",
+        "level": 4,
+        "diagnostic_fields": {}
+      },
+      {
+        "time": "2026-09-08T18:37:40.5483909+08:00",
+        "id": 6008,
+        "provider": "EventLog",
+        "level": 2,
+        "diagnostic_fields": {}
+      }
+    ]
+  },
+  "temperature": {
+    "status": "unavailable",
+    "error_type": "CimException",
+    "error_code": "HRESULT 0x80041003,Microsoft.Management.Infrastructure.CimCmdlets.GetCimInstanceCommand",
+    "hresult": -2146233088,
+    "meaning": "No health conclusion is possible from this unavailable check."
+  },
+  "update_services": {
+    "status": "available",
+    "services": [
+      {
+        "name": "BITS",
+        "state": "Stopped",
+        "start_type": "Manual"
+      },
+      {
+        "name": "UsoSvc",
+        "state": "Running",
+        "start_type": "Automatic"
+      },
+      {
+        "name": "wuauserv",
+        "state": "Stopped",
+        "start_type": "Manual"
+      }
+    ]
+  },
+  "automatic_update_policy": {
+    "status": "not_explicitly_configured_at_checked_key",
+    "limitation": "This does not establish whether automatic updates are enabled or disabled through all settings."
+  },
+  "pending_reboot_indicators": {
+    "status": "available",
+    "indicators": {
+      "windows_update_reboot_required": true,
+      "servicing_reboot_pending": true
+    },
+    "limitation": "These indicators are not an exhaustive reboot requirement test."
+  },
+  "update_events": {
+    "status": "available",
+    "returned_count": 40,
+    "limit": 80,
+    "potentially_truncated": false,
+    "provider": "Microsoft-Windows-WindowsUpdateClient",
+    "events": [
+      {
+        "time": "2026-09-10T00:54:14.7463310+08:00",
+        "id": 41,
+        "level": 4
+      },
+      {
+        "time": "2026-09-10T00:54:14.7463280+08:00",
+        "id": 26,
+        "level": 4
+      },
+      {
+        "time": "2026-09-10T00:54:14.7463150+08:00",
+        "id": 26,
+        "level": 4
+      },
+      {
+        "time": "2026-09-10T00:30:32.4998975+08:00",
+        "id": 41,
+        "level": 4
+      },
+      {
+        "time": "2026-09-09T23:54:15.6113996+08:00",
+        "id": 26,
+        "level": 4
+      },
+      {
+        "time": "2026-09-09T23:54:08.7319840+08:00",
+        "id": 26,
+        "level": 4
+      },
+      {
+        "time": "2026-09-09T18:00:23.2289750+08:00",
+        "id": 41,
+        "level": 4
+      },
+      {
+        "time": "2026-09-09T18:00:15.2267863+08:00",
+        "id": 41,
+        "level": 4
+      },
+      {
+        "time": "2026-09-09T13:14:18.4412636+08:00",
+        "id": 41,
+        "level": 4
+      },
+      {
+        "time": "2026-09-09T13:13:46.7241306+08:00",
+        "id": 26,
+        "level": 4
+      },
+      {
+        "time": "2026-09-09T12:43:46.6226352+08:00",
+        "id": 26,
+        "level": 4
+      },
+      {
+        "time": "2026-09-09T11:46:00.4217294+08:00",
+        "id": 41,
+        "level": 4
+      },
+      {
+        "time": "2026-09-09T11:39:42.6114663+08:00",
+        "id": 41,
+        "level": 4
+      },
+      {
+        "time": "2026-09-09T11:39:15.3592534+08:00",
+        "id": 41,
+        "level": 4
+      },
+      {
+        "time": "2026-09-09T11:38:52.1229126+08:00",
+        "id": 41,
+        "level": 4
+      },
+      {
+        "time": "2026-09-09T11:38:48.8880273+08:00",
+        "id": 41,
+        "level": 4
+      },
+      {
+        "time": "2026-09-09T11:38:48.8880243+08:00",
+        "id": 26,
+        "level": 4
+      },
+      {
+        "time": "2026-09-09T11:38:48.8880160+08:00",
+        "id": 26,
+        "level": 4
+      },
+      {
+        "time": "2026-09-09T11:38:18.0898336+08:00",
+        "id": 26,
+        "level": 4
+      },
+      {
+        "time": "2026-09-09T11:38:05.4304579+08:00",
+        "id": 26,
+        "level": 4
+      },
+      {
+        "time": "2026-09-09T11:37:47.6478621+08:00",
+        "id": 26,
+        "level": 4
+      },
+      {
+        "time": "2026-09-09T10:43:52.4210692+08:00",
+        "id": 26,
+        "level": 4
+      },
+      {
+        "time": "2026-09-09T09:58:48.0826148+08:00",
+        "id": 26,
+        "level": 4
+      },
+      {
+        "time": "2026-09-09T09:28:48.1094562+08:00",
+        "id": 26,
+        "level": 4
+      },
+      {
+        "time": "2026-09-09T00:54:15.8272131+08:00",
+        "id": 26,
+        "level": 4
+      },
+      {
+        "time": "2026-09-09T00:54:15.8272113+08:00",
+        "id": 26,
+        "level": 4
+      },
+      {
+        "time": "2026-09-08T23:23:15.0875147+08:00",
+        "id": 41,
+        "level": 4
+      },
+      {
+        "time": "2026-09-08T23:23:14.3930780+08:00",
+        "id": 26,
+        "level": 4
+      },
+      {
+        "time": "2026-09-08T23:23:08.4201094+08:00",
+        "id": 26,
+        "level": 4
+      },
+      {
+        "time": "2026-09-08T18:48:01.2174364+08:00",
+        "id": 26,
+        "level": 4
+      },
+      {
+        "time": "2026-09-08T18:48:01.2174131+08:00",
+        "id": 25,
+        "level": 2
+      },
+      {
+        "time": "2026-09-08T12:55:19.6119453+08:00",
+        "id": 26,
+        "level": 4
+      },
+      {
+        "time": "2026-09-08T12:55:19.6119416+08:00",
+        "id": 26,
+        "level": 4
+      },
+      {
+        "time": "2026-09-08T11:50:47.1529104+08:00",
+        "id": 41,
+        "level": 4
+      },
+      {
+        "time": "2026-09-08T11:50:43.5027380+08:00",
+        "id": 41,
+        "level": 4
+      },
+      {
+        "time": "2026-09-08T11:50:40.1341142+08:00",
+        "id": 41,
+        "level": 4
+      },
+      {
+        "time": "2026-09-08T11:50:38.9665681+08:00",
+        "id": 41,
+        "level": 4
+      },
+      {
+        "time": "2026-09-08T11:50:38.9665665+08:00",
+        "id": 41,
+        "level": 4
+      },
+      {
+        "time": "2026-09-08T11:50:15.9621584+08:00",
+        "id": 41,
+        "level": 4
+      },
+      {
+        "time": "2026-09-08T11:50:15.9621567+08:00",
+        "id": 41,
+        "level": 4
+      }
+    ]
+  },
+  "interpretation": "A restart or thermal cause cannot be inferred from authentication errors. Event 41/6008 establishes an unclean shutdown indication, not its root cause. Interpret the independent system evidence separately."
+}
