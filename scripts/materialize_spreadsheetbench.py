@@ -8,10 +8,13 @@ by ``configs/spreadsheetbench/default.yaml``.
 from __future__ import annotations
 
 import argparse
+import inspect
 import json
 import os
 import shutil
+import sys
 import tarfile
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -58,14 +61,142 @@ def is_within(child: Path, parent: Path) -> bool:
         return False
 
 
+def _extract_kwargs() -> dict[str, Any]:
+    """Pass an explicit tar extraction filter when the runtime supports one.
+
+    Python 3.12 deprecated the implicit filter (and emits a DeprecationWarning
+    from ``__main__``), while 3.14 changes the default to ``"data"``.
+    ``"fully_trusted"`` preserves the historical behaviour; the caller has
+    already rejected every member that would escape the destination directory.
+    """
+    try:
+        parameters = inspect.signature(tarfile.TarFile.extract).parameters
+    except (TypeError, ValueError):  # pragma: no cover - defensive introspection
+        return {}
+    return {"filter": "fully_trusted"} if "filter" in parameters else {}
+
+
+_EXTRACT_KWARGS = _extract_kwargs()
+
+
+def _format_bytes(value: float) -> str:
+    amount = float(value)
+    for unit in ("B", "KiB", "MiB", "GiB"):
+        if amount < 1024 or unit == "GiB":
+            return f"{amount:.0f} {unit}" if unit == "B" else f"{amount:.1f} {unit}"
+        amount /= 1024
+    return f"{amount:.1f} GiB"  # pragma: no cover - unreachable
+
+
+def _format_duration(seconds: float) -> str:
+    total = max(0, int(seconds))
+    hours, remainder = divmod(total, 3600)
+    minutes, secs = divmod(remainder, 60)
+    if hours:
+        return f"{hours:d}:{minutes:02d}:{secs:02d}"
+    return f"{minutes:02d}:{secs:02d}"
+
+
+class _ExtractProgress:
+    """Dependency-free extraction progress reporter.
+
+    Progress goes to stderr because ``main`` prints the JSON report on stdout.
+    The animated bar is only drawn on a TTY; redirected output gets a single
+    start line and a single summary line instead of thousands of redraws. Set
+    ``SKILLOPT_NO_PROGRESS=1`` to silence the reporter entirely.
+    """
+
+    WIDTH = 24
+    MIN_INTERVAL = 0.1  # seconds between redraws; extraction is IO bound
+
+    def __init__(self, total_bytes: int, total_members: int, destination: Path) -> None:
+        self.total_bytes = total_bytes
+        self.total_members = total_members
+        self.done_bytes = 0
+        self.done_members = 0
+        self.started_at = time.monotonic()
+        self._last_draw = 0.0
+        disabled = os.environ.get("SKILLOPT_NO_PROGRESS", "").strip().lower()
+        self.enabled = disabled not in {"1", "true", "yes", "on"}
+        self.animated = self.enabled and sys.stderr.isatty()
+        if self.enabled and not self.animated:
+            self._write(
+                f"  extracting {total_members} members "
+                f"({_format_bytes(total_bytes)}) -> {destination}\n"
+            )
+
+    def _write(self, text: str) -> None:
+        try:
+            sys.stderr.write(text)
+            sys.stderr.flush()
+        except (OSError, ValueError):
+            pass  # a closed stream must never abort a long extraction
+
+    def _fraction(self) -> float:
+        if self.total_bytes > 0:
+            return min(1.0, self.done_bytes / self.total_bytes)
+        if self.total_members > 0:
+            return min(1.0, self.done_members / self.total_members)
+        return 1.0
+
+    def _line(self) -> str:
+        fraction = self._fraction()
+        filled = int(round(fraction * self.WIDTH))
+        bar = "#" * filled + "-" * (self.WIDTH - filled)
+        elapsed = time.monotonic() - self.started_at
+        eta = (elapsed / fraction - elapsed) if fraction > 0 else 0.0
+        return (
+            f"\r  extracting [{bar}] {fraction * 100:5.1f}%  "
+            f"{_format_bytes(self.done_bytes)}/{_format_bytes(self.total_bytes)}  "
+            f"{self.done_members}/{self.total_members} entries  "
+            f"elapsed {_format_duration(elapsed)}  eta {_format_duration(eta)}"
+        )
+
+    def advance(self, member: tarfile.TarInfo) -> None:
+        if member.isfile():
+            self.done_bytes += member.size
+        self.done_members += 1
+        if not self.animated:
+            return
+        now = time.monotonic()
+        if self.done_members < self.total_members and now - self._last_draw < self.MIN_INTERVAL:
+            return
+        self._last_draw = now
+        self._write(self._line())
+
+    def finish(self) -> None:
+        if not self.enabled:
+            return
+        elapsed = time.monotonic() - self.started_at
+        if self.animated:
+            self._write(self._line())
+            self._write("\n")
+        self._write(
+            f"  extracted {self.done_members} entries "
+            f"({_format_bytes(self.done_bytes)}) in {elapsed:.1f}s\n"
+        )
+
+
 def safe_extract_tar(archive: Path, destination: Path) -> None:
+    """Extract ``archive`` into ``destination`` while reporting progress.
+
+    Every member path is validated before a single byte is written, so an
+    unsafe archive still fails without leaving a partial payload behind.
+    """
     destination.mkdir(parents=True, exist_ok=True)
     with tarfile.open(archive, "r:*") as tar:
-        for member in tar.getmembers():
+        members = tar.getmembers()
+        for member in members:
             target = destination / member.name
             if not is_within(target, destination):
                 raise RuntimeError(f"Unsafe archive member path: {member.name}")
-        tar.extractall(destination)
+
+        total_bytes = sum(member.size for member in members if member.isfile())
+        progress = _ExtractProgress(total_bytes, len(members), destination)
+        for member in members:
+            tar.extract(member, destination, **_EXTRACT_KWARGS)
+            progress.advance(member)
+        progress.finish()
 
 
 def archive_top_level_names(archive: Path) -> set[str]:
