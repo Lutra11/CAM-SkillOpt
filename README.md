@@ -20,7 +20,7 @@ Built on [SkillOpt](https://github.com/microsoft/SkillOpt), CAM-SkillOpt introdu
 
 This repository contains the CAM implementation, baseline and ablation configurations, data-materialization scripts, and selected experiment records. The current empirical evidence consists of offline module checks and small-scale SpreadsheetBench runs. The broader benchmark comparison described below remains a research protocol, with performance gains yet to be established.
 
-Latest implementation checkpoint: [Unified CAM Gate and final-best offline acceptance, 2026-09-09](reports/stage12/recovery_20260909/GATE_STEP2_REPORT.md), following [Persistent Memory integration](reports/stage12/recovery_20260909/MEMORY_STEP1_REPORT.md). Token-accounting repair remains pending. No new live P0 or formal ablation was launched at these checkpoints.
+Latest implementation checkpoint: [Request/token accounting acceptance, 2026-09-10](reports/stage12/recovery_20260909/TOKEN_ACCOUNTING_STEP3_REPORT.md): 220 offline tests passed; a read-only historical replay reconciled 27 CLI invocations and 384,380 tokens without changing the original evidence. This follows [Unified CAM Gate](reports/stage12/recovery_20260909/GATE_STEP2_REPORT.md) and [Persistent Memory integration](reports/stage12/recovery_20260909/MEMORY_STEP1_REPORT.md). No new live P0 or formal ablation was launched; the frozen-code n=4 P0 remains the next step.
 
 ## Method
 

@@ -1,0 +1,682 @@
+{
+  "schema_version": 1,
+  "stage": "token_accounting_offline_acceptance",
+  "status": "passed",
+  "created_at_utc": "2026-09-10T01:53:36.823681+00:00",
+  "external_model_calls": 0,
+  "evidence_type": "historical_trace_accounting_replay_not_new_P0_or_benchmark_training",
+  "historical_validity_note": "No historical Gate, Memory, or scientific validity claim is changed by this replay.",
+  "privacy": "Public files contain only allowlisted metadata; no prompts, workbooks, model responses, credentials or raw trace text.",
+  "errors": [],
+  "historical_inputs": {
+    "file_count_before": 507,
+    "before_sha256": "d36b26594c7edce3bcd2463fedb752cf5947ec03d2ac56840589ee243b50fa62",
+    "file_count_after": 507,
+    "after_sha256": "d36b26594c7edce3bcd2463fedb752cf5947ec03d2ac56840589ee243b50fa62",
+    "unchanged": true,
+    "changed_file_count": 0
+  },
+  "historical_recorded_source_sha256": "524ca3716b4457a47f09c5baeb496a4f254d6b3852a01ec7e2bd01a66d6cadad",
+  "historical_source_note": "Original manifest identity, not the new replay implementation's hash; not relabeled as current code.",
+  "replay_code": {
+    "before_sha256": "a159f717bc187d244966b4d57f77d3b5572ff8c119dca548f9dde2188ec0b7df",
+    "sha256_by_file": {
+      "scripts/check_token_accounting.py": "f415e481c6cac74b09fedd11282e5e4e4b3985dcbd322300b244a9c9f96cd094",
+      "skillopt/__init__.py": "acde34f209004e93450198fbcc4cf5f161e5079c53e5e38492d934e42347995c",
+      "skillopt/cam/__init__.py": "c8360007176a9aefddb759172a872e270ec5a1f11443c4a66ae300fbe244b6a9",
+      "skillopt/cam/adaptive_budget.py": "a7ad02d6241ff31cc163edd1e23637497f5e6dc2fbedfa2d5b13cf9223a5f122",
+      "skillopt/cam/bootstrap_gate.py": "7b532902b290a9bd0c713f539277ff08ce0b28d41121724eee3f55dcd20125ed",
+      "skillopt/cam/memory_context.py": "2226589d482c997d8439942ab8f5ffb0c6b9d055976fe41fd7d65e8bcb501970",
+      "skillopt/cam/rejected_memory.py": "167c2f41f12a0207884eb0d7ec93f9d174ad4918709804b9a28c4f40f4e861d8",
+      "skillopt/cam/selection_guard.py": "635556e87b1237c3da0323f1901c10445f500886f513699c722262e953268a22",
+      "skillopt/config.py": "b383edaefeefdda561e061a455ae721bee42ef07d50a2f1ddf9f06c68bb796fa",
+      "skillopt/datasets/__init__.py": "39a907e5207f3daa2477a4b3f9b01395fbadd43918f22ecdb8d4c132958467e7",
+      "skillopt/datasets/base.py": "82a68f80271fadb4947f49b81a27cf03af08af61ed85d5326381a7955d0da48b",
+      "skillopt/engine/__init__.py": "ef54fb8adc9731d16ec85321959437a41df1ba9c88114a424fa4da12df2a82db",
+      "skillopt/engine/run_artifacts.py": "1cd21e4184ecaf2b2cf57a59268fa1f8bd3527f5961f077790b2b86533a206b7",
+      "skillopt/engine/trainer.py": "55d2d9cab4d01f52bb7130e0ddb5b57ddd40f6b7d69e09d25423079454abf677",
+      "skillopt/envs/__init__.py": "a3e66f90175f614a239a4f1264569cefdc6f8c7c62f4204986119d9c8f605621",
+      "skillopt/envs/_template/env_template.py": "4fb7cf0a1e43df616450ba1193f103d36b19f4679da9dafbb481a62be8651484",
+      "skillopt/envs/_template/loader_template.py": "3722effd1180357c40f7e6cb0b3cc1e135d16855de3409d92bcc87f82f24fdaa",
+      "skillopt/envs/alfworld/__init__.py": "9338a5fbfeb5e983b39feae2c00858cfef2146e8b6fcc977dd86ce0060aa9c9d",
+      "skillopt/envs/alfworld/adapter.py": "15fa76d3e5ad6694a2bbe670b53cab301127493433d2a575f2f02e5e7e98083f",
+      "skillopt/envs/alfworld/dataloader.py": "3dff2eb535576c109c770d5a90a7a6e9d9442bd15c8035ff77a3f942766ecb7b",
+      "skillopt/envs/alfworld/reflect.py": "1dc783ea375e1d8e513a53e7007df3cbc4dae7c1ef8cc2994f843b5e560b1f88",
+      "skillopt/envs/alfworld/rollout.py": "eaacb4e895e4b399801b0496ee4cd4de51820a484bfa856e3804f5d47e298a20",
+      "skillopt/envs/alfworld/vendor/__init__.py": "4fe9aa8cca043c4587235d89b5e99b30b655227c08be51251347896c6d13f766",
+      "skillopt/envs/alfworld/vendor/alfworld_envs.py": "abf75595e9af8d673d136d2f83484f185e10ee38eaaee276985c7483787df179",
+      "skillopt/envs/alfworld/vendor/alfworld_projection.py": "b4a6fe296a09fedea023c5f820b89e36acc39fe38de47f2542da01d270fed155",
+      "skillopt/envs/alfworld/vendor/alfworld_prompts.py": "5356d37f2c0b141b8cf80e16882584c9470e6f0453a8cd401b1094769e680a87",
+      "skillopt/envs/alfworld/vendor/env_base.py": "1d2b23d7b9dcc9fda2c7ccb1680a671cf8ffeb7a5b8a15c0b08847a609613e82",
+      "skillopt/envs/alfworld/vendor/env_manager.py": "f20a9b34cc365b985ea0b08fd5ead5fe2d843b796f9eec6a7f988840d9f26b9a",
+      "skillopt/envs/alfworld/vendor/memory.py": "16cab09411702c5d885387a5921f6ae3dfdb9bc277057e4fb3c2efac48638e33",
+      "skillopt/envs/base.py": "198c4a5d2fb42516adef054a4d1e7c24f4827403088190d27dc3fe16888747c0",
+      "skillopt/envs/docvqa/__init__.py": "cc98501c0d2aee0afca305abc72241ec5cb314b7aae719e6ad0a4c6634b8968d",
+      "skillopt/envs/docvqa/adapter.py": "9f98e40a2dce8f7a63edb61727cf068c3417942726cd8d10fe3c3cc511ece476",
+      "skillopt/envs/docvqa/dataloader.py": "c4ec63cbaeb93b36a60dd61026972bf04da4aa0c1cc43ddfb44db4c3ef823e83",
+      "skillopt/envs/docvqa/evaluator.py": "09157ae524c546dfa1e5c42c3383b017303e04a95c09a5c9683e06d618b66b0b",
+      "skillopt/envs/docvqa/rollout.py": "0750bc09f460607fede146e17fe5eafb2a97f42e580b79c6180f72a88b410801",
+      "skillopt/envs/livemathematicianbench/__init__.py": "728bc6782ef8f7f8de3f54589f0dc268c78823029428e464cd2d0187ca8c56b4",
+      "skillopt/envs/livemathematicianbench/adapter.py": "f4fe95d156a3e63f0c5ec78d76c1fcb9a87db05fe368212eebfc5689a71de5fb",
+      "skillopt/envs/livemathematicianbench/dataloader.py": "bd0537a7a47e6ab49f92bd6987495cb6560ae817a7f0b2bf0b4825b04662c5ff",
+      "skillopt/envs/livemathematicianbench/evaluator.py": "97c92063a38228e91bbb6a12cad7a783374900c9975610654b50b3a4eb997488",
+      "skillopt/envs/livemathematicianbench/reflect.py": "a987082a62a8f8eaa7b97a6ecbf447d9bacfb7ec5f54bb1fe9c0ee5885690054",
+      "skillopt/envs/livemathematicianbench/rollout.py": "79712e2405a91c104130422bec97473eb83549245af94d2204daf8adb18ab273",
+      "skillopt/envs/officeqa/__init__.py": "78a588eb690f26cd9e2bdeb6eac88ca5848c75a3758af073a777f020902b0f01",
+      "skillopt/envs/officeqa/adapter.py": "4790e47fb518f266f0c54669c48aa5a5a1ade4a6da1286a5e0d3a30528e355ec",
+      "skillopt/envs/officeqa/dataloader.py": "709c89c6708d698b24abbeee94841d6bc6202ffc65ce2253f5fdc16fc6e603bb",
+      "skillopt/envs/officeqa/evaluator.py": "49dad2a2bdede9665541102fe47ca74ab2a0cc05ad84d2f8ca047f223c1b4aef",
+      "skillopt/envs/officeqa/rollout.py": "f517afe5d2e39344b598ae6b3c945c9da9645132e2a8facf1f1af36dc0319909",
+      "skillopt/envs/officeqa/tool_runtime.py": "c94510816a4e8afdb1b1abd6c65a800d294f9c4b7bf2eb966f831b502227a4f4",
+      "skillopt/envs/searchqa/__init__.py": "3874a40b6adfb028a32a8aa3a54604b1586032131a30cf53271e3cf0b2ece2fc",
+      "skillopt/envs/searchqa/adapter.py": "8959e7ab0e1494c23f6c2cedcce669c78de5539f9ae00d4619b81a88f884e491",
+      "skillopt/envs/searchqa/dataloader.py": "de33859056bb195cc629a132d66c1afc018b0f6bdd46a74ae53cfc9eaa64af24",
+      "skillopt/envs/searchqa/evaluator.py": "b69136fa727fedeede7ab257144f4dc937877bd1792f13c5c596d566df66fbd3",
+      "skillopt/envs/searchqa/reflect.py": "cecf8e770bc920d2a3a4a7ee1c9d7a20734c18f39a26d05c751abf4a04062b7c",
+      "skillopt/envs/searchqa/rollout.py": "f733f3bdf3418b8e314eccfa5da601c25a63433ec5f185530a9245cac221266b",
+      "skillopt/envs/spreadsheetbench/__init__.py": "bb65dbdcc0273c225958903cf9f5f9a441e5d1770b2875f80845e4d2df8f8837",
+      "skillopt/envs/spreadsheetbench/adapter.py": "8365ed73dadc7ca65f56ac1c98663d4b798383a521a6e582ab332dab9de80246",
+      "skillopt/envs/spreadsheetbench/codegen_agent.py": "ff446440b1f99fd2014f3d6459a688460e92e6a39aee94eb8a5855f5f6634415",
+      "skillopt/envs/spreadsheetbench/dataloader.py": "d5ab3731ba4430b52b71a49c1df355e32b0fe6ff62fc74ceb7a9b693c3e0957d",
+      "skillopt/envs/spreadsheetbench/evaluator.py": "341dd5a5e6109460fce41b336d78a897bd691159c5410a5fd98701de713dd162",
+      "skillopt/envs/spreadsheetbench/executor.py": "30b7143123a8a16ae77a51c097ebeff735289b8ceb90cc505ae44ac90c3cddc2",
+      "skillopt/envs/spreadsheetbench/react_agent.py": "6779790b19987b8a4b6e4a9d9df9680aaffa44d58aea7228566a79b12b937553",
+      "skillopt/envs/spreadsheetbench/reflect.py": "6f4c5ae1714f2f7478c43adc31258876a257c70996760aa1f7f39cf01c5a21a3",
+      "skillopt/envs/spreadsheetbench/rollout.py": "85f3bf0a7359bf99bdc94743621c85d05f90ee320b141eb79846801b737f7fa6",
+      "skillopt/evaluation/__init__.py": "1d34dd85f77152bca307443ec0ad4609cdc0f8fb0d68638d1e1235d2e5bbc854",
+      "skillopt/evaluation/gate.py": "3dfa23e45bb24c4126c4b14f668c3df4315483caddd0767f72c64a6f30554e46",
+      "skillopt/gradient/__init__.py": "570b2e37e2ca7a82b76ee0a0054cd8ecd849a55552d83dab1f7029be099fc43d",
+      "skillopt/gradient/aggregate.py": "9d272ee0f3e599e4091683d796eb223fdf23e8e1ba31f4ce1041779092c452d5",
+      "skillopt/gradient/reflect.py": "61794d0fead166e04704f715b93abe8edde0689555b5616093a0943fcfbf9ce6",
+      "skillopt/model/__init__.py": "4de7b0b85faaf9271455bad82c96d5215ea365e89677b6e31947ba3d5530ec99",
+      "skillopt/model/azure_openai.py": "0a726c842e4fafad169e0b7d8552624c9b071cde96512d80e29db4670cc6a12a",
+      "skillopt/model/backend_config.py": "90804f87a05a8e8789d02742f2a9a2ae4c1a4ab2effb153c33688534bf88364d",
+      "skillopt/model/claude_backend.py": "456a40aaeb8de0ce14501c4303ff09f866e5f8426d9eb2c9548db9df713279f3",
+      "skillopt/model/codex_backend.py": "11b33d607beede1e3035be305694c39e26e5228b6cd96eb9a675bbf84452a411",
+      "skillopt/model/codex_harness.py": "ed00168a7b8df385e393e95ba6b23290e6150959095fd3fd4aa0513b5544f517",
+      "skillopt/model/common.py": "cc6c3ead71b72ee7946107b4f00bad9ba89b4f36a1e2a427f89a14bfae8ce2b4",
+      "skillopt/model/infra_errors.py": "dbe7928936b6abd20d137214045207fbe32962ca065a94aa205c503fdffdb1d4",
+      "skillopt/model/minimax_backend.py": "94f326182a922b53c2246d7f3619b5222356657fa9b516c2253c1832eeafa480",
+      "skillopt/model/qwen_backend.py": "d0e049fbe7f0674aa224c8546cff0bd520856a75ad0223c848e89925c197cc13",
+      "skillopt/model/router.py": "3265614f352cd0dd665f39eb351278351b0f3c98f7dc3cde9a6b4b005015e5fb",
+      "skillopt/model/usage_accounting.py": "e85ddcc79be22a9179f78da470f9102fe7273863b5b321744753557c63d2cd87",
+      "skillopt/optimizer/__init__.py": "5f18d2f2fbcd469ef7ff64705fbb6b883102b28cccee7353af21e8bb36b8749b",
+      "skillopt/optimizer/appendix.py": "220c373fd1e0bb14f47b99a51ff7c712dfc9387c6107f4fae3f89f9102ca4f9c",
+      "skillopt/optimizer/clip.py": "d952216a72349cae4ccceeb1d778215979501170b2b27bd96e5ce77a06928b75",
+      "skillopt/optimizer/lr_autonomous.py": "4710b5b37abd52d81970f1ccb9e34c31eef2dc599a71a76cc5bd135c02e062e7",
+      "skillopt/optimizer/meta_skill.py": "1ade09c9da56e186ac9bc9470ebd1ff1c6c8ab7848af52624ce48d788cc68b03",
+      "skillopt/optimizer/rewrite.py": "7bf98a1b12bc98a558a596eca121d5effed1acedd1c25c6dc9d27967f9f2b099",
+      "skillopt/optimizer/scheduler.py": "9656edc495cdde8fe8f94cace83f9f2d42188895648bb59d99ad8f6b60f47912",
+      "skillopt/optimizer/select.py": "e675ebfe4c79627c944e6aa90de6542f85deaf948054c1cfe1b8876ec8442dab",
+      "skillopt/optimizer/skill.py": "1cb3ecd9da7ab5ea89ad86780f3e4536fcf5cda84455ea6ae8fcc9c86cc73d3f",
+      "skillopt/optimizer/skill_aware.py": "1ae65b3d024f98fc204aed5e5adbc1388c520ac61669e430d378ed4b5419621f",
+      "skillopt/optimizer/slow_update.py": "e9ee3500377ed8abf54b924780ef9523584a17d40edf807c6d4226b1320c25af",
+      "skillopt/optimizer/update_modes.py": "37c15553afd820a94216caadfe80d29a9cbfca7c01dacee3b628e439830d8841",
+      "skillopt/prompts/__init__.py": "50c017a18c35d990bf24d5efa4019aaa13bb3ef8db0e2b50dcab5c923a376455",
+      "skillopt/scheduler/__init__.py": "0b5dde163078007b9c45b14db83d2fb676d62d11bc81df90155a50f1d73d0623",
+      "skillopt/types.py": "80cb01e921a2640fc4497aaba2b19de538c3592a03a73db9c2f2d950f6c15dc5",
+      "skillopt/utils/__init__.py": "308fd27d1d0f5933eda39f29cc6cb584cec12f215ab968ca78ff569722e82aa5",
+      "skillopt/utils/json_utils.py": "613fafa6a1de784d39abfcd19ee08f879f749703b80cbc965d64d83f6c6d714c",
+      "skillopt/utils/scoring.py": "101f04df9118ffcb9d75d51cddeef9ac252fa1236a19b249f3a780b36fc6277b",
+      "tests/test_audit_recovery_run.py": "b7bd1ca97310a7838e68a341c9efb32548e788a0e0af2c19b92b9e4597b41fec",
+      "tests/test_cam_gate_trainer.py": "4e3b66595084a00731e5dadcfd91e05372e1a8955c726d0544ef0cc1fdebb470",
+      "tests/test_cam_recovery.py": "75bd3137a0105cf0f8f07314b70f0bf888d88addbd272847743eafc021eb6f40",
+      "tests/test_cam_selection_guard.py": "d3a60bb4d755977e2d54f24a2149727ef5adeca770b882d18b2b41b479441ca5",
+      "tests/test_codex_infra_failfast.py": "3a795bf9591c170235d11c98684e2dccbf61da87b4880b2fab05d2812070522c",
+      "tests/test_optimizer_infra_propagation.py": "e349c8889d0fc057e460f50bdba4dc80477fc8e7417261603cf9466f78957e33",
+      "tests/test_persistent_memory_context.py": "efd28252ca4353cc7a8f0b9e6b25e714e615c1f7ef077b1b9104b098b96c7458",
+      "tests/test_persistent_memory_reflection.py": "fb9b2750b933816609f80f47211a6696f2437458d6a61b0bd91b2e8ea623e929",
+      "tests/test_persistent_memory_trainer.py": "882f1766e55b30ef42ad8166e37f13278978d8b99d0883a7b91a573b6ba8f63e",
+      "tests/test_spreadsheetbench_infra_failfast.py": "75c3b281cbbbf6e863aca2246f34a350fcac127b9842a4b89ec5e9d6acafad10",
+      "tests/test_token_accounting.py": "15f3e860d29d68b6e7f8566a902f6602e1c5d195854053bf496ed4fb7a851c36",
+      "tests/test_token_accounting_cli.py": "90a524775876402e4bcdf6a4cc999f800442b2d073ef7c709771c51c9514c889",
+      "tests/test_token_accounting_trainer.py": "157e2a833241b062a846b0d356562b344923000c1c9cb1729361b097d4506a01"
+    },
+    "after_sha256": "a159f717bc187d244966b4d57f77d3b5572ff8c119dca548f9dde2188ec0b7df",
+    "unchanged": true
+  },
+  "tests": {
+    "modules": [
+      "tests.test_token_accounting",
+      "tests.test_token_accounting_cli",
+      "tests.test_token_accounting_trainer",
+      "tests.test_cam_selection_guard",
+      "tests.test_cam_gate_trainer",
+      "tests.test_persistent_memory_context",
+      "tests.test_persistent_memory_reflection",
+      "tests.test_persistent_memory_trainer",
+      "tests.test_cam_recovery",
+      "tests.test_codex_infra_failfast",
+      "tests.test_optimizer_infra_propagation",
+      "tests.test_spreadsheetbench_infra_failfast",
+      "tests.test_audit_recovery_run"
+    ],
+    "tests_run": 220,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "status": "passed",
+    "wall_time_s": 24.298,
+    "output_policy": "test_ID_status_exception_class_only_no_test_stdout_or_tracebacks"
+  },
+  "excluded_duplicate_trace_copies": [
+    {
+      "path": "final_selection_eval/predictions/45635/raw.txt",
+      "canonical": "final_selection_eval/predictions/45635/codex_raw.txt",
+      "sha256": "43362cf6d3c2f2b732f225d00ab35b067013b711c116aa01afe4321dc81ee137"
+    },
+    {
+      "path": "final_selection_eval/predictions/45635/raw_trace.txt",
+      "canonical": "final_selection_eval/predictions/45635/codex_raw.txt",
+      "sha256": "43362cf6d3c2f2b732f225d00ab35b067013b711c116aa01afe4321dc81ee137"
+    },
+    {
+      "path": "final_selection_eval/predictions/55049/raw.txt",
+      "canonical": "final_selection_eval/predictions/55049/codex_raw.txt",
+      "sha256": "0d0750aa05d99982e686f4fbd93e6400f168e354e82b55c0adbe7e6f7da97e8a"
+    },
+    {
+      "path": "final_selection_eval/predictions/55049/raw_trace.txt",
+      "canonical": "final_selection_eval/predictions/55049/codex_raw.txt",
+      "sha256": "0d0750aa05d99982e686f4fbd93e6400f168e354e82b55c0adbe7e6f7da97e8a"
+    },
+    {
+      "path": "final_selection_eval/predictions/560-12/raw.txt",
+      "canonical": "final_selection_eval/predictions/560-12/codex_raw.txt",
+      "sha256": "88118bb52b618ba3a6f3a071af00bd7970c04566f88f02987a58f82b23c2f7e0"
+    },
+    {
+      "path": "final_selection_eval/predictions/560-12/raw_trace.txt",
+      "canonical": "final_selection_eval/predictions/560-12/codex_raw.txt",
+      "sha256": "88118bb52b618ba3a6f3a071af00bd7970c04566f88f02987a58f82b23c2f7e0"
+    },
+    {
+      "path": "final_selection_eval/predictions/9569/raw.txt",
+      "canonical": "final_selection_eval/predictions/9569/codex_raw.txt",
+      "sha256": "5baccd1fc0d483b6792b046cb8be435d71e60f9e2e80c66a6823a15abd80ea3b"
+    },
+    {
+      "path": "final_selection_eval/predictions/9569/raw_trace.txt",
+      "canonical": "final_selection_eval/predictions/9569/codex_raw.txt",
+      "sha256": "5baccd1fc0d483b6792b046cb8be435d71e60f9e2e80c66a6823a15abd80ea3b"
+    },
+    {
+      "path": "selection_eval_baseline/predictions/45635/raw.txt",
+      "canonical": "selection_eval_baseline/predictions/45635/codex_raw.txt",
+      "sha256": "5e6808cbc9b428c6a1a6ef83f8171ed57092f5867133dbe45b8c4a97069d9364"
+    },
+    {
+      "path": "selection_eval_baseline/predictions/45635/raw_trace.txt",
+      "canonical": "selection_eval_baseline/predictions/45635/codex_raw.txt",
+      "sha256": "5e6808cbc9b428c6a1a6ef83f8171ed57092f5867133dbe45b8c4a97069d9364"
+    },
+    {
+      "path": "selection_eval_baseline/predictions/55049/raw.txt",
+      "canonical": "selection_eval_baseline/predictions/55049/codex_raw.txt",
+      "sha256": "1a9245fbcc421b503cef019aa57bc103206247cfa3bd14d297eb2dfcf413b21c"
+    },
+    {
+      "path": "selection_eval_baseline/predictions/55049/raw_trace.txt",
+      "canonical": "selection_eval_baseline/predictions/55049/codex_raw.txt",
+      "sha256": "1a9245fbcc421b503cef019aa57bc103206247cfa3bd14d297eb2dfcf413b21c"
+    },
+    {
+      "path": "selection_eval_baseline/predictions/560-12/raw.txt",
+      "canonical": "selection_eval_baseline/predictions/560-12/codex_raw.txt",
+      "sha256": "aeeccefdb5ae1a819f3f4d4782c349e6ddba5f5521cd016fa99ace1a7c09c3ec"
+    },
+    {
+      "path": "selection_eval_baseline/predictions/560-12/raw_trace.txt",
+      "canonical": "selection_eval_baseline/predictions/560-12/codex_raw.txt",
+      "sha256": "aeeccefdb5ae1a819f3f4d4782c349e6ddba5f5521cd016fa99ace1a7c09c3ec"
+    },
+    {
+      "path": "selection_eval_baseline/predictions/9569/raw.txt",
+      "canonical": "selection_eval_baseline/predictions/9569/codex_raw.txt",
+      "sha256": "df54e7f7a628b603fc404e05c79d71b0b0c26873ee22c2bb4419537a36425bdb"
+    },
+    {
+      "path": "selection_eval_baseline/predictions/9569/raw_trace.txt",
+      "canonical": "selection_eval_baseline/predictions/9569/codex_raw.txt",
+      "sha256": "df54e7f7a628b603fc404e05c79d71b0b0c26873ee22c2bb4419537a36425bdb"
+    },
+    {
+      "path": "steps/step_0001/rollout/predictions/32438/raw.txt",
+      "canonical": "steps/step_0001/rollout/predictions/32438/codex_raw.txt",
+      "sha256": "15e84bdc45b9ed7363b27be19970b130ffee9a7ee4bb7de81bed36449e9cb6fd"
+    },
+    {
+      "path": "steps/step_0001/rollout/predictions/32438/raw_trace.txt",
+      "canonical": "steps/step_0001/rollout/predictions/32438/codex_raw.txt",
+      "sha256": "15e84bdc45b9ed7363b27be19970b130ffee9a7ee4bb7de81bed36449e9cb6fd"
+    },
+    {
+      "path": "steps/step_0001/rollout/predictions/398-14/raw.txt",
+      "canonical": "steps/step_0001/rollout/predictions/398-14/codex_raw.txt",
+      "sha256": "50da8dad8c6d6f8b92d7fde645c826f995bb1e586a7bb6072345fbf014735678"
+    },
+    {
+      "path": "steps/step_0001/rollout/predictions/398-14/raw_trace.txt",
+      "canonical": "steps/step_0001/rollout/predictions/398-14/codex_raw.txt",
+      "sha256": "50da8dad8c6d6f8b92d7fde645c826f995bb1e586a7bb6072345fbf014735678"
+    },
+    {
+      "path": "steps/step_0001/rollout/predictions/47766/raw.txt",
+      "canonical": "steps/step_0001/rollout/predictions/47766/codex_raw.txt",
+      "sha256": "974964ac2691f5673b963d3fbf06611310b1468cd4c80e04be6461a4ea370a5f"
+    },
+    {
+      "path": "steps/step_0001/rollout/predictions/47766/raw_trace.txt",
+      "canonical": "steps/step_0001/rollout/predictions/47766/codex_raw.txt",
+      "sha256": "974964ac2691f5673b963d3fbf06611310b1468cd4c80e04be6461a4ea370a5f"
+    },
+    {
+      "path": "steps/step_0001/rollout/predictions/48365/raw.txt",
+      "canonical": "steps/step_0001/rollout/predictions/48365/codex_raw.txt",
+      "sha256": "3ca7e3bd768cbb4f188bdeb5fba460057e726b17620a3dfd0bd7cd2e426bb654"
+    },
+    {
+      "path": "steps/step_0001/rollout/predictions/48365/raw_trace.txt",
+      "canonical": "steps/step_0001/rollout/predictions/48365/codex_raw.txt",
+      "sha256": "3ca7e3bd768cbb4f188bdeb5fba460057e726b17620a3dfd0bd7cd2e426bb654"
+    },
+    {
+      "path": "steps/step_0001/selection_eval/predictions/45635/raw.txt",
+      "canonical": "steps/step_0001/selection_eval/predictions/45635/codex_raw.txt",
+      "sha256": "c03ce3d2678b227c1d89febaa83e6bb1ffb5a50c22302f717d07950fb623b233"
+    },
+    {
+      "path": "steps/step_0001/selection_eval/predictions/45635/raw_trace.txt",
+      "canonical": "steps/step_0001/selection_eval/predictions/45635/codex_raw.txt",
+      "sha256": "c03ce3d2678b227c1d89febaa83e6bb1ffb5a50c22302f717d07950fb623b233"
+    },
+    {
+      "path": "steps/step_0001/selection_eval/predictions/55049/raw.txt",
+      "canonical": "steps/step_0001/selection_eval/predictions/55049/codex_raw.txt",
+      "sha256": "543ad8d5aafcedd696338b024e50adb83484d7b555f98f6b7fa75464e3dec1c6"
+    },
+    {
+      "path": "steps/step_0001/selection_eval/predictions/55049/raw_trace.txt",
+      "canonical": "steps/step_0001/selection_eval/predictions/55049/codex_raw.txt",
+      "sha256": "543ad8d5aafcedd696338b024e50adb83484d7b555f98f6b7fa75464e3dec1c6"
+    },
+    {
+      "path": "steps/step_0001/selection_eval/predictions/560-12/raw.txt",
+      "canonical": "steps/step_0001/selection_eval/predictions/560-12/codex_raw.txt",
+      "sha256": "4078bdc455c67a313818c443996582a661b33cf9679e331cc6712381953c08ea"
+    },
+    {
+      "path": "steps/step_0001/selection_eval/predictions/560-12/raw_trace.txt",
+      "canonical": "steps/step_0001/selection_eval/predictions/560-12/codex_raw.txt",
+      "sha256": "4078bdc455c67a313818c443996582a661b33cf9679e331cc6712381953c08ea"
+    },
+    {
+      "path": "steps/step_0001/selection_eval/predictions/9569/raw.txt",
+      "canonical": "steps/step_0001/selection_eval/predictions/9569/codex_raw.txt",
+      "sha256": "c16274dbdbd4e598150f88bdd70a1fa9dcb43896b647a1062cf297a2a1b01e38"
+    },
+    {
+      "path": "steps/step_0001/selection_eval/predictions/9569/raw_trace.txt",
+      "canonical": "steps/step_0001/selection_eval/predictions/9569/codex_raw.txt",
+      "sha256": "c16274dbdbd4e598150f88bdd70a1fa9dcb43896b647a1062cf297a2a1b01e38"
+    },
+    {
+      "path": "test_eval/predictions/41-47/raw.txt",
+      "canonical": "test_eval/predictions/41-47/codex_raw.txt",
+      "sha256": "86a495f0e4d64b531d17d8f72c3f8341aa85474365c5d54af75d713decd69673"
+    },
+    {
+      "path": "test_eval/predictions/41-47/raw_trace.txt",
+      "canonical": "test_eval/predictions/41-47/codex_raw.txt",
+      "sha256": "86a495f0e4d64b531d17d8f72c3f8341aa85474365c5d54af75d713decd69673"
+    },
+    {
+      "path": "test_eval/predictions/42515/raw.txt",
+      "canonical": "test_eval/predictions/42515/codex_raw.txt",
+      "sha256": "ec7f5cbac3d499e31764bc1f177365f3192a57d5d89f8574fa2afa3fe8de881d"
+    },
+    {
+      "path": "test_eval/predictions/42515/raw_trace.txt",
+      "canonical": "test_eval/predictions/42515/codex_raw.txt",
+      "sha256": "ec7f5cbac3d499e31764bc1f177365f3192a57d5d89f8574fa2afa3fe8de881d"
+    },
+    {
+      "path": "test_eval/predictions/52532/raw.txt",
+      "canonical": "test_eval/predictions/52532/codex_raw.txt",
+      "sha256": "0dd84e509ffa69eaeb026cc5f99578b5b842f925182acf28591335927c146c43"
+    },
+    {
+      "path": "test_eval/predictions/52532/raw_trace.txt",
+      "canonical": "test_eval/predictions/52532/codex_raw.txt",
+      "sha256": "0dd84e509ffa69eaeb026cc5f99578b5b842f925182acf28591335927c146c43"
+    },
+    {
+      "path": "test_eval/predictions/59794/raw.txt",
+      "canonical": "test_eval/predictions/59794/codex_raw.txt",
+      "sha256": "6d1ec30b95506e689620b11e622112e7149466845092ec6822f796df04e53e3e"
+    },
+    {
+      "path": "test_eval/predictions/59794/raw_trace.txt",
+      "canonical": "test_eval/predictions/59794/codex_raw.txt",
+      "sha256": "6d1ec30b95506e689620b11e622112e7149466845092ec6822f796df04e53e3e"
+    },
+    {
+      "path": "test_eval_baseline/predictions/41-47/raw.txt",
+      "canonical": "test_eval_baseline/predictions/41-47/codex_raw.txt",
+      "sha256": "eccb754afa85dba05c32d0ea9deb2d05855c201c77d4ce079456fa0b9cb6701d"
+    },
+    {
+      "path": "test_eval_baseline/predictions/41-47/raw_trace.txt",
+      "canonical": "test_eval_baseline/predictions/41-47/codex_raw.txt",
+      "sha256": "eccb754afa85dba05c32d0ea9deb2d05855c201c77d4ce079456fa0b9cb6701d"
+    },
+    {
+      "path": "test_eval_baseline/predictions/42515/raw.txt",
+      "canonical": "test_eval_baseline/predictions/42515/codex_raw.txt",
+      "sha256": "1e882143464cd160a6e6e76a86331b08879e7d4811dbfd118ae2bbb270d62614"
+    },
+    {
+      "path": "test_eval_baseline/predictions/42515/raw_trace.txt",
+      "canonical": "test_eval_baseline/predictions/42515/codex_raw.txt",
+      "sha256": "1e882143464cd160a6e6e76a86331b08879e7d4811dbfd118ae2bbb270d62614"
+    },
+    {
+      "path": "test_eval_baseline/predictions/52532/raw.txt",
+      "canonical": "test_eval_baseline/predictions/52532/codex_raw.txt",
+      "sha256": "13cf614a6c855742497cb1d489cd9d0b5cac4d4f01a2e7e3162419312acf9a5c"
+    },
+    {
+      "path": "test_eval_baseline/predictions/52532/raw_trace.txt",
+      "canonical": "test_eval_baseline/predictions/52532/codex_raw.txt",
+      "sha256": "13cf614a6c855742497cb1d489cd9d0b5cac4d4f01a2e7e3162419312acf9a5c"
+    },
+    {
+      "path": "test_eval_baseline/predictions/59794/raw.txt",
+      "canonical": "test_eval_baseline/predictions/59794/codex_raw.txt",
+      "sha256": "bbf6862d878ec4dbab2672528930b2befd6df1f22707bac006c5b1c8a86850e3"
+    },
+    {
+      "path": "test_eval_baseline/predictions/59794/raw_trace.txt",
+      "canonical": "test_eval_baseline/predictions/59794/codex_raw.txt",
+      "sha256": "bbf6862d878ec4dbab2672528930b2befd6df1f22707bac006c5b1c8a86850e3"
+    }
+  ],
+  "replay": {
+    "status": "passed",
+    "canonical_requests": 27,
+    "excluded_duplicates": 48,
+    "target_calls": 24,
+    "optimizer_calls": 3,
+    "distinct_thread_ids": 27,
+    "independent_event_totals": {
+      "target": {
+        "input_tokens": 320404,
+        "output_tokens": 7434,
+        "cached_input_tokens": 86528,
+        "reasoning_output_tokens": 0,
+        "cache_write_input_tokens": 0,
+        "total_tokens": 327838,
+        "calls": 24,
+        "recovered_warning_count": 4
+      },
+      "_total": {
+        "input_tokens": 374840,
+        "output_tokens": 9540,
+        "cached_input_tokens": 86528,
+        "reasoning_output_tokens": 799,
+        "cache_write_input_tokens": 0,
+        "total_tokens": 384380,
+        "calls": 27,
+        "recovered_warning_count": 4
+      },
+      "merge": {
+        "input_tokens": 11166,
+        "output_tokens": 573,
+        "cached_input_tokens": 0,
+        "reasoning_output_tokens": 39,
+        "cache_write_input_tokens": 0,
+        "total_tokens": 11739,
+        "calls": 1,
+        "recovered_warning_count": 0
+      },
+      "analyst": {
+        "input_tokens": 43270,
+        "output_tokens": 1533,
+        "cached_input_tokens": 0,
+        "reasoning_output_tokens": 760,
+        "cache_write_input_tokens": 0,
+        "total_tokens": 44803,
+        "calls": 2,
+        "recovered_warning_count": 0
+      }
+    },
+    "ledger_summary": {
+      "analyst": {
+        "calls": 2,
+        "cli_invocations": 2,
+        "legacy_calls": 0,
+        "unknown_calls": 0,
+        "running_calls": 0,
+        "failed_calls": 0,
+        "input_tokens": 43270,
+        "output_tokens": 1533,
+        "total_tokens": 44803,
+        "cached_input_tokens": 0,
+        "reasoning_output_tokens": 760,
+        "cache_write_input_tokens": 0,
+        "known_tokens": 44803,
+        "recovered_warning_count": 0,
+        "usage_complete": true,
+        "cache_usage_complete": true
+      },
+      "merge": {
+        "calls": 1,
+        "cli_invocations": 1,
+        "legacy_calls": 0,
+        "unknown_calls": 0,
+        "running_calls": 0,
+        "failed_calls": 0,
+        "input_tokens": 11166,
+        "output_tokens": 573,
+        "total_tokens": 11739,
+        "cached_input_tokens": 0,
+        "reasoning_output_tokens": 39,
+        "cache_write_input_tokens": 0,
+        "known_tokens": 11739,
+        "recovered_warning_count": 0,
+        "usage_complete": true,
+        "cache_usage_complete": true
+      },
+      "target": {
+        "calls": 24,
+        "cli_invocations": 24,
+        "legacy_calls": 0,
+        "unknown_calls": 0,
+        "running_calls": 0,
+        "failed_calls": 0,
+        "input_tokens": 320404,
+        "output_tokens": 7434,
+        "total_tokens": 327838,
+        "cached_input_tokens": 86528,
+        "reasoning_output_tokens": 0,
+        "cache_write_input_tokens": 0,
+        "known_tokens": 327838,
+        "recovered_warning_count": 4,
+        "usage_complete": true,
+        "cache_usage_complete": true
+      },
+      "_total": {
+        "calls": 27,
+        "cli_invocations": 27,
+        "legacy_calls": 0,
+        "unknown_calls": 0,
+        "running_calls": 0,
+        "failed_calls": 0,
+        "input_tokens": 374840,
+        "output_tokens": 9540,
+        "total_tokens": 384380,
+        "cached_input_tokens": 86528,
+        "reasoning_output_tokens": 799,
+        "cache_write_input_tokens": 0,
+        "known_tokens": 384380,
+        "recovered_warning_count": 4,
+        "usage_complete": true,
+        "cache_usage_complete": true
+      }
+    },
+    "tracker_summary": {
+      "analyst": {
+        "calls": 2,
+        "cli_invocations": 2,
+        "legacy_calls": 0,
+        "unknown_calls": 0,
+        "running_calls": 0,
+        "failed_calls": 0,
+        "input_tokens": 43270,
+        "output_tokens": 1533,
+        "total_tokens": 44803,
+        "cached_input_tokens": 0,
+        "reasoning_output_tokens": 760,
+        "cache_write_input_tokens": 0,
+        "known_tokens": 44803,
+        "recovered_warning_count": 0,
+        "usage_complete": true,
+        "cache_usage_complete": true
+      },
+      "merge": {
+        "calls": 1,
+        "cli_invocations": 1,
+        "legacy_calls": 0,
+        "unknown_calls": 0,
+        "running_calls": 0,
+        "failed_calls": 0,
+        "input_tokens": 11166,
+        "output_tokens": 573,
+        "total_tokens": 11739,
+        "cached_input_tokens": 0,
+        "reasoning_output_tokens": 39,
+        "cache_write_input_tokens": 0,
+        "known_tokens": 11739,
+        "recovered_warning_count": 0,
+        "usage_complete": true,
+        "cache_usage_complete": true
+      },
+      "target": {
+        "calls": 24,
+        "cli_invocations": 24,
+        "legacy_calls": 0,
+        "unknown_calls": 0,
+        "running_calls": 0,
+        "failed_calls": 0,
+        "input_tokens": 320404,
+        "output_tokens": 7434,
+        "total_tokens": 327838,
+        "cached_input_tokens": 86528,
+        "reasoning_output_tokens": 0,
+        "cache_write_input_tokens": 0,
+        "known_tokens": 327838,
+        "recovered_warning_count": 4,
+        "usage_complete": true,
+        "cache_usage_complete": true
+      },
+      "_total": {
+        "calls": 27,
+        "cli_invocations": 27,
+        "legacy_calls": 0,
+        "unknown_calls": 0,
+        "running_calls": 0,
+        "failed_calls": 0,
+        "input_tokens": 374840,
+        "output_tokens": 9540,
+        "total_tokens": 384380,
+        "cached_input_tokens": 86528,
+        "reasoning_output_tokens": 799,
+        "cache_write_input_tokens": 0,
+        "known_tokens": 384380,
+        "recovered_warning_count": 4,
+        "usage_complete": true,
+        "cache_usage_complete": true
+      }
+    },
+    "model_summary": {
+      "analyst": {
+        "calls": 2,
+        "cli_invocations": 2,
+        "legacy_calls": 0,
+        "unknown_calls": 0,
+        "running_calls": 0,
+        "failed_calls": 0,
+        "input_tokens": 43270,
+        "output_tokens": 1533,
+        "total_tokens": 44803,
+        "cached_input_tokens": 0,
+        "reasoning_output_tokens": 760,
+        "cache_write_input_tokens": 0,
+        "known_tokens": 44803,
+        "recovered_warning_count": 0,
+        "usage_complete": true,
+        "cache_usage_complete": true
+      },
+      "merge": {
+        "calls": 1,
+        "cli_invocations": 1,
+        "legacy_calls": 0,
+        "unknown_calls": 0,
+        "running_calls": 0,
+        "failed_calls": 0,
+        "input_tokens": 11166,
+        "output_tokens": 573,
+        "total_tokens": 11739,
+        "cached_input_tokens": 0,
+        "reasoning_output_tokens": 39,
+        "cache_write_input_tokens": 0,
+        "known_tokens": 11739,
+        "recovered_warning_count": 0,
+        "usage_complete": true,
+        "cache_usage_complete": true
+      },
+      "target": {
+        "calls": 24,
+        "cli_invocations": 24,
+        "legacy_calls": 0,
+        "unknown_calls": 0,
+        "running_calls": 0,
+        "failed_calls": 0,
+        "input_tokens": 320404,
+        "output_tokens": 7434,
+        "total_tokens": 327838,
+        "cached_input_tokens": 86528,
+        "reasoning_output_tokens": 0,
+        "cache_write_input_tokens": 0,
+        "known_tokens": 327838,
+        "recovered_warning_count": 4,
+        "usage_complete": true,
+        "cache_usage_complete": true
+      },
+      "_total": {
+        "calls": 27,
+        "cli_invocations": 27,
+        "legacy_calls": 0,
+        "unknown_calls": 0,
+        "running_calls": 0,
+        "failed_calls": 0,
+        "input_tokens": 374840,
+        "output_tokens": 9540,
+        "total_tokens": 384380,
+        "cached_input_tokens": 86528,
+        "reasoning_output_tokens": 799,
+        "cache_write_input_tokens": 0,
+        "known_tokens": 384380,
+        "recovered_warning_count": 4,
+        "usage_complete": true,
+        "cache_usage_complete": true
+      }
+    },
+    "shared_tracker_and_env_ledger_deduplicated": true,
+    "count_unit": "historical_CLI_invocations_with_completed_turn_not_provider_billing_requests",
+    "source_request_identity": "target=run/stage/task; optimizer=local_UUID_directory; thread_id is correlation only",
+    "private_raw_location": "private_ledger/ (local only, excluded by .gitignore)",
+    "cached_and_reasoning_tokens_are_subsets_not_extra_total_tokens": true
+  },
+  "wall_time_s": 28.045
+}

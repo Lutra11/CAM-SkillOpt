@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-10",
+  "step": 3,
+  "status": "offline_acceptance_passed_paused_before_step4",
+  "implementation_commit": "2154488ff7ce117b18eb1502973318aaa37ffc5f",
+  "runtime_source_sha256": "b5dc39c846cedab48c0486a3d6b462eabfbafe80a7760c86b35020d31f1b0f8a",
+  "source_hash_function": "scripts.cam_recovery.source_hash",
+  "runtime_and_git_mirror_equal": true,
+  "acceptance_code_inventory_sha256": "a159f717bc187d244966b4d57f77d3b5572ff8c119dca548f9dde2188ec0b7df",
+  "tests_passed": 220,
+  "new_tests": 55,
+  "existing_regressions": 165,
+  "external_model_calls": 0,
+  "historical_replay": {
+    "run": "p0_newcli_retry_01",
+    "original_source_sha256": "524ca3716b4457a47f09c5baeb496a4f254d6b3852a01ec7e2bd01a66d6cadad",
+    "files_unchanged": 507,
+    "input_tree_sha256": "d36b26594c7edce3bcd2463fedb752cf5947ec03d2ac56840589ee243b50fa62",
+    "canonical_cli_invocations": 27,
+    "target_invocations": 24,
+    "optimizer_invocations": 3,
+    "total_tokens": 384380,
+    "excluded_duplicate_traces": 48,
+    "historical_method_validity_unchanged": true
+  },
+  "public_artifact_hash_scope": "Exact bytes of local Windows acceptance artifacts before Git CRLF-to-LF normalization; use the runtime output directory to verify these hashes.",
+  "public_artifact_sha256": {
+    "acceptance.json": "ef3b0b14c271f38f3f41b35a11c36ef87170c892dab945551d8c51d9baee758d",
+    "test_output.txt": "7f9f667ac97e720df8b34307f784fc73248f6254249062f8e7ddbcf4add1683e",
+    "requests.jsonl": "a222f905685ca6038c1826b1b5ea6e227cdaf9dd88f26a47876fe3351f1a7f43"
+  },
+  "next_step": "User confirmation, then frozen-code same n=4 P0; no expansion before natural Memory write, subsequent hit and actual prompt injection."
+}
