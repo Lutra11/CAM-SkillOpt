@@ -221,8 +221,14 @@ def _reconnect_notice_text(line: str, channel: str) -> str:
         if payload.get("type") != "error":
             return ""
         message = str(payload.get("message", ""))
-    if re.match(r"\s*Reconnecting\b", message, re.I) and re.search(
-        r"network|connection|stream|error sending request", message, re.I,
+    candidate = message
+    if channel == "stderr" and payload is None:
+        # Non-JSON Codex emits "ERROR: Reconnecting... waiting for network".
+        # Normalize only this explicit prefix, not arbitrary ERROR/FATAL text;
+        # keep the original message as evidence. Terminal JSON events stay out.
+        candidate = re.sub(r"^\s*ERROR:\s*(?=Reconnecting\b)", "", message, count=1, flags=re.I)
+    if re.match(r"\s*Reconnecting\b", candidate, re.I) and re.search(
+        r"network|connection|stream|error sending request", candidate, re.I,
     ):
         return message
     return ""
