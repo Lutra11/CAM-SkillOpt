@@ -259,7 +259,7 @@ python scripts/cam_stage10_compat_preflight.py --config configs/cam_experiments/
 ### 4. 运行一次小规模训练检查
 
 ```bash
-python scripts/train.py --config configs/cam_experiments/spreadsheetbench_cam_full_deepseek_only.yaml --cfg-options train.num_epochs=1 train.train_size=8 train.batch_size=4 gradient.minibatch_size=2 gradient.merge_batch_size=2 gradient.analyst_workers=1 gradient.max_analyst_rounds=1 evaluation.sel_env_num=4 evaluation.test_env_num=4 env.workers=1 env.out_root=outputs/smoke/cam_full_deepseek
+python scripts/train.py --config configs/cam_experiments/spreadsheetbench_cam_full_deepseek_only.yaml --cfg-options train.num_epochs=1 train.train_size=80 train.batch_size=4 gradient.minibatch_size=2 gradient.merge_batch_size=2 gradient.analyst_workers=1 gradient.max_analyst_rounds=1 evaluation.sel_env_num=4 evaluation.test_env_num=4 env.workers=1 env.out_root=outputs/smoke/cam_full_deepseek
 ```
 
 这次精简运行检查由模型驱动的训练路径。它独立于计划中的基准协议，也独立于已记录的、由 Codex 支撑的 Stage 12 实验。若要做匹配的基线检查，请使用 [`spreadsheetbench_baseline_deepseek_only.yaml`](configs/cam_experiments/spreadsheetbench_baseline_deepseek_only.yaml)，施加相同的覆盖项并指定独立的输出目录。
