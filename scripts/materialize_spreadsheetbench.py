@@ -1,9 +1,11 @@
 """Materialize SpreadsheetBench Verified 400 for SkillOpt/CAM-SkillOpt.
 
-This script is intentionally offline. It does not download the Hugging Face
-payload. Put ``spreadsheetbench_verified_400.tar.gz`` under ``data/`` or provide
-``--archive``; then run this script to create the runnable split directory used
-by ``configs/spreadsheetbench/default.yaml``.
+When the official archive ``spreadsheetbench_verified_400.tar.gz`` is missing
+from ``data/`` this script downloads it automatically, trying the primary URL
+first and then a list of Chinese mirrors (``ghproxy.com``, ``gh-proxy.com``) in
+order. Pass ``--no-download`` to keep the old offline behaviour. After the
+archive is on disk the script extracts it and writes the runnable split
+directory consumed by ``configs/spreadsheetbench/default.yaml``.
 """
 from __future__ import annotations
 
@@ -15,6 +17,8 @@ import shutil
 import sys
 import tarfile
 import time
+import urllib.error
+import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -26,6 +30,20 @@ DEFAULT_MANIFEST = REPO_ROOT / "data" / "spreadsheetbench_id_split"
 DEFAULT_PAYLOAD_ROOT = REPO_ROOT / "data" / "spreadsheetbench_verified_400"
 DEFAULT_SPLIT_DIR = REPO_ROOT / "data" / "spreadsheetbench_split"
 DEFAULT_REPORT_DIR = REPO_ROOT / "outputs" / "stage6_data_materialization"
+DEFAULT_DOWNLOAD_URL = (
+    # raw.githubusercontent.com serves the actual file; the GitHub blob URL
+    # returns an HTML page even with ``Accept: application/octet-stream``.
+    "https://raw.githubusercontent.com/RUCKBReasoning/SpreadsheetBench/"
+    "main/data/spreadsheetbench_verified_400.tar.gz"
+)
+# Domestic mirrors used when the primary URL is blocked or slow. Each entry is
+# a full URL (the mirror's domain prepended to the raw.githubusercontent.com
+# path). ``download_archive_with_fallback`` walks the list in order after the
+# primary URL fails.
+DEFAULT_MIRROR_URLS = (
+    "https://ghproxy.com/https://raw.githubusercontent.com/RUCKBReasoning/SpreadsheetBench/main/data/spreadsheetbench_verified_400.tar.gz",
+    "https://gh-proxy.com/https://raw.githubusercontent.com/RUCKBReasoning/SpreadsheetBench/main/data/spreadsheetbench_verified_400.tar.gz",
+)
 REQUIRED_FIELDS = ("id", "instruction", "spreadsheet_path")
 
 
@@ -40,6 +58,27 @@ def parse_args() -> argparse.Namespace:
         "--force",
         action="store_true",
         help="Overwrite existing output split files after validation.",
+    )
+    parser.add_argument(
+        "--no-download",
+        action="store_true",
+        help="Disable automatic download when the archive is missing (offline mode).",
+    )
+    parser.add_argument(
+        "--download-url",
+        type=str,
+        default=DEFAULT_DOWNLOAD_URL,
+        help="URL used to fetch the archive when --archive is missing.",
+    )
+    parser.add_argument(
+        "--mirror-url",
+        action="append",
+        default=None,
+        metavar="URL",
+        help="Fallback URL tried after --download-url fails. Pass multiple times "
+             "for multiple fallbacks (in declared order). When omitted, the "
+             "script walks a built-in list of Chinese mirrors (ghproxy.com, "
+             "gh-proxy.com).",
     )
     return parser.parse_args()
 
@@ -199,6 +238,172 @@ def safe_extract_tar(archive: Path, destination: Path) -> None:
         progress.finish()
 
 
+class _DownloadProgress:
+    """Dependency-free download progress reporter.
+
+    Mirrors :class:`_ExtractProgress`: a redrawing bar on a TTY, a single
+    start/finish line when stderr is redirected, and silence when
+    ``SKILLOPT_NO_PROGRESS=1``.
+    """
+
+    WIDTH = 24
+    MIN_INTERVAL = 0.1  # seconds between redraws; network throughput varies
+
+    def __init__(self, total_bytes: int, url: str, destination: Path) -> None:
+        self.total_bytes = total_bytes
+        self.done_bytes = 0
+        self.started_at = time.monotonic()
+        self._last_draw = 0.0
+        disabled = os.environ.get("SKILLOPT_NO_PROGRESS", "").strip().lower()
+        self.enabled = disabled not in {"1", "true", "yes", "on"}
+        self.animated = self.enabled and sys.stderr.isatty()
+        if self.enabled and not self.animated:
+            size_hint = _format_bytes(total_bytes) if total_bytes else "unknown size"
+            self._write(
+                f"  downloading {url} ({size_hint}) -> {destination}\n"
+            )
+
+    def _write(self, text: str) -> None:
+        try:
+            sys.stderr.write(text)
+            sys.stderr.flush()
+        except (OSError, ValueError):
+            pass  # a closed stream must never abort a long download
+
+    def _fraction(self) -> float:
+        if self.total_bytes > 0:
+            return min(1.0, self.done_bytes / self.total_bytes)
+        return 0.0
+
+    def _line(self) -> str:
+        fraction = self._fraction()
+        filled = int(round(fraction * self.WIDTH))
+        bar = "#" * filled + "-" * (self.WIDTH - filled)
+        elapsed = time.monotonic() - self.started_at
+        speed = self.done_bytes / elapsed if elapsed > 0 else 0.0
+        size_total = _format_bytes(self.total_bytes) if self.total_bytes else "?"
+        return (
+            f"\r  downloading [{bar}] {fraction * 100:5.1f}%  "
+            f"{_format_bytes(self.done_bytes)}/{size_total}  "
+            f"{_format_bytes(speed)}/s  "
+            f"elapsed {_format_duration(elapsed)}"
+        )
+
+    def advance(self, chunk_size: int) -> None:
+        self.done_bytes += chunk_size
+        if not self.animated:
+            return
+        now = time.monotonic()
+        if now - self._last_draw < self.MIN_INTERVAL:
+            return
+        self._last_draw = now
+        self._write(self._line())
+
+    def finish(self) -> None:
+        if not self.enabled:
+            return
+        elapsed = time.monotonic() - self.started_at
+        speed = self.done_bytes / elapsed if elapsed > 0 else 0.0
+        if self.animated:
+            self._write(self._line())
+            self._write("\n")
+        self._write(
+            f"  downloaded {_format_bytes(self.done_bytes)} in {elapsed:.1f}s "
+            f"({_format_bytes(speed)}/s)\n"
+        )
+
+
+def download_archive(archive: Path, url: str) -> int:
+    """Stream ``url`` into ``archive`` and return the number of bytes written.
+
+    The download lands at ``archive.with_name(archive.name + '.part')`` and is
+    atomically renamed on success, so an interrupted transfer never leaves a
+    half-written file at the final path. ``Content-Length`` is enforced when
+    the server advertises it; a mismatch is treated as a hard failure and the
+    staging copy is removed.
+    """
+    archive.parent.mkdir(parents=True, exist_ok=True)
+    staging = archive.with_name(archive.name + ".part")
+    if staging.exists():
+        staging.unlink()
+
+    request = urllib.request.Request(
+        url,
+        headers={"User-Agent": "SkillOpt/CAM-SkillOpt (data materialization)"},
+    )
+
+    try:
+        response = urllib.request.urlopen(request, timeout=60)
+    except urllib.error.URLError as exc:
+        staging.unlink(missing_ok=True)
+        raise RuntimeError(f"could not reach {url}: {exc.reason}") from exc
+    except urllib.error.HTTPError as exc:
+        staging.unlink(missing_ok=True)
+        raise RuntimeError(
+            f"server returned HTTP {exc.code} for {url}: {exc.reason}"
+        ) from exc
+
+    total_bytes = 0
+    try:
+        try:
+            total_bytes = int(response.headers.get("Content-Length", 0) or 0)
+        except (TypeError, ValueError):
+            total_bytes = 0
+        progress = _DownloadProgress(total_bytes, url, archive)
+        written = 0
+        try:
+            with staging.open("wb") as fh:
+                while True:
+                    chunk = response.read(64 * 1024)
+                    if not chunk:
+                        break
+                    fh.write(chunk)
+                    written += len(chunk)
+                    progress.advance(len(chunk))
+        except Exception:
+            staging.unlink(missing_ok=True)
+            raise
+        progress.finish()
+    finally:
+        response.close()
+
+    if total_bytes and written != total_bytes:
+        staging.unlink(missing_ok=True)
+        raise RuntimeError(
+            f"download truncated: server promised {total_bytes} bytes, "
+            f"received {written}"
+        )
+
+    staging.replace(archive)
+    return written
+
+
+def download_archive_with_fallback(archive: Path, urls: list[str]) -> tuple[int, str]:
+    """Try each URL in order; return ``(bytes_downloaded, url_used)``.
+
+    The primary URL is tried first, then each mirror in declared order. Every
+    failed attempt cleans its staging file (handled inside
+    :func:`download_archive`) so the next URL starts from a clean slate. The
+    collected failures are joined into the final exception so the caller can
+    surface every attempt to the user, not just the last one.
+    """
+    attempts: list[tuple[str, Exception]] = []
+    for url in urls:
+        try:
+            sys.stderr.write(f"[spreadsheetbench] trying {url}\n")
+            sys.stderr.flush()
+            downloaded = download_archive(archive, url)
+            return downloaded, url
+        except Exception as exc:
+            attempts.append((url, exc))
+            sys.stderr.write(
+                f"[spreadsheetbench] download from {url} failed: {exc}\n"
+            )
+            sys.stderr.flush()
+    summary = "; ".join(f"{url}: {exc}" for url, exc in attempts)
+    raise RuntimeError(f"all {len(urls)} URLs failed ({summary})")
+
+
 def archive_top_level_names(archive: Path) -> set[str]:
     with tarfile.open(archive, "r:*") as tar:
         return {
@@ -312,6 +517,8 @@ def build_report(args: argparse.Namespace) -> dict:
         "payload_root": str(args.payload_root),
         "payload_exists": args.payload_root.exists(),
         "output_split_dir": str(args.output_split_dir),
+        "download_url": args.download_url,
+        "archive_downloaded": False,
         "status": "BLOCKED",
         "blockers": [],
         "splits": {},
@@ -320,6 +527,41 @@ def build_report(args: argparse.Namespace) -> dict:
     if not args.manifest_dir.exists():
         report["blockers"].append("SpreadsheetBench manifest directory is missing.")
         return report
+
+    if not args.archive.exists():
+        if args.no_download:
+            report["blockers"].append(
+                "Official archive is missing. Expected "
+                f"{args.archive}; rerun without --no-download to fetch it, "
+                "or place the archive manually."
+            )
+            return report
+        mirror_urls = (
+            list(args.mirror_url)
+            if args.mirror_url is not None
+            else list(DEFAULT_MIRROR_URLS)
+        )
+        urls_to_try = [args.download_url, *mirror_urls]
+        report["mirror_urls"] = mirror_urls
+        try:
+            sys.stderr.write(
+                f"\n[spreadsheetbench] archive not found at {args.archive}\n"
+            )
+            sys.stderr.flush()
+            downloaded, url_used = download_archive_with_fallback(
+                args.archive, urls_to_try
+            )
+            report["archive_downloaded"] = True
+            report["archive_bytes"] = downloaded
+            report["archive_exists"] = args.archive.exists()
+            report["download_url_used"] = url_used
+        except Exception as exc:
+            report["blockers"].append(
+                f"Auto-download of {args.archive.name} failed: {exc}. "
+                "Place the archive manually and rerun, or pass --no-download "
+                "to suppress this attempt (offline mode)."
+            )
+            return report
 
     if not args.payload_root.exists():
         if args.archive.exists():
@@ -393,20 +635,41 @@ def build_report(args: argparse.Namespace) -> dict:
 
 
 def write_markdown(report: dict, path: Path) -> None:
+    archive_bytes = report.get("archive_bytes")
+    archive_downloaded = report.get("archive_downloaded", False)
+    archive_size = (
+        _format_bytes(archive_bytes)
+        if archive_downloaded and archive_bytes
+        else "n/a"
+    )
+    download_url_used = report.get("download_url_used", "n/a")
+    mirror_urls = report.get("mirror_urls", [])
     lines = [
         "# CAM-SkillOpt Stage 6 Data Materialization",
         "",
         f"- Status: `{report['status']}`",
         f"- Archive exists: `{report['archive_exists']}`",
-        f"- Manifest exists: `{report['manifest_exists']}`",
-        f"- Payload exists: `{report['payload_exists']}`",
-        f"- Output split dir: `{report['output_split_dir']}`",
-        "",
-        "## Split Checks",
-        "",
-        "| Split | Manifest | Materialized | Missing Records | Invalid Items | Ready |",
-        "|---|---:|---:|---:|---:|---|",
+        f"- Archive downloaded: `{archive_downloaded}` (size: {archive_size})",
+        f"- Primary download URL: `{report.get('download_url', 'n/a')}`",
+        f"- Download URL used: `{download_url_used}`",
     ]
+    if mirror_urls:
+        lines.append("- Mirror fallbacks:")
+        lines.extend(f"  - `{url}`" for url in mirror_urls)
+    else:
+        lines.append("- Mirror fallbacks: *(none configured)*")
+    lines.extend(
+        [
+            f"- Manifest exists: `{report['manifest_exists']}`",
+            f"- Payload exists: `{report['payload_exists']}`",
+            f"- Output split dir: `{report['output_split_dir']}`",
+            "",
+            "## Split Checks",
+            "",
+            "| Split | Manifest | Materialized | Missing Records | Invalid Items | Ready |",
+            "|---|---:|---:|---:|---:|---|",
+        ]
+    )
     for split, info in report.get("splits", {}).items():
         lines.append(
             f"| {split} | {info['manifest_count']} | {info['materialized_count']} | "
