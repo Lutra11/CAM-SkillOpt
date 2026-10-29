@@ -1,0 +1,77 @@
+{
+  "observed_at_utc": "2026-10-18T16:49:37.7492093Z",
+  "automation_id": "cam-20",
+  "queue_status": "running",
+  "supervisor_status": "running",
+  "supervisor_error": null,
+  "cells": [
+    {
+      "cell_id": "baseline_seed42",
+      "status": "accepted"
+    },
+    {
+      "cell_id": "cam_v3_seed42",
+      "status": "accepted"
+    },
+    {
+      "cell_id": "cam_v3_seed43",
+      "status": "running"
+    },
+    {
+      "cell_id": "baseline_seed43",
+      "status": "pending"
+    }
+  ],
+  "processes": [
+    {
+      "ProcessId": 20616,
+      "ParentProcessId": 35548,
+      "CreationDate": "2026-10-18T20:42:48.692339+08:00",
+      "ExecutablePath": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "CommandLine": "\"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe\" -NoProfile -ExecutionPolicy Bypass -File E:\\Programs\\CAM\\CAM-SkillOpt\\outputs\\studies\\continuous_adaptation_v3\\supervise_v3.ps1"
+    },
+    {
+      "ProcessId": 38372,
+      "ParentProcessId": 20616,
+      "CreationDate": "2026-10-18T20:42:49.372388+08:00",
+      "ExecutablePath": "E:\\MiniConda\\envs\\skillopt\\python.exe",
+      "CommandLine": "\"E:\\MiniConda\\envs\\skillopt\\python.exe\" -X utf8 E:\\Programs\\CAM\\CAM-SkillOpt\\scripts\\run_continuous_adaptation_v3.py --run --lanes 1 "
+    },
+    {
+      "ProcessId": 35836,
+      "ParentProcessId": 38372,
+      "CreationDate": "2026-10-19T00:26:46.766106+08:00",
+      "ExecutablePath": "E:\\MiniConda\\envs\\skillopt\\python.exe",
+      "CommandLine": "E:\\MiniConda\\envs\\skillopt\\python.exe -X utf8 E:\\Programs\\CAM\\CAM-SkillOpt\\scripts\\run_continuous_adaptation_v3.py --cell cam_v3_seed43"
+    }
+  ],
+  "current_cell": "cam_v3_seed43",
+  "completed_training_steps": 1,
+  "latest_stage_path": "E:\\Programs\\CAM\\CAM-SkillOpt\\outputs\\continuous_adaptation_v3\\spreadsheetbench\\qwen\\cam_v3_seed43\\steps\\step_0002\\selection_eval\\stage_stats.json",
+  "latest_stage_updated_utc": "2026-10-18T16:49:34.0706210Z",
+  "latest_stage": {
+    "stage": "selection_eval",
+    "status": "running",
+    "n_expected": 40,
+    "n_recorded": 8,
+    "n_scored": 8,
+    "n_not_run": 32,
+    "failure_types": {
+      "none": 5,
+      "score_mismatch": 3
+    },
+    "phase_counts": {
+      "exec": 8
+    },
+    "llm_ok": 8,
+    "code_ok": 8,
+    "exec_ok": 8,
+    "hard": null,
+    "soft": null,
+    "wall_time_s": 76.547
+  },
+  "current_cell_error_matches": [],
+  "known_warning": "CAM seed42 epoch03 no_content remains disclosed in INCIDENTS.md",
+  "recovery_action": "none: 2 cells accepted, CAM43 active with recent writes",
+  "interpretation": "One accepted seed pair, seed43 incomplete; no overall efficacy conclusion and no tuning from test results"
+}

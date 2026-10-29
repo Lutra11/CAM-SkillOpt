@@ -1,0 +1,20 @@
+{
+  "study_id": "cam_v2r1_qwen",
+  "status": "operator_interrupted",
+  "updated_at": "2026-10-18T10:40:05.6265560Z",
+  "supervisor_pid": 27012,
+  "smoke_pid": 36960,
+  "smoke_path": "E:\\Programs\\CAM\\CAM-SkillOpt\\outputs\\smoke\\v2r1_review",
+  "freeze_path": "E:\\Programs\\CAM\\CAM-SkillOpt\\outputs\\studies\\cam_v2r1_qwen\\freeze.json",
+  "formal_stdout": "E:\\Programs\\CAM\\CAM-SkillOpt\\reports\\v2r1\\logs\\formal_driver.stdout.log",
+  "formal_stderr": "E:\\Programs\\CAM\\CAM-SkillOpt\\reports\\v2r1\\logs\\formal_driver.stderr.log",
+  "formal_creation_date": "2026/10/18 18:32:18",
+  "validation_output": "SMOKE_VALIDATION True complete; steps, actions, test IDs and scores verified; FREEZE_VERIFIED 1398; SEED42_VALIDATION baseline_seed42 True complete; steps, actions, test IDs and scores verified\r\nSEED42_VALIDATION cam_full_seed42 True complete; steps, actions, test IDs and scores verified",
+  "driver_identity_verified": true,
+  "formal_exit_code": null,
+  "formal_pid": 13872,
+  "formal_exit_known": false,
+  "formal_parent_pid": 27012,
+  "formal_command": "\"E:\\MiniConda\\envs\\skillopt\\python.exe\" -X utf8 scripts/run_study.py --run --lanes 2 ",
+  "reason": "User selected reduced option 2; old full queue stopped by recorded exact process identities."
+}

@@ -21,6 +21,7 @@ import os
 import random
 import re
 import time
+from dataclasses import asdict
 from collections import defaultdict
 
 from skillopt.datasets.base import BatchSpec
@@ -31,6 +32,7 @@ from skillopt.cam import (
     compute_adaptive_budget,
     estimate_failure_confidence,
 )
+from skillopt.cam.adaptive_budget import compute_evidence_budget
 from skillopt.gradient.aggregate import merge_patches
 from skillopt.optimizer.meta_skill import run_meta_skill
 from skillopt.optimizer.clip import rank_and_select
@@ -62,6 +64,7 @@ from skillopt.optimizer.update_modes import (
     is_full_rewrite_minibatch_mode,
     normalize_update_mode,
     payload_label,
+    set_payload_items,
     short_item_summary,
 )
 from skillopt.model import (
@@ -390,19 +393,44 @@ def _load_skill(out_root: str, step: int) -> str:
 
 
 def _load_meta_skill_content(out_root: str, epoch: int) -> str:
-    if epoch <= 0:
+    # A chain of validated no-update outcomes carries forward the last
+    # successful memory. A historical no_content/failed result terminates the
+    # chain: do not silently treat that old failure as a legitimate no-op.
+    while epoch > 0:
+        path = os.path.join(
+            out_root, "meta_skill", f"epoch_{epoch:02d}", "meta_skill_result.json",
+        )
+        if not os.path.exists(path):
+            return ""
+        try:
+            with open(path, encoding="utf-8") as f:
+                result = json.load(f)
+        except Exception:
+            return ""
+        if not isinstance(result, dict):
+            return ""
+        action = result.get("action")
+        if action == "no_update" and result.get("outcome_kind") == "validated_no_update":
+            epoch -= 1
+            continue
+        content = result.get("meta_skill_content")
+        if action == "write_meta_skill" and isinstance(content, str) and content.strip():
+            return content.strip()
+        # Legacy successful artifacts had content but no action field.
+        if action is None and isinstance(content, str) and content.strip():
+            return content.strip()
         return ""
-    path = os.path.join(
-        out_root, "meta_skill", f"epoch_{epoch:02d}", "meta_skill_result.json",
+    return ""
+
+
+def _save_auxiliary_error(path: str, exc: BaseException) -> None:
+    """Persist typed auxiliary failure metadata without raw model output."""
+    error = exc if isinstance(exc, InfraError) else InfraError(
+        "provider_error", "Auxiliary generation failed", stage="auxiliary",
+        details={"exception_type": type(exc).__name__},
     )
-    if not os.path.exists(path):
-        return ""
-    try:
-        with open(path) as f:
-            result = json.load(f)
-        return str(result.get("meta_skill_content", "")).strip()
-    except Exception:
-        return ""
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump({**error.to_dict(), "action": "failed"}, f, indent=2, ensure_ascii=False)
 
 
 def _load_runtime_state(out_root: str) -> dict | None:
@@ -428,7 +456,14 @@ def _cam_signature(cfg: dict) -> dict:
             "sel_env_num", "target_model", "target_backend", "codex_exec_reasoning_effort",
             "exec_timeout", "workers", "analyst_workers", "mode", "max_turns",
             "gate_metric", "gate_mixed_weight", "cam_confidence_level", "cam_meaningful_improvement",
-            "cam_bootstrap_samples", "cam_seed")
+            "cam_bootstrap_samples", "cam_seed", "reasoning_effort", "optimizer_model",
+            "cam_soft_accept", "cam_drift_patience", "cam_drift_tolerance",
+            "cam_memory_inconclusive", "cam_memory_enabled", "cam_memory_top_k",
+            "cam_adaptive_budget", "cam_min_budget", "cam_max_budget",
+            "cam_soft_accept_policy", "cam_noninferiority_margin", "cam_group_guard",
+            "cam_group_max_regression", "cam_group_min_pairs", "cam_memory_policy",
+            "cam_memory_min_similarity", "cam_memory_half_life_steps", "cam_budget_policy",
+            "cam_budget_min_support_tasks", "final_selection")
     signature = {key: cfg.get(key) for key in keys}
     initial_path = os.path.abspath(cfg["skill_init"])
     initial = ""
@@ -438,7 +473,11 @@ def _cam_signature(cfg: dict) -> dict:
     signature["initial_skill_sha256"] = hashlib.sha256(initial.encode("utf-8")).hexdigest()
     digest = hashlib.sha256()
     for source_file in (__file__, os.path.join(os.path.dirname(__file__), "..", "cam", "selection_guard.py"),
-                        os.path.join(os.path.dirname(__file__), "..", "cam", "bootstrap_gate.py")):
+                        os.path.join(os.path.dirname(__file__), "..", "cam", "bootstrap_gate.py"),
+                        os.path.join(os.path.dirname(__file__), "..", "cam", "drift_guard.py"),
+                        os.path.join(os.path.dirname(__file__), "..", "cam", "memory_context.py"),
+                        os.path.join(os.path.dirname(__file__), "..", "cam", "adaptive_budget.py"),
+                        os.path.join(os.path.dirname(__file__), "..", "cam", "rejected_memory.py")):
         with open(source_file, "rb") as handle:
             digest.update(handle.read())
     signature["gate_implementation_sha256"] = digest.hexdigest()
@@ -557,6 +596,27 @@ def _extract_failure_patterns(
     return patterns
 
 
+def _observed_training_failure_patterns(rollout_results: list[dict]) -> list[dict]:
+    """Group observed training failures without attributing analyst prose to unrelated IDs."""
+    groups: dict[str, set[str]] = defaultdict(set)
+    for row in rollout_results:
+        if row.get("status") == "infra_error":
+            raise SelectionEvidenceError("Infrastructure errors are not training failure evidence")
+        for key in ("split", "dataset_split", "source_split"):
+            if row.get(key) and row[key] not in {"train", "training"}:
+                raise SelectionEvidenceError("Only training rows may define memory failure patterns")
+        if float(row.get("hard") or 0) > 0:
+            continue
+        task_type = str(row.get("task_type") or row.get("instruction_type") or "unknown")
+        category = str(row.get("failure_type") or "unknown")
+        reason = str(row.get("fail_reason") or "unspecified")[:1000]
+        if row.get("id") is not None:
+            groups[f"{task_type}: {category}: {reason}"].add(str(row["id"]))
+    return [{"pattern": pattern, "count": len(ids), "task_ids": sorted(ids),
+             "source": "observed_training_metadata"}
+            for pattern, ids in sorted(groups.items())]
+
+
 def _format_step_buffer(buffer: list[dict]) -> str:
     """Format the unified step buffer into a single context block.
 
@@ -593,9 +653,9 @@ def _format_step_buffer(buffer: list[dict]) -> str:
         if rejected:
             score_before = entry.get("score_before", "?")
             score_after = entry.get("score_after", "?")
-            parts.append(
-                f"  Rejected edits (score {score_before} → {score_after}):"
-            )
+            kind = entry.get("kind", "rejected")
+            label = "Inconclusive edits (may already be in current; do not assume harm)" if kind == "inconclusive" else "Rejected edits"
+            parts.append(f"  {label} (score {score_before} → {score_after}):")
             for i, e in enumerate(rejected, 1):
                 if e.get("op") is not None:
                     op = e.get("op", "?")
@@ -830,7 +890,21 @@ class ReflACTTrainer:
         out_root = cfg["out_root"]
         os.makedirs(out_root, exist_ok=True)
         strict_cam = bool(cfg.get("cam_enabled", False) and cfg.get("cam_bootstrap_gate", True))
-        cam_policy = "paired_selection_all_updates_v1"
+        cam_policy = ("paired_selection_all_updates_v3"
+                      if cfg.get("cam_soft_accept_policy", "legacy") != "legacy"
+                      or cfg.get("cam_memory_policy", "legacy") != "legacy"
+                      or cfg.get("cam_budget_policy", "legacy") != "legacy"
+                      else "paired_selection_all_updates_v2r1")
+        if cfg.get("cam_enabled", False):
+            for key, allowed in (("cam_soft_accept_policy", {"legacy", "noninferiority"}),
+                                 ("cam_memory_policy", {"legacy", "evidence_v3"}),
+                                 ("cam_budget_policy", {"legacy", "evidence_v3"})):
+                if cfg.get(key, "legacy") not in allowed:
+                    raise ValueError(f"Unsupported {key}: use one of {sorted(allowed)}")
+            if (cfg.get("cam_memory_enabled", False)
+                    and cfg.get("cam_memory_policy", "legacy") == "evidence_v3" and not strict_cam):
+                raise ValueError("Evidence-v3 memory requires aligned strict CAM validation evidence; "
+                                 "No-Bootstrap with evidence-v3 memory is not supported")
         cam_state_path = os.path.join(out_root, "cam_gate_state.json")
         saved_cam_state = None
         cam_signature = _cam_signature(cfg) if strict_cam else None
@@ -1156,6 +1230,13 @@ class ReflACTTrainer:
             best_origin = "initial_skill"
             resume_from = 1
 
+        from skillopt.cam.drift_guard import DriftGuard
+        drift_guard = DriftGuard(
+            patience=cfg.get("cam_drift_patience", 2),
+            tolerance=cfg.get("cam_drift_tolerance", 0.0),
+            state=(runtime_state or {}).get("cam_drift_guard"),
+        )
+
         if not self._validating_cam_resume:
             _save_skill(out_root, 0, skill_init)
 
@@ -1192,6 +1273,7 @@ class ReflACTTrainer:
                     "best_score": best_score,
                     "best_step": best_step,
                     "best_origin": best_origin,
+                    "cam_drift_guard": dict(drift_guard.state) if strict_cam else None,
                 },
             )
 
@@ -1207,7 +1289,7 @@ class ReflACTTrainer:
             authorized_current = {skill_hash(skill_init)}
             authorized_best = {skill_hash(skill_init)}
             for event in cam_events:
-                if event.get("action") in {"accept", "accept_new_best"}:
+                if event.get("action") in {"accept", "accept_new_best", "soft_accept"}:
                     authorized_current.add(event.get("candidate_hash"))
                 if event.get("promotion_authorized"):
                     authorized_best.add(event.get("candidate_hash"))
@@ -1251,7 +1333,10 @@ class ReflACTTrainer:
         cam_memory_enabled = bool(cfg.get("cam_memory_enabled", False))
         cam_memory = (
             PersistentRejectedEditMemory(
-                os.path.join(out_root, "cam_rejected_memory.json")
+                os.path.join(out_root, "cam_rejected_memory.json"),
+                policy=cfg.get("cam_memory_policy", "legacy"),
+                min_similarity=cfg.get("cam_memory_min_similarity", 0.15),
+                half_life_steps=cfg.get("cam_memory_half_life_steps", 8),
             )
             if cam_enabled and cam_memory_enabled
             else None
@@ -1284,7 +1369,8 @@ class ReflACTTrainer:
             baseline = sel_result_cache.get(skill_hash(skill_init))
             if baseline and set(scores) != set(indexed_scores(baseline["rows"], metric=gate_metric, mixed_weight=gate_mixed_weight)):
                 raise SelectionEvidenceError("Selection IDs changed from the initial fixed split")
-            rows = [{key: row[key] for key in ("id", "hard", "soft", "status", "split", "dataset_split") if key in row}
+            rows = [{key: row[key] for key in ("id", "hard", "soft", "status", "split", "dataset_split",
+                                              "task_type", "instruction_type") if key in row}
                     for row in results]
             sh = skill_hash(skill)
             sel_result_cache[sh] = {"rows": rows, "source": os.path.relpath(directory, out_root).replace(os.sep, "/"),
@@ -1322,6 +1408,17 @@ class ReflACTTrainer:
                 raise SelectionEvidenceError("Cached CAM selection evidence is incomplete")
             sel_cache[sh] = compute_score(entry["rows"])
             return entry["rows"]
+
+        def _apply_cam_drift_guard(origin):
+            nonlocal current_skill, current_score, current_origin
+            if not strict_cam:
+                return None
+            observation = drift_guard.observe(current_score, best_score, global_step)
+            observation.update(origin=origin, current_score_before=current_score, best_score=best_score)
+            if observation["rolled_back"]:
+                print(f"    [drift guard] {origin}: current={current_score:.4f} -> best={best_score:.4f}")
+                current_skill, current_score, current_origin = best_skill, best_score, best_origin
+            return observation
 
         def _cam_decide(candidate, directory, *, origin, reference_skill=None):
             reference = current_skill if reference_skill is None else reference_skill
@@ -1362,10 +1459,13 @@ class ReflACTTrainer:
             gate, audit = _cam_decide(candidate, directory, origin=origin)
             current_skill, current_score = gate.current_skill, gate.current_score
             best_skill, best_score, best_step = gate.best_skill, gate.best_score, gate.best_step
-            if gate.action in {"accept", "accept_new_best"}:
+            if gate.action in {"accept", "accept_new_best", "soft_accept"}:
                 current_origin = origin
             if audit.get("promotion_authorized"):
                 best_origin = origin
+            drift = _apply_cam_drift_guard(origin)
+            if drift is not None:
+                write_json(os.path.join(directory, "drift_guard.json"), drift)
             return gate, audit
 
         def _flush_appendix(raw_patches, record, directory):
@@ -1708,7 +1808,50 @@ class ReflACTTrainer:
                                 **lr_decision,
                             }, ensure_ascii=False) + "\n")
                     else:
-                        if cam_enabled and cam_adaptive_budget:
+                        if (cam_enabled and cam_adaptive_budget
+                                and cfg.get("cam_budget_policy", "legacy") == "evidence_v3"):
+                            # Membership is verifiable; an analyst support_count alone
+                            # is not evidence of distinct supporting training tasks.
+                            training_ids = {str(row["id"]) for row in all_rollout_results
+                                            if "id" in row and row.get("status") != "infra_error"}
+                            verified_items = []
+                            discarded_ids = set()
+                            for item in merged_items:
+                                if not isinstance(item, dict):
+                                    continue
+                                verified = dict(item)
+                                for key in ("support_task_ids", "task_ids", "evidence_task_ids"):
+                                    raw_ids = verified.get(key, [])
+                                    if isinstance(raw_ids, (str, int)) and not isinstance(raw_ids, bool):
+                                        raw_ids = [raw_ids]
+                                    raw_ids = raw_ids if isinstance(raw_ids, (list, tuple, set)) else []
+                                    claimed = {str(value).strip() for value in raw_ids
+                                               if isinstance(value, (str, int)) and not isinstance(value, bool)}
+                                    discarded_ids.update(claimed - training_ids)
+                                    if key in verified:
+                                        verified[key] = sorted(claimed & training_ids)
+                                verified_items.append(verified)
+                            recent_changes = [record.get("cam_gate", {}).get("mean_improvement")
+                                              for record in history[-2:]]
+                            recent_changes = [value for value in recent_changes
+                                              if isinstance(value, (int, float)) and not isinstance(value, bool)]
+                            budget_decision = compute_evidence_budget(
+                                verified_items,
+                                total_failures=sum(float(row.get("hard") or 0) < 1e-9
+                                                   for row in all_rollout_results),
+                                min_budget=int(cfg.get("cam_min_budget", 2)),
+                                max_budget=int(cfg.get("cam_max_budget", cfg.get("edit_budget", 4))),
+                                min_support_tasks=int(cfg.get("cam_budget_min_support_tasks", 2)),
+                                recent_score_changes=recent_changes,
+                            )
+                            edit_budget = budget_decision.budget
+                            merged_patch = set_payload_items(dict(merged_patch),
+                                                             budget_decision.eligible_edits, update_mode)
+                            step_rec["cam_evidence_budget"] = asdict(budget_decision)
+                            step_rec["cam_evidence_budget"]["discarded_nontraining_ids"] = sorted(discarded_ids)
+                            with open(os.path.join(step_dir, "evidence_budget.json"), "w", encoding="utf-8") as handle:
+                                json.dump(step_rec["cam_evidence_budget"], handle, ensure_ascii=False, indent=2)
+                        elif cam_enabled and cam_adaptive_budget:
                             select_patterns = _extract_failure_patterns(
                                 all_rollout_results, step_dir,
                             )
@@ -1739,12 +1882,15 @@ class ReflACTTrainer:
                             }
                         else:
                             edit_budget = scheduler.step()
-                    ranked_patch = rank_and_select(
-                        current_skill, merged_patch,
-                        max_edits=edit_budget,
-                        update_mode=update_mode,
-                        meta_skill_context=active_meta_skill,
-                    )
+                    if edit_budget == 0:
+                        ranked_patch = set_payload_items(dict(merged_patch), [], update_mode)
+                    else:
+                        ranked_patch = rank_and_select(
+                            current_skill, merged_patch,
+                            max_edits=edit_budget,
+                            update_mode=update_mode,
+                            meta_skill_context=active_meta_skill,
+                        )
                     with open(os.path.join(step_dir, "ranked_edits.json"), "w") as f:
                         json.dump(ranked_patch, f, ensure_ascii=False, indent=2)
 
@@ -1972,12 +2118,15 @@ class ReflACTTrainer:
                 best_skill = gate.best_skill
                 best_score = gate.best_score
                 best_step = gate.best_step
-                if gate.action in {"accept", "accept_new_best", "force_accept"}:
+                if gate.action in {"accept", "accept_new_best", "force_accept", "soft_accept"}:
                     current_origin = f"step_{global_step:04d}"
                 if gate.action == "accept_new_best" or (
                     gate.action == "force_accept" and best_step == global_step
                 ):
                     best_origin = current_origin
+
+                if strict_cam:
+                    step_rec["drift_guard"] = _apply_cam_drift_guard(f"step_{global_step:04d}")
 
                 if use_skill_aware:
                     _flush_appendix(all_raw_patches, step_rec, step_dir)
@@ -2006,6 +2155,11 @@ class ReflACTTrainer:
                         f"    [6/6 EVALUATE] FORCE-ACCEPT (gate disabled) "
                         f"{score_label}"
                     )
+                elif gate.action == "soft_accept":
+                    print(
+                        f"    [6/6 EVALUATE] SOFT-ACCEPT "
+                        f"{score_label}; paired CI overlaps zero -> current adopts candidate, best preserved"
+                    )
                 elif gate.action == "cam_re_evaluate":
                     print(
                         f"    [6/6 EVALUATE] CAM RE-EVALUATE "
@@ -2023,9 +2177,9 @@ class ReflACTTrainer:
                 action = step_rec.get("action", "unknown")
                 n_total = len(all_rollout_results) or 1
                 n_fail = sum(1 for r in all_rollout_results if not r.get("hard") or float(r.get("hard", 0)) < 1e-9)
-                failure_patterns = _extract_failure_patterns(
-                    all_rollout_results, step_dir,
-                )
+                failure_patterns = (_observed_training_failure_patterns(all_rollout_results)
+                                    if cfg.get("cam_memory_policy", "legacy") == "evidence_v3"
+                                    else _extract_failure_patterns(all_rollout_results, step_dir))
 
                 buf_entry: dict = {
                     "step": global_step,
@@ -2036,16 +2190,18 @@ class ReflACTTrainer:
                 }
 
                 # Attach rejected edits when the step was rejected
-                if "reject" in action and ranked_patch:
+                if ("reject" in action or action == "soft_accept") and ranked_patch:
                     rejected_edits = [
                         short_item_summary(item, update_mode)
                         for item in ranked_items
                         if isinstance(item, dict)
                     ]
-                    buf_entry["score_before"] = current_score
+                    buf_entry["score_before"] = prev_current
                     buf_entry["score_after"] = cand_gate_score
                     buf_entry["rejected_edits"] = rejected_edits
-                    if cam_memory is not None:
+                    buf_entry["kind"] = "rejected" if "reject" in action else "inconclusive"
+                    if (cam_memory is not None and cfg.get("cam_memory_policy", "legacy") != "evidence_v3"
+                            and ("reject" in action or cfg.get("cam_memory_inconclusive", True))):
                         stored_memory = cam_memory.add_rejected_step(
                             failure_patterns=[
                                 item.get("pattern", "unknown")
@@ -2058,18 +2214,69 @@ class ReflACTTrainer:
                             task_type="overall",
                             epoch=epoch,
                             step=global_step,
+                            kind="rejected" if "reject" in action else "inconclusive",
                         )
                         buf_entry["cam_memory_items_added"] = len(stored_memory)
                         step_rec["persistent_memory"]["write_calls"] += 1
                         step_rec["persistent_memory"]["items_added"] += len(stored_memory)
                         with open(os.path.join(step_dir, "memory_write.json"), "w", encoding="utf-8") as handle:
                             json.dump({"stage": "rejected_update", "epoch": epoch,
+                                       "kind": "rejected" if "reject" in action else "inconclusive",
                                        "step": global_step, "source_split": "train",
                                        "score_source": "selection_aggregate_delta",
                                        "score_change": cand_gate_score - prev_current,
                                        "items_added": len(stored_memory),
                                        "memory_ids": [item.memory_id for item in stored_memory],
                                        "stored_item_count": len(cam_memory.items)},
+                                      handle, ensure_ascii=False, indent=2)
+
+                if (cam_memory is not None and cfg.get("cam_memory_policy", "legacy") == "evidence_v3"
+                        and ranked_items and action in {"accept", "accept_new_best", "force_accept",
+                                                        "soft_accept", "reject", "cam_re_evaluate"}):
+                    kind = ("accepted" if action in {"accept", "accept_new_best", "force_accept"}
+                            else "rejected" if action == "reject" else "inconclusive")
+                    if kind != "inconclusive" or cfg.get("cam_memory_inconclusive", True):
+                        types = {str(row.get("task_type") or row.get("instruction_type") or "").strip()
+                                 for row in all_rollout_results}
+                        types.discard("")
+                        task_scope = next(iter(types)) if len(types) == 1 else "mixed"
+                        changed_ids = []
+                        if strict_cam:
+                            previous_rows = sel_result_cache[current_hash_at_eval]["rows"]
+                            proposed_rows = sel_result_cache[cand_hash]["rows"]
+                            old_scores = indexed_scores(previous_rows, metric=gate_metric,
+                                                        mixed_weight=gate_mixed_weight)
+                            new_scores = indexed_scores(proposed_rows, metric=gate_metric,
+                                                        mixed_weight=gate_mixed_weight)
+                            changed_ids = [task_id for task_id in old_scores
+                                           if old_scores[task_id] != new_scores[task_id]]
+                        stored_memory = cam_memory.add_rejected_step(
+                            failure_patterns=[item.get("pattern", "unknown") for item in failure_patterns
+                                              if isinstance(item, dict)],
+                            rejected_edits=[json.dumps(short_item_summary(item, update_mode),
+                                                       sort_keys=True, ensure_ascii=False)
+                                            for item in ranked_items if isinstance(item, dict)],
+                            score_change=cand_gate_score - prev_current,
+                            benchmark=str(cfg.get("env", "unknown")), task_type=task_scope,
+                            epoch=epoch, step=global_step, kind=kind,
+                            skill_before_hash=current_hash_at_eval, skill_after_hash=cand_hash,
+                            supporting_task_ids=changed_ids,
+                        )
+                        buf_entry["cam_memory_items_added"] = len(stored_memory)
+                        step_rec["persistent_memory"]["write_calls"] += 1
+                        step_rec["persistent_memory"]["items_added"] += len(stored_memory)
+                        with open(os.path.join(step_dir, "memory_write.json"), "w", encoding="utf-8") as handle:
+                            json.dump({"schema_version": 3, "stage": "update_bundle", "epoch": epoch,
+                                       "step": global_step, "kind": kind, "task_type": task_scope,
+                                       "source_split": "train", "score_source": "selection_aggregate_delta",
+                                       "attribution_scope": "update_bundle",
+                                       "score_change": cand_gate_score - prev_current,
+                                       "supporting_task_ids": changed_ids,
+                                       "paired_evidence_available": strict_cam,
+                                       "support_definition": "validation_ids_with_changed_scores_not_causal_credit",
+                                       "skill_before_hash": current_hash_at_eval, "skill_after_hash": cand_hash,
+                                       "items_added": len(stored_memory),
+                                       "memory_ids": [item.memory_id for item in stored_memory]},
                                       handle, ensure_ascii=False, indent=2)
 
                 step_buffer.append(buf_entry)
@@ -2283,17 +2490,30 @@ class ReflACTTrainer:
                     existing_guidance = extract_slow_update_field(current_skill)
 
                     # 6. Optimizer analysis (with reflection on previous guidance)
-                    slow_result = run_slow_update(
-                        current_skill,
-                        results_prev,
-                        results_curr,
-                        slow_items,
-                        prev_skill=prev_skill,
-                        prev_slow_update_content=existing_guidance,
-                        prev_rollout_dir=prev_rollout_dir,
-                        curr_rollout_dir=curr_rollout_dir,
-                        comparison_pairs=comparison_pairs,
-                    )
+                    try:
+                        slow_result = run_slow_update(
+                            current_skill,
+                            results_prev,
+                            results_curr,
+                            slow_items,
+                            prev_skill=prev_skill,
+                            prev_slow_update_content=existing_guidance,
+                            prev_rollout_dir=prev_rollout_dir,
+                            curr_rollout_dir=curr_rollout_dir,
+                            comparison_pairs=comparison_pairs,
+                        )
+                    except Exception as exc:
+                        _save_auxiliary_error(os.path.join(slow_dir, "slow_error.json"), exc)
+                        raise
+                    if not isinstance(slow_result, dict) or slow_result.get("outcome_kind") not in {
+                        "validated_update", "validated_no_update",
+                    }:
+                        exc = InfraError(
+                            "provider_error", "Slow update returned no validated outcome",
+                            stage="slow_update", details={"error_kind": "missing_outcome"},
+                        )
+                        _save_auxiliary_error(os.path.join(slow_dir, "slow_error.json"), exc)
+                        raise exc
                     slow_time = round(time.time() - t_slow, 1)
 
                     if slow_result and slow_result.get("slow_update_content"):
@@ -2381,7 +2601,7 @@ class ReflACTTrainer:
                             best_skill = slow_gate.best_skill
                             best_score = slow_gate.best_score
                             best_step = slow_gate.best_step
-                            if slow_gate.action in {"accept", "accept_new_best"}:
+                            if slow_gate.action in {"accept", "accept_new_best", "soft_accept"}:
                                 current_origin = (
                                     f"slow_update_epoch_{epoch:02d}"
                                 )
@@ -2436,11 +2656,11 @@ class ReflACTTrainer:
                                 f"{slow_time}s"
                             )
                     else:
-                        slow_result = slow_result or {}
-                        slow_result["action"] = "no_content"
+                        slow_result["action"] = "no_update"
                         slow_result["time_s"] = slow_time
                         print(
-                            f"    [slow update] no guidance produced, "
+                            f"    [slow update] retained current guidance: "
+                            f"{slow_result['no_update_reason']}; "
                             f"{slow_time}s"
                         )
 
@@ -2545,15 +2765,32 @@ class ReflACTTrainer:
                         )
 
                     t_meta_skill = time.time()
-                    meta_skill_result = run_meta_skill(
-                        prev_skill=prev_skill,
-                        curr_skill=epoch_last_step_skill,
-                        comparison_pairs=epoch_comparison_pairs or [],
-                        prev_meta_skill_content=prev_meta_skill,
-                    )
+                    try:
+                        meta_skill_result = run_meta_skill(
+                            prev_skill=prev_skill,
+                            curr_skill=epoch_last_step_skill,
+                            comparison_pairs=epoch_comparison_pairs or [],
+                            prev_meta_skill_content=prev_meta_skill,
+                        )
+                    except Exception as exc:
+                        _save_auxiliary_error(
+                            os.path.join(meta_skill_dir, "meta_error.json"), exc,
+                        )
+                        raise
+                    if not isinstance(meta_skill_result, dict) or meta_skill_result.get("outcome_kind") not in {
+                        "validated_update", "validated_no_update",
+                    }:
+                        exc = InfraError(
+                            "provider_error", "Meta skill returned no validated outcome",
+                            stage="meta_skill", details={"error_kind": "missing_outcome"},
+                        )
+                        _save_auxiliary_error(
+                            os.path.join(meta_skill_dir, "meta_error.json"), exc,
+                        )
+                        raise exc
                     meta_skill_time = round(time.time() - t_meta_skill, 1)
 
-                    if meta_skill_result and meta_skill_result.get("meta_skill_content"):
+                    if meta_skill_result.get("meta_skill_content"):
                         meta_skill_result["time_s"] = meta_skill_time
                         meta_skill_result["action"] = "write_meta_skill"
                         print(
@@ -2562,10 +2799,12 @@ class ReflACTTrainer:
                             f"{meta_skill_time}s"
                         )
                     else:
-                        meta_skill_result = meta_skill_result or {}
                         meta_skill_result["time_s"] = meta_skill_time
-                        meta_skill_result["action"] = "no_content"
-                        print(f"    [meta skill] no memory produced, {meta_skill_time}s")
+                        meta_skill_result["action"] = "no_update"
+                        print(
+                            f"    [meta skill] retained current memory: "
+                            f"{meta_skill_result['no_update_reason']}, {meta_skill_time}s"
+                        )
 
                     with open(meta_skill_done_path, "w") as f:
                         json.dump(meta_skill_result, f, indent=2, ensure_ascii=False)
@@ -2612,9 +2851,10 @@ class ReflACTTrainer:
             write_json(os.path.join(out_root, "final_cam_gate.json"), final_cam_gate)
             _persist_runtime_state(global_step)
 
-        if cfg["eval_test"]:
-            task_types = adapter.get_task_types()
-
+        # v3 opts into final validation independently of held-out test calls.
+        # This gives baseline's final slow update the same opportunity for
+        # selection when the study wrapper performs only one post-training test.
+        if cfg.get("final_selection", cfg["eval_test"]):
             # ── Final skill validation (valid_seen) + best promotion ─────
             # The final (last) skill may carry an epoch-end slow_update that
             # was force-injected WITHOUT a val pass (use_gate=false or
@@ -2641,6 +2881,11 @@ class ReflACTTrainer:
                     )
                     fval_dir = os.path.join(out_root, "final_selection_eval")
                     fval_results = adapter.rollout(fval_env, current_skill, fval_dir)
+                    if cfg.get("final_selection", False):
+                        final_scores = indexed_scores(fval_results, metric="hard")
+                        indexed_scores(fval_results, metric="soft")
+                        if len(final_scores) != int(cfg["sel_env_num"]):
+                            raise SelectionEvidenceError("Final selection evidence must cover the fixed validation set")
                     final_selection_hard, final_selection_soft = compute_score(fval_results)
                     final_gate_score = select_gate_score(
                         final_selection_hard, final_selection_soft,
@@ -2671,6 +2916,8 @@ class ReflACTTrainer:
                         _persist_runtime_state(global_step)
             except Exception as _e:  # noqa: BLE001
                 infra = _e if isinstance(_e, InfraError) else None
+                if cfg.get("final_selection", False):
+                    raise
                 if isinstance(_e, SelectionEvidenceError):
                     raise
                 if infra is not None:
@@ -2678,6 +2925,9 @@ class ReflACTTrainer:
                 final_selection_hard = None
                 final_selection_soft = None
                 print(f"\n  [final skill val FAILED: {_e!r}]")
+
+        if cfg["eval_test"]:
+            task_types = adapter.get_task_types()
 
             # Baseline: S_0 on test set (valid_unseen)
             print(f"\n{'='*60}")
@@ -2837,7 +3087,9 @@ class ReflACTTrainer:
 
         # ── Global summary ───────────────────────────────────────────────
         total_wall = time.time() - t_loop_start
-        n_accept = sum(1 for h in history if "accept" in h.get("action", ""))
+        n_soft = sum(1 for h in history if h.get("action") == "soft_accept")
+        n_accept = sum(1 for h in history
+                       if "accept" in h.get("action", "") and h.get("action") != "soft_accept")
         n_reject = sum(1 for h in history if h.get("action") == "reject")
         n_skip = sum(1 for h in history if h.get("action") == "skip_no_patches")
 
@@ -2851,7 +3103,8 @@ class ReflACTTrainer:
                 epoch_stats.append({
                     "epoch": e,
                     "steps": [h["step"] for h in epoch_records],
-                    "accepts": sum(1 for h in epoch_records if "accept" in h.get("action", "")),
+                    "accepts": sum(1 for h in epoch_records if h.get("action") in {"accept", "accept_new_best", "force_accept"}),
+                    "soft_accepts": sum(1 for h in epoch_records if h.get("action") == "soft_accept"),
                     "rejects": sum(1 for h in epoch_records if h.get("action") == "reject"),
                     "skips": sum(1 for h in epoch_records if h.get("action") == "skip_no_patches"),
                     "best_score_at_epoch_end": epoch_records[-1].get("best_score", 0.0),
@@ -2892,6 +3145,8 @@ class ReflACTTrainer:
             "best_origin": best_origin,
             "total_steps": len(history),
             "total_accepts": n_accept,
+            "total_soft_accepts": n_soft,
+            "cam_drift_guard": dict(drift_guard.state) if strict_cam else None,
             "total_rejects": n_reject,
             "total_skips": n_skip,
             "epoch_stats": epoch_stats,
@@ -2931,7 +3186,7 @@ class ReflACTTrainer:
         print("  Final Summary")
         print(f"{'='*60}")
         print(
-            f"  steps={len(history)} accept={n_accept} "
+            f"  steps={len(history)} accept={n_accept} soft_accept={n_soft} "
             f"reject={n_reject} skip={n_skip}"
         )
         print(f"  best_score={best_score:.4f} (step {best_step})  wall={total_wall:.0f}s")

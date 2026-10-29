@@ -1,0 +1,129 @@
+{
+  "created_at_utc": "2026-10-18T15:51:11.420141+00:00",
+  "study_id": "continuous_adaptation_v3",
+  "audit_scope": "read-only offline validity audit of main CAM steps and optional epoch auxiliary update; no quality decision",
+  "freeze": {
+    "sha256": "3e36613b9d9db411f806cca95a6644a6a66612924c925add240d44ffcd0bb597",
+    "source_fingerprints": 1378,
+    "all_fingerprints_valid": true,
+    "all_fingerprints_valid_after_reporter": true
+  },
+  "queue": {
+    "status": "running",
+    "cell_statuses": {
+      "baseline_seed42": "accepted",
+      "cam_v3_seed42": "running",
+      "cam_v3_seed43": "pending",
+      "baseline_seed43": "pending"
+    },
+    "sha256_at_audit_start": "ac854ada152f1937d1f905eeafe94014601397f3895d6e5d30717efaa91ad2d8",
+    "sha256_after_reporter": "ac854ada152f1937d1f905eeafe94014601397f3895d6e5d30717efaa91ad2d8",
+    "cell_statuses_after_reporter": {
+      "baseline_seed42": "accepted",
+      "cam_v3_seed42": "running",
+      "cam_v3_seed43": "pending",
+      "baseline_seed43": "pending"
+    },
+    "unchanged_during_offline_audit": true
+  },
+  "baseline_seed42": {
+    "queue_status": "accepted",
+    "full_cell_validation_accepted_previously": true,
+    "primary_baseline_test": {
+      "n": 120,
+      "hard_passes": 68,
+      "hard_rate": 0.5666666666666667,
+      "task_type_counts": {
+        "cell_level": 83,
+        "sheet_level": 37
+      },
+      "task_type_passes": {
+        "cell_level": 46,
+        "sheet_level": 22
+      },
+      "fixed_id_hash_matches": true
+    },
+    "token_accounting_caveat": {
+      "coverage": "partial",
+      "usage_complete": false,
+      "billing_completeness": "not_claimed"
+    }
+  },
+  "cam_v3_seed42": {
+    "queue_status": "running",
+    "completed_main_history_steps": 3,
+    "actions": {
+      "accept_new_best": 1,
+      "reject": 2
+    },
+    "last_completed_step": 3,
+    "main_steps": [
+      {
+        "step": 1,
+        "action": "accept_new_best",
+        "rollout_rows": 20,
+        "ids_exact_unique": true,
+        "task_types_exact": true,
+        "train_test_overlap": [],
+        "gate_event_consistent": true,
+        "gate_group_guard_reason": null,
+        "pair_n": 40
+      },
+      {
+        "step": 2,
+        "action": "reject",
+        "rollout_rows": 20,
+        "ids_exact_unique": true,
+        "task_types_exact": true,
+        "train_test_overlap": [],
+        "gate_event_consistent": true,
+        "gate_group_guard_reason": "cell_level_current_mean_regression_exceeds_tolerance",
+        "pair_n": 40
+      },
+      {
+        "step": 3,
+        "action": "reject",
+        "rollout_rows": 20,
+        "ids_exact_unique": true,
+        "task_types_exact": true,
+        "train_test_overlap": [],
+        "gate_event_consistent": true,
+        "gate_group_guard_reason": "cell_level_current_mean_regression_exceeds_tolerance",
+        "pair_n": 40
+      }
+    ],
+    "gate_event_count": 4,
+    "step4_dir_exists": true,
+    "test_evaluation_dirs": [],
+    "epoch3_slow_update": {
+      "artifact_action": "no_content",
+      "has_guidance": false,
+      "recorded_time_s": 455.6,
+      "failure_in_log": true,
+      "logged_failure_summary": "RuntimeError after three retries: NoneType is not subscriptable",
+      "validator_requires_slow_update_success": false
+    },
+    "epoch3_meta_skill": {
+      "artifact_exists": true,
+      "action": "write_meta_skill",
+      "has_content": true,
+      "content_chars": 3078
+    }
+  },
+  "train_test_leakage": {
+    "observed_main_rollouts_over_fixed_test_ids": [],
+    "frozen_train_ids_over_fixed_test_ids": []
+  },
+  "validity_assessment": {
+    "main_step_gate_evidence_consistent": true,
+    "slow_update_protocol_note": "run_slow_update documents dict-or-None; unclassified non-infrastructure exceptions are logged and return None. Trainer persists action=no_content and continues to meta-skill/next step. Current complete-cell validator does not require slow-update content or a candidate gate when none was returned.",
+    "comparison_use": "If the overall cell later passes fixed-ID test validation, the configured CAM comparison is reportable only with an explicit epoch-3 auxiliary-update deviation disclosure; it is not a clean protocol-complete run for claims that assume every slow update succeeded.",
+    "needs_revision_for_main_gate_validity": false,
+    "critical_blocker": null
+  },
+  "token_accounting_caveat": "Legacy returned token totals may be partial and do not establish complete HTTP billing.",
+  "reporter_refresh": {
+    "status": "awaiting_complete_seed_pairs",
+    "complete_seed_pair_count": 0
+  }
+}

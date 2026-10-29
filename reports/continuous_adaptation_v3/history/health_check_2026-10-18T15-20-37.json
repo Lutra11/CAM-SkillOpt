@@ -1,0 +1,227 @@
+{
+  "created_at_utc": "2026-10-18T15:20:37.948970+00:00",
+  "study_id": "continuous_adaptation_v3",
+  "audit_scope": "compact offline mechanism health check; no training/test-derived quality decisions",
+  "freeze": {
+    "sha256": "3e36613b9d9db411f806cca95a6644a6a66612924c925add240d44ffcd0bb597",
+    "source_fingerprint_count": 1378,
+    "all_fingerprints_valid": true,
+    "cam_config_matches_freeze": true,
+    "all_fingerprints_valid_after_reporter": true
+  },
+  "queue": {
+    "status": "running",
+    "cell_statuses": {
+      "baseline_seed42": "accepted",
+      "cam_v3_seed42": "running",
+      "cam_v3_seed43": "pending",
+      "baseline_seed43": "pending"
+    },
+    "sha256_at_audit_start": "ac854ada152f1937d1f905eeafe94014601397f3895d6e5d30717efaa91ad2d8",
+    "status_after_reporter": "running",
+    "cell_statuses_after_reporter": {
+      "baseline_seed42": "accepted",
+      "cam_v3_seed42": "running",
+      "cam_v3_seed43": "pending",
+      "baseline_seed43": "pending"
+    },
+    "sha256_after_reporter": "ac854ada152f1937d1f905eeafe94014601397f3895d6e5d30717efaa91ad2d8",
+    "status_snapshot_unchanged": true
+  },
+  "baseline_seed42": {
+    "queue_status": "accepted",
+    "full_cell_validation_accepted_previously": true,
+    "primary_baseline_test": {
+      "n": 120,
+      "hard_passes": 68,
+      "hard_rate": 0.5666666666666667,
+      "task_type_counts": {
+        "cell_level": 83,
+        "sheet_level": 37
+      },
+      "task_type_passes": {
+        "cell_level": 46,
+        "sheet_level": 22
+      },
+      "fixed_id_hash_matches": true
+    },
+    "token_accounting_caveat": {
+      "coverage": "partial",
+      "usage_complete": false,
+      "billing_completeness": "not_claimed"
+    }
+  },
+  "cam_v3_seed42": {
+    "queue_status": "running",
+    "config": {
+      "cam_enabled": true,
+      "cam_bootstrap_gate": true,
+      "cam_soft_accept_policy": "noninferiority",
+      "cam_noninferiority_margin": 0.05,
+      "cam_group_guard": true,
+      "cam_group_max_regression": 0.1,
+      "cam_group_min_pairs": 5,
+      "cam_adaptive_budget": true,
+      "cam_budget_policy": "evidence_v3",
+      "cam_memory_enabled": true,
+      "cam_memory_policy": "evidence_v3",
+      "eval_test": false,
+      "final_selection": true
+    },
+    "completed_history_steps": 2,
+    "runtime_progress": {
+      "last_completed_step": 2,
+      "current_score": 0.65,
+      "best_score": 0.65,
+      "best_step": 1,
+      "current_origin": "step_0001",
+      "best_origin": "step_0001"
+    },
+    "gate_event_count": 2,
+    "steps": [
+      {
+        "step": 1,
+        "action": "accept_new_best",
+        "frozen_task_type": "Cell-Level Manipulation",
+        "rollout_n": 20,
+        "rollout_id_set_matches_freeze": true,
+        "rollout_types_match_freeze": true,
+        "train_test_id_overlap": [],
+        "gate_journal_matches_history_action_and_pairs": true,
+        "gate_event_action": "accept_new_best",
+        "gate_pair_count": 40,
+        "gate_group_guard": {
+          "enabled": true,
+          "reason": null,
+          "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee"
+        },
+        "evidence_budget": {
+          "budget": 2,
+          "candidate_count": 6,
+          "eligible_candidate_count": 6,
+          "evidence_task_ids": [],
+          "unknown_provenance": true,
+          "reason": "provenance_unknown_minimum_fallback"
+        },
+        "memory_update": {
+          "stage": "update_bundle",
+          "kind": "accepted",
+          "source_split": "train",
+          "task_type": "cell_level",
+          "paired_evidence_available": true,
+          "items_added": 1,
+          "supporting_task_ids": [
+            "227-40",
+            "37378",
+            "38462",
+            "46897",
+            "48620",
+            "53383",
+            "54144",
+            "55049",
+            "55979",
+            "56563",
+            "59196",
+            "59595",
+            "6698",
+            "7902",
+            "80-42",
+            "8942"
+          ],
+          "skill_before_hash": "5c49d03008aea2c7",
+          "skill_after_hash": "df2af5edbe39342c"
+        },
+        "memory_step_metrics": {
+          "reflection_batches": 1,
+          "instrumented_batches": 1,
+          "write_calls": 1,
+          "items_added": 1,
+          "retrieval_calls": 2,
+          "hit_count": 0
+        }
+      },
+      {
+        "step": 2,
+        "action": "reject",
+        "frozen_task_type": "Sheet-Level Manipulation",
+        "rollout_n": 20,
+        "rollout_id_set_matches_freeze": true,
+        "rollout_types_match_freeze": true,
+        "train_test_id_overlap": [],
+        "gate_journal_matches_history_action_and_pairs": true,
+        "gate_event_action": "reject",
+        "gate_pair_count": 40,
+        "gate_group_guard": {
+          "enabled": true,
+          "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+          "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee"
+        },
+        "evidence_budget": {
+          "budget": 2,
+          "candidate_count": 10,
+          "eligible_candidate_count": 10,
+          "evidence_task_ids": [],
+          "unknown_provenance": true,
+          "reason": "provenance_unknown_minimum_fallback"
+        },
+        "memory_update": {
+          "stage": "update_bundle",
+          "kind": "rejected",
+          "source_split": "train",
+          "task_type": "sheet_level",
+          "paired_evidence_available": true,
+          "items_added": 1,
+          "supporting_task_ids": [
+            "38462",
+            "463-17",
+            "46897",
+            "48921",
+            "54144",
+            "59196",
+            "59595",
+            "7902",
+            "80-42"
+          ],
+          "skill_before_hash": "df2af5edbe39342c",
+          "skill_after_hash": "a01e72b1620de505"
+        },
+        "memory_step_metrics": {
+          "reflection_batches": 1,
+          "instrumented_batches": 1,
+          "write_calls": 1,
+          "items_added": 1,
+          "retrieval_calls": 2,
+          "hit_count": 0
+        }
+      }
+    ],
+    "test_evaluation_dirs": [],
+    "mechanisms_consistent": true,
+    "evidence_budget_active": true,
+    "memory_v3_active": true,
+    "epoch2_slow_update_paired_validation": {
+      "stage": "selection_eval",
+      "status": "running",
+      "completed_pairs": 39,
+      "expected_pairs": 40,
+      "recorded_rows": 39,
+      "not_run": 1,
+      "last_write_age_seconds": 18.9
+    },
+    "meaningful_mechanism_findings": [
+      "Step 1 candidate was accepted as new best under the strict CAM gate; paired group guard was enabled.",
+      "Step 2 candidate was rejected; group guard reason was cell_level_current_mean_regression_exceeds_tolerance. This is a descriptive mean safeguard, not a confidence guarantee.",
+      "Evidence-v3 budget ran, but task provenance was unknown in both steps, so the configured minimum fallback budget was used.",
+      "Evidence-v3 memory wrote one train-scoped update_bundle for each completed step, with paired selection evidence and changed-task support IDs."
+    ]
+  },
+  "train_test_leakage": {
+    "frozen_train_ids_over_fixed_test_ids": [],
+    "observed_completed_step_overlap": []
+  },
+  "interpretation": "CAM seed42 completed steps 1-2 have matching frozen rollout ID sets/types and gate journal/action/group-guard evidence. Step 2 was rejected by the descriptive group safeguard. The epoch-2 slow-update paired selection evaluation is in progress; reporter reports no complete seed pair. These are mechanism/validation observations only, not CAM quality claims. Token coverage remains partial.",
+  "reporter_refresh": {
+    "status": "awaiting_complete_seed_pairs",
+    "complete_seed_pair_count": 0
+  }
+}

@@ -1,0 +1,9 @@
+test_forbidden_inputs_and_path_escape_are_rejected (test_cam_v3_diagnostics.DiagnosticsTests.test_forbidden_inputs_and_path_escape_are_rejected) ... ok
+test_online_flag_rejected_before_old_evidence_access (test_cam_v3_diagnostics.DiagnosticsTests.test_online_flag_rejected_before_old_evidence_access) ... ok
+test_preservation_guard_stops_changed_old_evidence (test_cam_v3_diagnostics.DiagnosticsTests.test_preservation_guard_stops_changed_old_evidence) ... ok
+test_recurrence_excludes_warmup_and_does_not_claim_no_memory (test_cam_v3_diagnostics.DiagnosticsTests.test_recurrence_excludes_warmup_and_does_not_claim_no_memory) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.096s
+
+OK

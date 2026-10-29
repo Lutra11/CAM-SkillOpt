@@ -1,0 +1,180 @@
+{
+  "schema_version": 1,
+  "audit_time_utc": "2026-10-19T07:51:27.881914+00:00",
+  "scope": "Read-only preservation audit. Old snapshot compared only to its own freeze manifest; no live source used for that verification.",
+  "old_study": "continuous_adaptation_v3",
+  "old_snapshot": {
+    "freeze_path": "outputs/studies/continuous_adaptation_v3/freeze.json",
+    "freeze_file_entries": 1378,
+    "snapshot_file_entries": 1378,
+    "hashes_matching": 1378,
+    "missing_paths": [],
+    "extra_paths": [],
+    "hash_mismatches": []
+  },
+  "prompt_observation": {
+    "path": "outputs/studies/continuous_adaptation_v3/prompt_observation_20261019_0125",
+    "observation_historical_content_proven": false,
+    "prechange_prompt_count": 21,
+    "prechange_prompts": [
+      {
+        "path": "skillopt/prompts/analyst_error.md",
+        "backup_matches_registration": true,
+        "backup_matches_prompt_observation": true
+      },
+      {
+        "path": "skillopt/prompts/analyst_error_full_rewrite.md",
+        "backup_matches_registration": true,
+        "backup_matches_prompt_observation": true
+      },
+      {
+        "path": "skillopt/prompts/analyst_error_rewrite.md",
+        "backup_matches_registration": true,
+        "backup_matches_prompt_observation": true
+      },
+      {
+        "path": "skillopt/prompts/analyst_success.md",
+        "backup_matches_registration": true,
+        "backup_matches_prompt_observation": true
+      },
+      {
+        "path": "skillopt/prompts/analyst_success_full_rewrite.md",
+        "backup_matches_registration": true,
+        "backup_matches_prompt_observation": true
+      },
+      {
+        "path": "skillopt/prompts/analyst_success_rewrite.md",
+        "backup_matches_registration": true,
+        "backup_matches_prompt_observation": true
+      },
+      {
+        "path": "skillopt/prompts/lr_autonomous.md",
+        "backup_matches_registration": true,
+        "backup_matches_prompt_observation": true
+      },
+      {
+        "path": "skillopt/prompts/merge_failure.md",
+        "backup_matches_registration": true,
+        "backup_matches_prompt_observation": true
+      },
+      {
+        "path": "skillopt/prompts/merge_failure_full_rewrite.md",
+        "backup_matches_registration": true,
+        "backup_matches_prompt_observation": true
+      },
+      {
+        "path": "skillopt/prompts/merge_failure_rewrite.md",
+        "backup_matches_registration": true,
+        "backup_matches_prompt_observation": true
+      },
+      {
+        "path": "skillopt/prompts/merge_final.md",
+        "backup_matches_registration": true,
+        "backup_matches_prompt_observation": true
+      },
+      {
+        "path": "skillopt/prompts/merge_final_full_rewrite.md",
+        "backup_matches_registration": true,
+        "backup_matches_prompt_observation": true
+      },
+      {
+        "path": "skillopt/prompts/merge_final_rewrite.md",
+        "backup_matches_registration": true,
+        "backup_matches_prompt_observation": true
+      },
+      {
+        "path": "skillopt/prompts/merge_success.md",
+        "backup_matches_registration": true,
+        "backup_matches_prompt_observation": true
+      },
+      {
+        "path": "skillopt/prompts/merge_success_full_rewrite.md",
+        "backup_matches_registration": true,
+        "backup_matches_prompt_observation": true
+      },
+      {
+        "path": "skillopt/prompts/merge_success_rewrite.md",
+        "backup_matches_registration": true,
+        "backup_matches_prompt_observation": true
+      },
+      {
+        "path": "skillopt/prompts/meta_skill.md",
+        "backup_matches_registration": true,
+        "backup_matches_prompt_observation": true
+      },
+      {
+        "path": "skillopt/prompts/ranking.md",
+        "backup_matches_registration": true,
+        "backup_matches_prompt_observation": true
+      },
+      {
+        "path": "skillopt/prompts/ranking_rewrite.md",
+        "backup_matches_registration": true,
+        "backup_matches_prompt_observation": true
+      },
+      {
+        "path": "skillopt/prompts/rewrite_skill.md",
+        "backup_matches_registration": true,
+        "backup_matches_prompt_observation": true
+      },
+      {
+        "path": "skillopt/prompts/slow_update.md",
+        "backup_matches_registration": true,
+        "backup_matches_prompt_observation": true
+      }
+    ],
+    "live_prompt_differences_vs_observation": [
+      {
+        "path": "skillopt/prompts/meta_skill.md",
+        "observation_sha256": "b2bab7f7635cd2a94348de6adf15ceaa247ddabd0a2a8bb7c53eab5cfca7deba",
+        "live_sha256": "bac017fb978f3c107f458d7895eafb472d4757f0b2470b1ef99302e1339b6c88",
+        "added_lines": 13,
+        "removed_lines": 1,
+        "adds_explicit_no_update_contract": true,
+        "adds_update_outcome_schema": true
+      },
+      {
+        "path": "skillopt/prompts/slow_update.md",
+        "observation_sha256": "7f6f97d2283a370ad072a91ad61e152551f4f4eb4f519c9a1c5c60679b4782f2",
+        "live_sha256": "7fc9f0c44cf97b5504a175f7488f464b07ac3cf8216f90a758895b58646c68ba",
+        "added_lines": 13,
+        "removed_lines": 1,
+        "adds_explicit_no_update_contract": true,
+        "adds_update_outcome_schema": true
+      }
+    ],
+    "interpretation": "All 21 registered prechange prompt copies match the 2026-10-19 observation byte-for-byte. Current live source differs only in slow_update.md and meta_skill.md, where each adds explicit update/no_update response contracts."
+  },
+  "cam20": {
+    "automation_id": "cam-20",
+    "status": "PAUSED"
+  },
+  "checks": {
+    "old_freeze_entry_count_is_1378": true,
+    "snapshot_file_count_matches_freeze": true,
+    "snapshot_paths_match_freeze": true,
+    "all_snapshot_hashes_match_freeze": true,
+    "prechange_prompt_count_is_21": true,
+    "all_prechange_prompts_match_registration": true,
+    "all_prechange_prompts_match_observation": true,
+    "only_live_prompt_changes_are_slow_meta": true,
+    "both_live_prompt_changes_add_no_update_contract": true,
+    "cam20_is_paused": true
+  },
+  "all_checks_pass": true,
+  "credential_data_read": false,
+  "model_api_calls": 0,
+  "prechange_backup_audit": {
+    "manifest_entries": 225,
+    "files_matching": 225,
+    "all_match": true,
+    "report": "reports/cam_v3r1_runtime_diagnostics/prechange_backup_audit.json"
+  },
+  "r1_freeze": {
+    "sha256": "c1d435957f1132f6e897515a6a2c9b249463b3651d7ca84838b673740dc35319",
+    "file_entries": 1445,
+    "prompt_entries": 21,
+    "prepare_twice_and_verify": true,
+    "no_runtime_queue": true
+  }
+}

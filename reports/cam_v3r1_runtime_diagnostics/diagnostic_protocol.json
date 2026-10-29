@@ -1,0 +1,9 @@
+{
+  "revision": "cam_v3r1_runtime_diagnostics",
+  "script_sha256": "ab250481a87d60aba494740903e2dc6a577fec3fad5d2c30661a669ee30229fd",
+  "source_study": "continuous_adaptation_v3",
+  "model_api_budget": 0,
+  "inputs": "frozen task-order metadata, train histories, gate/budget/memory records, auxiliary outcomes",
+  "heldout_predictions": "forbidden",
+  "old_report_access": "preservation hashes only"
+}

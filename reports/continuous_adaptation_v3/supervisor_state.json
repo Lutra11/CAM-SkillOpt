@@ -1,0 +1,32 @@
+{
+    "schema_version":  1,
+    "study_id":  "continuous_adaptation_v3",
+    "supervisor_pid":  20616,
+    "supervisor_created_at_utc":  "2026-10-18T12:42:49.0859845Z",
+    "driver_pid":  38372,
+    "driver_creation_time_utc":  "2026-10-18T12:42:49.3723889Z",
+    "driver_executable":  "E:\\MiniConda\\envs\\skillopt\\python.exe",
+    "driver_command":  "\"E:\\MiniConda\\envs\\skillopt\\python.exe\" -X utf8 \"E:\\Programs\\CAM\\CAM-SkillOpt\\scripts\\run_continuous_adaptation_v3.py\" --run --lanes 1",
+    "driver_handle_retained":  true,
+    "driver_exit_code":  0,
+    "driver_exit_code_known":  true,
+    "reporter_exit_code":  0,
+    "queue_status":  "complete",
+    "queue_cell_ids":  [
+                           "baseline_seed42",
+                           "cam_v3_seed42",
+                           "cam_v3_seed43",
+                           "baseline_seed43"
+                       ],
+    "accepted_cell_ids":  [
+                              "baseline_seed42",
+                              "cam_v3_seed42",
+                              "cam_v3_seed43",
+                              "baseline_seed43"
+                          ],
+    "status":  "complete",
+    "started_at_utc":  "2026-10-18T12:42:49.0895038Z",
+    "updated_at_utc":  "2026-10-18T19:34:16.8293830Z",
+    "finished_at_utc":  "2026-10-18T19:34:16.8293830Z",
+    "error":  null
+}

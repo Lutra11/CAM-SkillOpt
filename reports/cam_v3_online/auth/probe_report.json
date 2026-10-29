@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "config": "configs/experiments/cam_v3_mechanisms.yaml",
+  "roles": {
+    "optimizer": {
+      "role": "optimizer",
+      "model": "glm",
+      "endpoint": "https://hub.zgci.org/v1",
+      "auth_mode": "openai_compatible",
+      "attempts": [
+        {
+          "role": "optimizer",
+          "model": "glm",
+          "endpoint": "https://hub.zgci.org/v1",
+          "credential_source": "project_dotenv:OPTIMIZER_AZURE_OPENAI_API_KEY",
+          "status": 200,
+          "request_id": null,
+          "error_type": null
+        }
+      ],
+      "status": "ok",
+      "working_credential_source": "project_dotenv:OPTIMIZER_AZURE_OPENAI_API_KEY"
+    },
+    "target": {
+      "role": "target",
+      "model": "qwen",
+      "endpoint": "https://hub.zgci.org/v1",
+      "auth_mode": "openai_compatible",
+      "attempts": [
+        {
+          "role": "target",
+          "model": "qwen",
+          "endpoint": "https://hub.zgci.org/v1",
+          "credential_source": "project_dotenv:TARGET_AZURE_OPENAI_API_KEY",
+          "status": 200,
+          "request_id": null,
+          "error_type": null
+        }
+      ],
+      "status": "ok",
+      "working_credential_source": "project_dotenv:TARGET_AZURE_OPENAI_API_KEY"
+    }
+  },
+  "request_policy": {
+    "max_requests_per_role": 2,
+    "retries": 0,
+    "timeout_seconds": 30,
+    "max_output_tokens": 32,
+    "prompt": "Reply exactly: OK"
+  },
+  "helper_api": "scripts.probe_cam_v3_auth.select_role_credential(role, source_var)",
+  "config_sha256": "bf840f1f56ffa967b4a03e8f15a24c0d98a7141cd570267773b4bd4c0c24f3d2",
+  "observed_at_utc": "2026-10-18T12:16:39Z",
+  "timestamp_source": "file_mtime"
+}

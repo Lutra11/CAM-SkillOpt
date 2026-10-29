@@ -53,8 +53,20 @@ Your guidance must:
 - Address the target directly (e.g., "When you encounter X, always do Y"
   rather than "The agent should...").
 
-Respond ONLY with a valid JSON object (no markdown fences, no extra text):
+If the comparison provides no evidence that warrants changing the guidance,
+you may explicitly choose `no_update`. In that case provide a concise,
+evidence-based `no_update_reason`; the existing guidance will remain active.
+
+Respond ONLY with a valid JSON object (no markdown fences, no extra text). Use
+exactly one of these forms, with all fields shown as strings:
 {
+  "outcome": "update",
   "reasoning": "<your reflection on the previous guidance AND analysis of the longitudinal comparison>",
   "slow_update_content": "<the exact guidance text to insert into the protected section>"
+}
+or
+{
+  "outcome": "no_update",
+  "reasoning": "<brief reflection on the evidence>",
+  "no_update_reason": "<why the current guidance should remain unchanged>"
 }

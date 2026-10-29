@@ -1,0 +1,31 @@
+{
+  "revision": "cam_v3r1_runtime_diagnostics",
+  "completed_at_utc": "2026-10-19T07:58:34Z",
+  "status": "completed",
+  "scope": "Option 1: offline runtime reliability repair and existing mechanism diagnosis",
+  "test_executor": "GPT-6 Luna high subagents",
+  "python": "E:/MiniConda/envs/skillopt/python.exe -X utf8",
+  "model_api_calls": 0,
+  "new_online_experiment_started": false,
+  "old_experiment_replayed_or_backfilled": false,
+  "cam_decision_algorithm_changed": false,
+  "accuracy_improvement_validated": false,
+  "unique_unittest_passed": 140,
+  "legacy_types_compat_assert_methods_passed": 24,
+  "pytest_available": false,
+  "freeze_sha256": "c1d435957f1132f6e897515a6a2c9b249463b3651d7ca84838b673740dc35319",
+  "freeze_files": 1445,
+  "frozen_prompt_files": 21,
+  "old_snapshot_files_preserved": 1378,
+  "prechange_backup_files_preserved": 225,
+  "old_evidence_guards_unchanged": true,
+  "automation_cam20_status": "PAUSED",
+  "reports": {
+    "repair": "reports/cam_v3r1_runtime_diagnostics/REPAIR_REPORT.md",
+    "diagnosis": "reports/cam_v3r1_runtime_diagnostics/DIAGNOSIS.md",
+    "acceptance": "reports/cam_v3r1_runtime_diagnostics/freeze_acceptance.json",
+    "preservation": "reports/cam_v3r1_runtime_diagnostics/preservation_audit.json",
+    "protocol": "docs/experiments/CAM_V3R1_RUNTIME_DIAGNOSTICS.md"
+  },
+  "next_step_boundary": "Prioritize training task-ID provenance diagnosis under a separately registered method protocol; no automatic experiment expansion"
+}

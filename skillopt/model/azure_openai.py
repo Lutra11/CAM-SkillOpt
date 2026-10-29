@@ -8,11 +8,14 @@ from __future__ import annotations
 import json
 import os
 import subprocess
+import sys
 import threading
 import time
+from collections.abc import Mapping
 from types import SimpleNamespace
 from typing import Any
-from openai import AzureOpenAI, OpenAI
+from openai import APIConnectionError, APITimeoutError, AzureOpenAI, OpenAI
+from skillopt.model.infra_errors import InfraError, persist_infra_error
 
 # Sentinel value used as the api_version when the "openai_compatible"
 # auth_mode is selected. Real Azure deployments never use this string,
@@ -113,6 +116,216 @@ _RESPONSES_API_MODELS = {
     "gpt-5.3-codex", "gpt-5.1-codex", "gpt-5.2-codex",
     "gpt-5-codex", "codex-mini", "gpt-5.4-pro",
 }
+
+_MAX_CHAT_ATTEMPTS = 5
+_RETRYABLE_STATUS = {408, 409, 429, 500, 502, 503, 504}
+
+
+def _safe_attr(obj: Any, name: str) -> Any:
+    """Read a named object field or mapping key without serializing payloads."""
+    if isinstance(obj, Mapping):
+        return obj.get(name)
+    try:
+        return getattr(obj, name, None)
+    except Exception:
+        return None
+
+
+def _failure_details(exc: BaseException | None = None, response: Any = None) -> dict[str, Any]:
+    """Allowlist diagnostics; never include request/response bodies or exception text."""
+    details: dict[str, Any] = {}
+    if exc is not None:
+        details["exception_type"] = type(exc).__name__
+        status = _safe_attr(exc, "status_code")
+        code = _safe_attr(exc, "code")
+        request_id = _safe_attr(exc, "request_id")
+        if request_id is None:
+            response_obj = _safe_attr(exc, "response")
+            headers = _safe_attr(response_obj, "headers")
+            if headers is not None:
+                try:
+                    request_id = headers.get("x-request-id")
+                except Exception:
+                    pass
+        if isinstance(status, int):
+            details["status_code"] = status
+        if isinstance(code, str) and len(code) <= 100:
+            details["error_code"] = code
+        if isinstance(request_id, str) and len(request_id) <= 200:
+            details["request_id"] = request_id
+        # Frame locations help identify the SDK boundary without retaining source text.
+        tb = exc.__traceback__
+        frames = []
+        while tb is not None and len(frames) < 8:
+            code_obj = tb.tb_frame.f_code
+            frames.append({"file": os.path.basename(code_obj.co_filename), "line": tb.tb_lineno,
+                           "function": code_obj.co_name})
+            tb = tb.tb_next
+        if frames:
+            details["frames"] = frames
+    if response is not None:
+        error = _safe_attr(response, "error")
+        response_status = _safe_attr(response, "status_code") or _safe_attr(response, "status")
+        request_id = _safe_attr(response, "_request_id") or _safe_attr(response, "request_id")
+        if isinstance(response_status, (int, str)):
+            if isinstance(response_status, int):
+                details["status_code"] = response_status
+            else:
+                details["response_status"] = response_status
+        if isinstance(request_id, str) and len(request_id) <= 200:
+            details["request_id"] = request_id
+        choices = _safe_attr(response, "choices")
+        output = _safe_attr(response, "output")
+        details["response_shape"] = {
+            "type": type(response).__name__,
+            "choices": ("missing" if choices is None else len(choices) if isinstance(choices, (list, tuple)) else "invalid"),
+            "output": ("missing" if output is None else len(output) if isinstance(output, (list, tuple)) else "invalid"),
+            "usage_present": _safe_attr(response, "usage") is not None,
+            "error_present": error is not None,
+        }
+        if isinstance(choices, (list, tuple)) and choices:
+            finish_reason = _safe_attr(choices[0], "finish_reason")
+            if finish_reason in {"stop", "length", "content_filter", "tool_calls", "function_call"}:
+                details["finish_reason"] = finish_reason
+        incomplete = _safe_attr(response, "incomplete_details")
+        incomplete_reason = _safe_attr(incomplete, "reason")
+        if incomplete_reason in {"max_output_tokens", "content_filter", "max_tool_calls", "incomplete"}:
+            details["incomplete_reason"] = incomplete_reason
+        if error is not None:
+            details["provider_error"] = True
+            code = _safe_attr(error, "code")
+            status = _safe_attr(error, "status_code") or _safe_attr(error, "status")
+            request_id = _safe_attr(error, "request_id") or request_id
+            if isinstance(code, str) and len(code) <= 100:
+                details["error_code"] = code
+            if isinstance(status, int):
+                details["status_code"] = status
+            elif isinstance(status, str):
+                try:
+                    details["status_code"] = int(status)
+                except ValueError:
+                    details["response_status"] = status
+            if isinstance(request_id, str) and len(request_id) <= 200:
+                details["request_id"] = request_id
+    return details
+
+
+def _contract_error(
+    reason: str, stage: str, deployment: str, response: Any = None, *, retryable: bool | None = None,
+) -> InfraError:
+    details = {"response_contract": reason, **_failure_details(response=response)}
+    if retryable is not None:
+        details["retryable_response"] = retryable
+    frame = sys._getframe(1)
+    details["frames"] = [{"file": os.path.basename(frame.f_code.co_filename),
+                          "line": frame.f_lineno, "function": frame.f_code.co_name}]
+    status = details.get("status_code")
+    try:
+        status = int(status)
+    except (TypeError, ValueError):
+        status = None
+    if status is not None:
+        details["status_code"] = status
+    error_code = str(details.get("error_code", "")).lower()
+    if status in (401, 403) or error_code in {"unauthorized", "authentication_error", "invalid_api_key", "invalid_token"}:
+        failure_type = "auth_error"
+    elif status == 404 or error_code in {"model_not_found", "deployment_not_found", "model_unavailable"}:
+        failure_type = "model_unavailable"
+    else:
+        failure_type = "provider_error"
+    error = InfraError(failure_type, reason, stage=stage, model=deployment, details=details)
+    return persist_infra_error(error, raw=json.dumps(error.details, ensure_ascii=True))
+
+
+def _raise_provider_failure(exc: BaseException, stage: str, deployment: str) -> InfraError:
+    status = _safe_attr(exc, "status_code")
+    code = _safe_attr(exc, "code")
+    request_id = _safe_attr(exc, "request_id")
+    details = _failure_details(exc)
+    if isinstance(status, int) and status in (401, 403):
+        kind, message = "auth_error", f"Provider authentication failed (HTTP {status})"
+    elif isinstance(status, int) and status == 404:
+        kind, message = "model_unavailable", "Provider reports the deployment or endpoint is unavailable (HTTP 404)"
+    elif isinstance(status, int) and status not in _RETRYABLE_STATUS:
+        kind, message = "provider_error", f"Provider rejected the request (HTTP {status})"
+    elif isinstance(exc, (TimeoutError, APITimeoutError)):
+        kind, message = "llm_timeout", "Provider request timed out"
+    elif isinstance(exc, (ConnectionError, APIConnectionError)):
+        kind, message = "network_error", "Provider connection failed"
+    else:
+        kind, message = "provider_error", "Provider request failed"
+    if isinstance(code, str) and len(code) <= 100:
+        details["error_code"] = code
+    if isinstance(request_id, str) and len(request_id) <= 200:
+        details["request_id"] = request_id
+    error = InfraError(kind, message, stage=stage, model=deployment, details=details)
+    return persist_infra_error(error, raw=json.dumps(details, ensure_ascii=True))
+
+
+def _extract_usage(usage: Any, *, responses: bool = False) -> dict[str, int]:
+    p_name, c_name = ("input_tokens", "output_tokens") if responses else ("prompt_tokens", "completion_tokens")
+    p = _safe_attr(usage, p_name) or 0
+    c = _safe_attr(usage, c_name) or 0
+    if not isinstance(p, int): p = 0
+    if not isinstance(c, int): c = 0
+    total = _safe_attr(usage, "total_tokens")
+    if not isinstance(total, int): total = p + c
+    return {"prompt_tokens": p, "completion_tokens": c, "total_tokens": total}
+
+
+def _validate_attempts(retries: int) -> int:
+    if isinstance(retries, bool) or not isinstance(retries, int) or retries <= 0:
+        raise ValueError("retries must be a positive integer")
+    return min(retries, _MAX_CHAT_ATTEMPTS)
+
+
+def _client_with_zero_retries(client: Any) -> Any:
+    """Ensure externally supplied OpenAI SDK clients do not add hidden attempts."""
+    with_options = getattr(client, "with_options", None)
+    if callable(with_options):
+        return with_options(max_retries=0)
+    return client
+
+
+def _record_attempt(error: InfraError, attempt: int, max_attempts: int) -> InfraError:
+    error.details["attempt"] = attempt
+    error.details["max_attempts"] = max_attempts
+    raw = json.dumps(error.details, ensure_ascii=True)
+    return persist_infra_error(error, raw=raw, evidence_dir=error.evidence_dir or None)
+
+
+def _valid_tool_calls(calls: Any) -> bool:
+    if not isinstance(calls, (list, tuple)):
+        return False
+    for call in calls:
+        call_id = _safe_attr(call, "id")
+        fn = _safe_attr(call, "function")
+        name = _safe_attr(fn, "name")
+        arguments = _safe_attr(fn, "arguments")
+        if not isinstance(call_id, str) or not call_id.strip():
+            return False
+        if not isinstance(name, str) or not name.strip() or not isinstance(arguments, str):
+            return False
+        try:
+            parsed = json.loads(arguments)
+        except (TypeError, json.JSONDecodeError):
+            return False
+        if not isinstance(parsed, dict):
+            return False
+    return True
+
+
+def _contract_retryable(error: InfraError) -> bool:
+    if "retryable_response" in error.details:
+        return bool(error.details["retryable_response"])
+    status = error.details.get("status_code")
+    if status in _RETRYABLE_STATUS:
+        return True
+    if isinstance(status, int) and status >= 400:
+        return False
+    if error.details.get("provider_error"):
+        return False
+    return "response_contract" in error.details and error.failure_type not in {"auth_error", "model_unavailable"}
 
 
 # ── Token Tracker ─────────────────────────────────────────────────────────────
@@ -297,6 +510,7 @@ def _make_client(role: str) -> AzureOpenAI | OpenAI:
             base_url=cfg["endpoint"].rstrip("/"),
             api_key=cfg["api_key"] or "dummy",
             default_headers={"User-Agent": "SkillOpt"},
+            max_retries=0,
         )
     if auth_mode in {"api_key", "key"}:
         if not cfg["api_key"]:
@@ -308,6 +522,7 @@ def _make_client(role: str) -> AzureOpenAI | OpenAI:
             api_version=cfg["api_version"],
             azure_endpoint=cfg["endpoint"],
             api_key=cfg["api_key"],
+            max_retries=0,
         )
     return AzureOpenAI(
         api_version=cfg["api_version"],
@@ -317,6 +532,7 @@ def _make_client(role: str) -> AzureOpenAI | OpenAI:
             cfg["ad_scope"],
             cfg["managed_identity_client_id"],
         ),
+        max_retries=0,
     )
 
 
@@ -340,6 +556,7 @@ def get_target_client() -> AzureOpenAI | OpenAI:
                 _target_client = OpenAI(
                     base_url=target_config.base_url,
                     api_key=target_config.api_key or "dummy",
+                    max_retries=0,
                 )
             else:
                 _target_client = _make_client("target")
@@ -365,10 +582,9 @@ def _chat_impl(
     timeout: int | None = None,
 ) -> tuple[str, dict]:
     """Call LLM, track tokens, return (text, usage_dict)."""
-    last_err = None
-    usage_info = {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0}
-
-    for attempt in range(retries):
+    attempts = _validate_attempts(retries)
+    client = _client_with_zero_retries(client)
+    for attempt in range(attempts):
         try:
             if _needs_responses_api(deployment):
                 kwargs: dict[str, Any] = {
@@ -383,21 +599,23 @@ def _chat_impl(
                 if timeout is not None:
                     kwargs["timeout"] = timeout
                 resp = client.responses.create(**kwargs)
+                if _safe_attr(resp, "status") == "incomplete":
+                    raise _contract_error("responses_incomplete", stage, deployment, response=resp, retryable=False)
+                if _safe_attr(resp, "error") is not None or _safe_attr(resp, "status") == "failed":
+                    raise _contract_error("responses_provider_error", stage, deployment, response=resp)
+                response_message, _ = _responses_to_chat_message(resp)
+                if not _valid_tool_calls(response_message.tool_calls):
+                    raise _contract_error("responses_tool_calls_invalid", stage, deployment, response=resp)
                 text = getattr(resp, "output_text", None) or ""
                 if not text:
-                    for item in getattr(resp, "output", None) or []:
-                        for part in getattr(item, "content", []):
-                            if getattr(part, "type", "") == "output_text":
-                                text = part.text or ""
-                if hasattr(resp, "usage") and resp.usage:
-                    usage_info = {
-                        "prompt_tokens": getattr(resp.usage, "input_tokens", 0) or 0,
-                        "completion_tokens": getattr(resp.usage, "output_tokens", 0) or 0,
-                        "total_tokens": (
-                            (getattr(resp.usage, "input_tokens", 0) or 0)
-                            + (getattr(resp.usage, "output_tokens", 0) or 0)
-                        ),
-                    }
+                    output = _safe_attr(resp, "output") or []
+                    for item in output:
+                        for part in _safe_attr(item, "content") or []:
+                            if _safe_attr(part, "type") == "output_text":
+                                text += _safe_attr(part, "text") or ""
+                if not isinstance(text, str) or not text.strip():
+                    raise _contract_error("responses_empty_text", stage, deployment, response=resp)
+                usage_info = _extract_usage(_safe_attr(resp, "usage"), responses=True)
             else:
                 kwargs: dict[str, Any] = dict(
                     model=deployment,
@@ -413,13 +631,23 @@ def _chat_impl(
                 if timeout is not None:
                     kwargs["timeout"] = timeout
                 resp = client.chat.completions.create(**kwargs)
-                text = resp.choices[0].message.content or ""
-                if resp.usage:
-                    usage_info = {
-                        "prompt_tokens": resp.usage.prompt_tokens or 0,
-                        "completion_tokens": resp.usage.completion_tokens or 0,
-                        "total_tokens": resp.usage.total_tokens or 0,
-                    }
+                if _safe_attr(resp, "error") is not None:
+                    raise _contract_error("chat_provider_error", stage, deployment, response=resp)
+                choices = _safe_attr(resp, "choices")
+                if not isinstance(choices, (list, tuple)) or not choices:
+                    raise _contract_error("chat_choices_missing_or_empty", stage, deployment, response=resp)
+                finish_reason = _safe_attr(choices[0], "finish_reason")
+                if finish_reason in {"length", "content_filter"}:
+                    raise _contract_error(f"chat_finish_reason_{finish_reason}", stage, deployment,
+                                          response=resp, retryable=False)
+                message = _safe_attr(choices[0], "message")
+                calls = _safe_attr(message, "tool_calls") or []
+                if not _valid_tool_calls(calls):
+                    raise _contract_error("chat_tool_calls_invalid", stage, deployment, response=resp)
+                text = _safe_attr(message, "content")
+                if not isinstance(text, str) or not text.strip():
+                    raise _contract_error("chat_empty_text", stage, deployment, response=resp)
+                usage_info = _extract_usage(_safe_attr(resp, "usage"))
 
             tracker.record(
                 stage,
@@ -428,12 +656,19 @@ def _chat_impl(
             )
             return text, usage_info
 
-        except Exception as e:  # noqa: BLE001
-            last_err = e
-            sleep = min(2 ** attempt, 30)
-            time.sleep(sleep)
-
-    raise RuntimeError(f"LLM call failed after {retries} retries: {last_err}")
+        except InfraError as error:
+            _record_attempt(error, attempt + 1, attempts)
+            retryable = error.failure_type in {"network_error", "llm_timeout"} or _contract_retryable(error)
+            if not retryable or attempt + 1 >= attempts:
+                raise error from None
+        except Exception as exc:  # noqa: BLE001
+            error = _raise_provider_failure(exc, stage, deployment)
+            _record_attempt(error, attempt + 1, attempts)
+            retryable = error.failure_type in {"network_error", "llm_timeout"} or error.details.get("status_code") in _RETRYABLE_STATUS
+            if not retryable or attempt + 1 >= attempts:
+                raise error from None
+        time.sleep(min(0.25 * (2 ** attempt), 2.0))
+    raise _contract_error("chat_attempts_exhausted", stage, deployment)
 
 
 def _chat_messages_impl(
@@ -451,10 +686,9 @@ def _chat_messages_impl(
     timeout: int | None = None,
 ) -> tuple[Any, dict]:
     """Call the model with a pre-built message list."""
-    last_err = None
-    usage_info = {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0}
-
-    for attempt in range(retries):
+    attempts = _validate_attempts(retries)
+    client = _client_with_zero_retries(client)
+    for attempt in range(attempts):
         try:
             if _needs_responses_api(deployment):
                 input_items, instructions = _messages_to_responses_input(messages)
@@ -475,16 +709,16 @@ def _chat_messages_impl(
                 if timeout is not None:
                     kwargs["timeout"] = timeout
                 resp = client.responses.create(**kwargs)
+                if _safe_attr(resp, "status") == "incomplete":
+                    raise _contract_error("responses_incomplete", stage, deployment, response=resp, retryable=False)
+                if _safe_attr(resp, "error") is not None or _safe_attr(resp, "status") == "failed":
+                    raise _contract_error("responses_provider_error", stage, deployment, response=resp)
                 message, text = _responses_to_chat_message(resp)
-                if hasattr(resp, "usage") and resp.usage:
-                    usage_info = {
-                        "prompt_tokens": getattr(resp.usage, "input_tokens", 0) or 0,
-                        "completion_tokens": getattr(resp.usage, "output_tokens", 0) or 0,
-                        "total_tokens": (
-                            (getattr(resp.usage, "input_tokens", 0) or 0)
-                            + (getattr(resp.usage, "output_tokens", 0) or 0)
-                        ),
-                    }
+                if not _valid_tool_calls(message.tool_calls):
+                    raise _contract_error("responses_tool_calls_invalid", stage, deployment, response=resp)
+                if not text.strip() and not (return_message and message.tool_calls):
+                    raise _contract_error("responses_empty_text", stage, deployment, response=resp)
+                usage_info = _extract_usage(_safe_attr(resp, "usage"), responses=True)
             else:
                 kwargs = dict(
                     model=deployment,
@@ -502,26 +736,44 @@ def _chat_messages_impl(
                 if timeout is not None:
                     kwargs["timeout"] = timeout
                 resp = client.chat.completions.create(**kwargs)
-                message = resp.choices[0].message
-                text = message.content or ""
-                if resp.usage:
-                    usage_info = {
-                        "prompt_tokens": resp.usage.prompt_tokens or 0,
-                        "completion_tokens": resp.usage.completion_tokens or 0,
-                        "total_tokens": resp.usage.total_tokens or 0,
-                    }
+                if _safe_attr(resp, "error") is not None:
+                    raise _contract_error("chat_provider_error", stage, deployment, response=resp)
+                choices = _safe_attr(resp, "choices")
+                if not isinstance(choices, (list, tuple)) or not choices:
+                    raise _contract_error("chat_choices_missing_or_empty", stage, deployment, response=resp)
+                finish_reason = _safe_attr(choices[0], "finish_reason")
+                if finish_reason in {"length", "content_filter"}:
+                    raise _contract_error(f"chat_finish_reason_{finish_reason}", stage, deployment,
+                                          response=resp, retryable=False)
+                message = _safe_attr(choices[0], "message")
+                if message is None:
+                    raise _contract_error("chat_message_missing", stage, deployment, response=resp)
+                text = _safe_attr(message, "content") or ""
+                calls = _safe_attr(message, "tool_calls") or []
+                if not _valid_tool_calls(calls):
+                    raise _contract_error("chat_tool_calls_invalid", stage, deployment, response=resp)
+                if not isinstance(text, str) or (not text.strip() and not (return_message and calls)):
+                    raise _contract_error("chat_empty_text", stage, deployment, response=resp)
+                usage_info = _extract_usage(_safe_attr(resp, "usage"))
             tracker.record(
                 stage,
                 usage_info["prompt_tokens"],
                 usage_info["completion_tokens"],
             )
             return (message if return_message else text), usage_info
-        except Exception as e:  # noqa: BLE001
-            last_err = e
-            sleep = min(2 ** attempt, 30)
-            time.sleep(sleep)
-
-    raise RuntimeError(f"LLM message call failed after {retries} retries: {last_err}")
+        except InfraError as error:
+            _record_attempt(error, attempt + 1, attempts)
+            retryable = error.failure_type in {"network_error", "llm_timeout"} or _contract_retryable(error)
+            if not retryable or attempt + 1 >= attempts:
+                raise error from None
+        except Exception as exc:  # noqa: BLE001
+            error = _raise_provider_failure(exc, stage, deployment)
+            _record_attempt(error, attempt + 1, attempts)
+            retryable = error.failure_type in {"network_error", "llm_timeout"} or error.details.get("status_code") in _RETRYABLE_STATUS
+            if not retryable or attempt + 1 >= attempts:
+                raise error from None
+        time.sleep(min(0.25 * (2 ** attempt), 2.0))
+    raise _contract_error("chat_message_attempts_exhausted", stage, deployment)
 
 
 def _chat_tool_to_responses_tool(tool: dict[str, Any]) -> dict[str, Any]:
@@ -574,24 +826,27 @@ def _messages_to_responses_input(messages: list[dict[str, Any]]) -> tuple[list[d
 
 def _responses_to_chat_message(resp: Any) -> tuple[Any, str]:
     """Convert Responses output into the subset of Chat message API we use."""
-    text = getattr(resp, "output_text", None) or ""
+    text = _safe_attr(resp, "output_text") or ""
     tool_calls: list[dict[str, Any]] = []
-    for item in getattr(resp, "output", None) or []:
-        item_type = getattr(item, "type", "")
+    output = _safe_attr(resp, "output") or []
+    if not isinstance(output, (list, tuple)):
+        return SimpleNamespace(content=text, tool_calls=[None]), text
+    for item in output:
+        item_type = _safe_attr(item, "type") or ""
         if item_type == "function_call":
             tool_calls.append({
-                "id": getattr(item, "call_id", "") or getattr(item, "id", ""),
+                "id": _safe_attr(item, "call_id"),
                 "type": "function",
                 "function": {
-                    "name": getattr(item, "name", ""),
-                    "arguments": getattr(item, "arguments", "") or "{}",
+                    "name": _safe_attr(item, "name"),
+                    "arguments": _safe_attr(item, "arguments"),
                 },
             })
         elif item_type == "message" and not text:
-            content_parts = getattr(item, "content", []) or []
+            content_parts = _safe_attr(item, "content") or []
             for part in content_parts:
-                if getattr(part, "type", "") == "output_text":
-                    text += getattr(part, "text", "") or ""
+                if _safe_attr(part, "type") == "output_text":
+                    text += _safe_attr(part, "text") or ""
     return SimpleNamespace(content=text, tool_calls=tool_calls), text
 
 

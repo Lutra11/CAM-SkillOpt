@@ -1,0 +1,4 @@
+# Offline runtime-diagnostics reference for the registered r1 revision.
+# It preserves the v3 mechanism settings; this file does not authorize a run.
+_base_: cam_v3_mechanisms.yaml
+

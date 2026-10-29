@@ -1,0 +1,3658 @@
+{
+  "budget_fixtures": [
+    {
+      "budget": 2,
+      "candidate_count": 2,
+      "conflicting_count": 0,
+      "duplicate_count": 1,
+      "eligible_candidate_count": 2,
+      "eligible_indices": [
+        0,
+        2
+      ],
+      "eligible_targets": [
+        "A",
+        "B"
+      ],
+      "evidence_task_ids": [
+        "t1",
+        "t2",
+        "t3",
+        "t4"
+      ],
+      "name": "duplicate",
+      "reason": "distinct_task_support",
+      "unknown_provenance": false
+    },
+    {
+      "budget": 1,
+      "candidate_count": 3,
+      "conflicting_count": 2,
+      "duplicate_count": 0,
+      "eligible_candidate_count": 1,
+      "eligible_indices": [
+        2
+      ],
+      "eligible_targets": [
+        "B"
+      ],
+      "evidence_task_ids": [
+        "t5",
+        "t6"
+      ],
+      "name": "conflict",
+      "reason": "distinct_task_support",
+      "unknown_provenance": false
+    },
+    {
+      "budget": 2,
+      "candidate_count": 2,
+      "conflicting_count": 0,
+      "duplicate_count": 0,
+      "eligible_candidate_count": 2,
+      "eligible_indices": [
+        0,
+        1
+      ],
+      "eligible_targets": [
+        "A",
+        "B"
+      ],
+      "evidence_task_ids": [],
+      "name": "no_provenance",
+      "reason": "provenance_unknown_minimum_fallback",
+      "unknown_provenance": true
+    },
+    {
+      "budget": 2,
+      "candidate_count": 3,
+      "conflicting_count": 0,
+      "duplicate_count": 0,
+      "eligible_candidate_count": 2,
+      "eligible_indices": [
+        0,
+        1
+      ],
+      "eligible_targets": [
+        "A",
+        "B"
+      ],
+      "evidence_task_ids": [
+        "t1",
+        "t2",
+        "t3",
+        "t4"
+      ],
+      "name": "explicit_ids",
+      "reason": "distinct_task_support",
+      "unknown_provenance": false
+    }
+  ],
+  "gate": {
+    "by_scenario": {
+      "clear_improvement": {
+        "mean_cell_delta": 0.12220279437559686,
+        "mean_delta": 0.12159135503153588,
+        "mean_sheet_delta": 0.12097991568747493,
+        "n_runs": 20,
+        "v2_actions": {
+          "accept_new_best": 20
+        },
+        "v3_actions": {
+          "accept_new_best": 20
+        },
+        "v3_group_guard_statuses": {
+          "passed": 20
+        }
+      },
+      "clear_loss": {
+        "mean_cell_delta": -0.12341443903105018,
+        "mean_delta": -0.12243913635436236,
+        "mean_sheet_delta": -0.12146383367767458,
+        "n_runs": 20,
+        "v2_actions": {
+          "reject": 20
+        },
+        "v3_actions": {
+          "reject": 20
+        },
+        "v3_group_guard_statuses": {
+          "blocked": 20
+        }
+      },
+      "noisy_mixed_gains_losses": {
+        "mean_cell_delta": 0.01610784841537306,
+        "mean_delta": 0.015871113461537613,
+        "mean_sheet_delta": 0.01563437850770216,
+        "n_runs": 20,
+        "v2_actions": {
+          "soft_accept": 20
+        },
+        "v3_actions": {
+          "soft_accept": 20
+        },
+        "v3_group_guard_statuses": {
+          "passed": 20
+        }
+      },
+      "small_loss": {
+        "mean_cell_delta": -0.03030714334436401,
+        "mean_delta": -0.030280618720331005,
+        "mean_sheet_delta": -0.030254094096297996,
+        "n_runs": 20,
+        "v2_actions": {
+          "reject": 20
+        },
+        "v3_actions": {
+          "reject": 20
+        },
+        "v3_group_guard_statuses": {
+          "passed": 20
+        }
+      },
+      "subgroup_regression_masked_by_gains": {
+        "mean_cell_delta": 0.20049069044570594,
+        "mean_delta": 0.02448410584319654,
+        "mean_sheet_delta": -0.15152247875931288,
+        "n_runs": 20,
+        "v2_actions": {
+          "soft_accept": 20
+        },
+        "v3_actions": {
+          "cam_re_evaluate": 20
+        },
+        "v3_group_guard_statuses": {
+          "blocked": 20
+        }
+      },
+      "unchanged": {
+        "mean_cell_delta": 0.0,
+        "mean_delta": 0.0,
+        "mean_sheet_delta": 0.0,
+        "n_runs": 20,
+        "v2_actions": {
+          "soft_accept": 20
+        },
+        "v3_actions": {
+          "soft_accept": 20
+        },
+        "v3_group_guard_statuses": {
+          "passed": 20
+        }
+      }
+    },
+    "runs": [
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.11578935579327876,
+          "sheet_level": 0.11871048000122478
+        },
+        "mean_improvement": 0.11724991789725177,
+        "scenario": "clear_improvement",
+        "seed": 0,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "positive_bootstrap_fraction": 1.0
+        },
+        "v3": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 1.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.12100115775916935,
+          "sheet_level": 0.12092547731835308
+        },
+        "mean_improvement": 0.12096331753876122,
+        "scenario": "clear_improvement",
+        "seed": 1,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "positive_bootstrap_fraction": 1.0
+        },
+        "v3": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 1.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.11645241335958592,
+          "sheet_level": 0.11721335184515125
+        },
+        "mean_improvement": 0.11683288260236857,
+        "scenario": "clear_improvement",
+        "seed": 2,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "positive_bootstrap_fraction": 1.0
+        },
+        "v3": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 1.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.12728384999159742,
+          "sheet_level": 0.12914161040231786
+        },
+        "mean_improvement": 0.12821273019695764,
+        "scenario": "clear_improvement",
+        "seed": 3,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "positive_bootstrap_fraction": 1.0
+        },
+        "v3": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 1.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.12420408185489729,
+          "sheet_level": 0.1232066965994986
+        },
+        "mean_improvement": 0.12370538922719794,
+        "scenario": "clear_improvement",
+        "seed": 4,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "positive_bootstrap_fraction": 1.0
+        },
+        "v3": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 1.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.12388268127611186,
+          "sheet_level": 0.11941581138848571
+        },
+        "mean_improvement": 0.12164924633229879,
+        "scenario": "clear_improvement",
+        "seed": 5,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "positive_bootstrap_fraction": 1.0
+        },
+        "v3": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 1.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.12005393887875446,
+          "sheet_level": 0.1211188626496352
+        },
+        "mean_improvement": 0.12058640076419483,
+        "scenario": "clear_improvement",
+        "seed": 6,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "positive_bootstrap_fraction": 1.0
+        },
+        "v3": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 1.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.12408247687179516,
+          "sheet_level": 0.12349624867216909
+        },
+        "mean_improvement": 0.12378936277198212,
+        "scenario": "clear_improvement",
+        "seed": 7,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "positive_bootstrap_fraction": 1.0
+        },
+        "v3": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 1.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.12424698049291694,
+          "sheet_level": 0.11256390802262559
+        },
+        "mean_improvement": 0.11840544425777126,
+        "scenario": "clear_improvement",
+        "seed": 8,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "positive_bootstrap_fraction": 1.0
+        },
+        "v3": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 1.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.12395174027203518,
+          "sheet_level": 0.12216400870829917
+        },
+        "mean_improvement": 0.12305787449016718,
+        "scenario": "clear_improvement",
+        "seed": 9,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "positive_bootstrap_fraction": 1.0
+        },
+        "v3": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 1.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.12827711337754777,
+          "sheet_level": 0.11860659960268997
+        },
+        "mean_improvement": 0.12344185649011888,
+        "scenario": "clear_improvement",
+        "seed": 10,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "positive_bootstrap_fraction": 1.0
+        },
+        "v3": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 1.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.11470381246339154,
+          "sheet_level": 0.11631038840726007
+        },
+        "mean_improvement": 0.11550710043532582,
+        "scenario": "clear_improvement",
+        "seed": 11,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "positive_bootstrap_fraction": 1.0
+        },
+        "v3": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 1.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.11302419680630929,
+          "sheet_level": 0.1234543142886693
+        },
+        "mean_improvement": 0.11823925554748929,
+        "scenario": "clear_improvement",
+        "seed": 12,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "positive_bootstrap_fraction": 1.0
+        },
+        "v3": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 1.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.12664645462110952,
+          "sheet_level": 0.12516093729858158
+        },
+        "mean_improvement": 0.12590369595984557,
+        "scenario": "clear_improvement",
+        "seed": 13,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "positive_bootstrap_fraction": 1.0
+        },
+        "v3": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 1.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.12022569939052133,
+          "sheet_level": 0.11805233178700011
+        },
+        "mean_improvement": 0.11913901558876072,
+        "scenario": "clear_improvement",
+        "seed": 14,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "positive_bootstrap_fraction": 1.0
+        },
+        "v3": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 1.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.11867022813160695,
+          "sheet_level": 0.11986913236534039
+        },
+        "mean_improvement": 0.11926968024847366,
+        "scenario": "clear_improvement",
+        "seed": 15,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "positive_bootstrap_fraction": 1.0
+        },
+        "v3": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 1.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.1272034314442916,
+          "sheet_level": 0.11821130352426135
+        },
+        "mean_improvement": 0.12270736748427646,
+        "scenario": "clear_improvement",
+        "seed": 16,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "positive_bootstrap_fraction": 1.0
+        },
+        "v3": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 1.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.12779384599320184,
+          "sheet_level": 0.12366298561172684
+        },
+        "mean_improvement": 0.12572841580246436,
+        "scenario": "clear_improvement",
+        "seed": 17,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "positive_bootstrap_fraction": 1.0
+        },
+        "v3": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 1.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.12855860836045144,
+          "sheet_level": 0.12443524665944503
+        },
+        "mean_improvement": 0.12649692750994823,
+        "scenario": "clear_improvement",
+        "seed": 18,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "positive_bootstrap_fraction": 1.0
+        },
+        "v3": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 1.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.11800382037336377,
+          "sheet_level": 0.12387861859676338
+        },
+        "mean_improvement": 0.12094121948506358,
+        "scenario": "clear_improvement",
+        "seed": 19,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "positive_bootstrap_fraction": 1.0
+        },
+        "v3": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 1.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": -0.11857428852004485,
+          "sheet_level": -0.11588862477309388
+        },
+        "mean_improvement": -0.11723145664656935,
+        "scenario": "clear_loss",
+        "seed": 0,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": -0.1284149117144229,
+          "sheet_level": -0.12087696030677382
+        },
+        "mean_improvement": -0.12464593601059834,
+        "scenario": "clear_loss",
+        "seed": 1,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": -0.11814217345108198,
+          "sheet_level": -0.11637873064464513
+        },
+        "mean_improvement": -0.11726045204786355,
+        "scenario": "clear_loss",
+        "seed": 2,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": -0.11677347802274504,
+          "sheet_level": -0.11848245682999334
+        },
+        "mean_improvement": -0.11762796742636919,
+        "scenario": "clear_loss",
+        "seed": 3,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": -0.11515884800737644,
+          "sheet_level": -0.1160774565074126
+        },
+        "mean_improvement": -0.11561815225739451,
+        "scenario": "clear_loss",
+        "seed": 4,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": -0.12595754947809396,
+          "sheet_level": -0.13082823825574585
+        },
+        "mean_improvement": -0.12839289386691993,
+        "scenario": "clear_loss",
+        "seed": 5,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": -0.13230534551930653,
+          "sheet_level": -0.13365704708845022
+        },
+        "mean_improvement": -0.13298119630387836,
+        "scenario": "clear_loss",
+        "seed": 6,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": -0.1282392471405802,
+          "sheet_level": -0.1226079934702649
+        },
+        "mean_improvement": -0.12542362030542253,
+        "scenario": "clear_loss",
+        "seed": 7,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": -0.12403311994221064,
+          "sheet_level": -0.11289459822187072
+        },
+        "mean_improvement": -0.11846385908204067,
+        "scenario": "clear_loss",
+        "seed": 8,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": -0.1164855284753115,
+          "sheet_level": -0.11522374839412017
+        },
+        "mean_improvement": -0.11585463843471584,
+        "scenario": "clear_loss",
+        "seed": 9,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": -0.12871984078033857,
+          "sheet_level": -0.12847924949853107
+        },
+        "mean_improvement": -0.1285995451394348,
+        "scenario": "clear_loss",
+        "seed": 10,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": -0.12415445735494324,
+          "sheet_level": -0.11860254288263124
+        },
+        "mean_improvement": -0.12137850011878723,
+        "scenario": "clear_loss",
+        "seed": 11,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": -0.12274748665716592,
+          "sheet_level": -0.12026046428445199
+        },
+        "mean_improvement": -0.12150397547080896,
+        "scenario": "clear_loss",
+        "seed": 12,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": -0.12237567204066299,
+          "sheet_level": -0.12753425933154738
+        },
+        "mean_improvement": -0.1249549656861052,
+        "scenario": "clear_loss",
+        "seed": 13,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": -0.12971901205426903,
+          "sheet_level": -0.12694456302044937
+        },
+        "mean_improvement": -0.12833178753735922,
+        "scenario": "clear_loss",
+        "seed": 14,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": -0.11939878943233802,
+          "sheet_level": -0.11467406679344387
+        },
+        "mean_improvement": -0.11703642811289094,
+        "scenario": "clear_loss",
+        "seed": 15,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": -0.12185471631865334,
+          "sheet_level": -0.13348463256675808
+        },
+        "mean_improvement": -0.12766967444270572,
+        "scenario": "clear_loss",
+        "seed": 16,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": -0.11884669728367743,
+          "sheet_level": -0.12796893694346945
+        },
+        "mean_improvement": -0.12340781711357345,
+        "scenario": "clear_loss",
+        "seed": 17,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": -0.12870891515302413,
+          "sheet_level": -0.11457089850001752
+        },
+        "mean_improvement": -0.12163990682652082,
+        "scenario": "clear_loss",
+        "seed": 18,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": -0.12767870327475678,
+          "sheet_level": -0.11384120523982069
+        },
+        "mean_improvement": -0.12075995425728873,
+        "scenario": "clear_loss",
+        "seed": 19,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.0,
+          "sheet_level": 0.0
+        },
+        "mean_improvement": 0.0,
+        "scenario": "unchanged",
+        "seed": 0,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": true,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.0,
+          "sheet_level": 0.0
+        },
+        "mean_improvement": 0.0,
+        "scenario": "unchanged",
+        "seed": 1,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": true,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.0,
+          "sheet_level": 0.0
+        },
+        "mean_improvement": 0.0,
+        "scenario": "unchanged",
+        "seed": 2,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": true,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.0,
+          "sheet_level": 0.0
+        },
+        "mean_improvement": 0.0,
+        "scenario": "unchanged",
+        "seed": 3,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": true,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.0,
+          "sheet_level": 0.0
+        },
+        "mean_improvement": 0.0,
+        "scenario": "unchanged",
+        "seed": 4,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": true,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.0,
+          "sheet_level": 0.0
+        },
+        "mean_improvement": 0.0,
+        "scenario": "unchanged",
+        "seed": 5,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": true,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.0,
+          "sheet_level": 0.0
+        },
+        "mean_improvement": 0.0,
+        "scenario": "unchanged",
+        "seed": 6,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": true,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.0,
+          "sheet_level": 0.0
+        },
+        "mean_improvement": 0.0,
+        "scenario": "unchanged",
+        "seed": 7,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": true,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.0,
+          "sheet_level": 0.0
+        },
+        "mean_improvement": 0.0,
+        "scenario": "unchanged",
+        "seed": 8,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": true,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.0,
+          "sheet_level": 0.0
+        },
+        "mean_improvement": 0.0,
+        "scenario": "unchanged",
+        "seed": 9,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": true,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.0,
+          "sheet_level": 0.0
+        },
+        "mean_improvement": 0.0,
+        "scenario": "unchanged",
+        "seed": 10,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": true,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.0,
+          "sheet_level": 0.0
+        },
+        "mean_improvement": 0.0,
+        "scenario": "unchanged",
+        "seed": 11,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": true,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.0,
+          "sheet_level": 0.0
+        },
+        "mean_improvement": 0.0,
+        "scenario": "unchanged",
+        "seed": 12,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": true,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.0,
+          "sheet_level": 0.0
+        },
+        "mean_improvement": 0.0,
+        "scenario": "unchanged",
+        "seed": 13,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": true,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.0,
+          "sheet_level": 0.0
+        },
+        "mean_improvement": 0.0,
+        "scenario": "unchanged",
+        "seed": 14,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": true,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.0,
+          "sheet_level": 0.0
+        },
+        "mean_improvement": 0.0,
+        "scenario": "unchanged",
+        "seed": 15,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": true,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.0,
+          "sheet_level": 0.0
+        },
+        "mean_improvement": 0.0,
+        "scenario": "unchanged",
+        "seed": 16,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": true,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.0,
+          "sheet_level": 0.0
+        },
+        "mean_improvement": 0.0,
+        "scenario": "unchanged",
+        "seed": 17,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": true,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.0,
+          "sheet_level": 0.0
+        },
+        "mean_improvement": 0.0,
+        "scenario": "unchanged",
+        "seed": 18,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": true,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.0,
+          "sheet_level": 0.0
+        },
+        "mean_improvement": 0.0,
+        "scenario": "unchanged",
+        "seed": 19,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": true,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": -0.03156411948404555,
+          "sheet_level": -0.028557548744469384
+        },
+        "mean_improvement": -0.030060834114257466,
+        "scenario": "small_loss",
+        "seed": 0,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": -0.02659331951056837,
+          "sheet_level": -0.03366816290057131
+        },
+        "mean_improvement": -0.030130741205569845,
+        "scenario": "small_loss",
+        "seed": 1,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": -0.03054025691914496,
+          "sheet_level": -0.03270255398236247
+        },
+        "mean_improvement": -0.03162140545075372,
+        "scenario": "small_loss",
+        "seed": 2,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": -0.029558249439424006,
+          "sheet_level": -0.032030094247628926
+        },
+        "mean_improvement": -0.030794171843526463,
+        "scenario": "small_loss",
+        "seed": 3,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": -0.030727827354318116,
+          "sheet_level": -0.028908592916830074
+        },
+        "mean_improvement": -0.0298182101355741,
+        "scenario": "small_loss",
+        "seed": 4,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": -0.026784767286444095,
+          "sheet_level": -0.0298263658502178
+        },
+        "mean_improvement": -0.02830556656833095,
+        "scenario": "small_loss",
+        "seed": 5,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": -0.031044531033658285,
+          "sheet_level": -0.029044997393076817
+        },
+        "mean_improvement": -0.030044764213367547,
+        "scenario": "small_loss",
+        "seed": 6,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": -0.030947153362234508,
+          "sheet_level": -0.02901276467441271
+        },
+        "mean_improvement": -0.02997995901832361,
+        "scenario": "small_loss",
+        "seed": 7,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": -0.031503526058040784,
+          "sheet_level": -0.029037140997105648
+        },
+        "mean_improvement": -0.030270333527573218,
+        "scenario": "small_loss",
+        "seed": 8,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": -0.03190640053818913,
+          "sheet_level": -0.02963806779732602
+        },
+        "mean_improvement": -0.030772234167757574,
+        "scenario": "small_loss",
+        "seed": 9,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": -0.030993745878785055,
+          "sheet_level": -0.028366121666330735
+        },
+        "mean_improvement": -0.029679933772557898,
+        "scenario": "small_loss",
+        "seed": 10,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": -0.029715386579650026,
+          "sheet_level": -0.03170178396506259
+        },
+        "mean_improvement": -0.030708585272356308,
+        "scenario": "small_loss",
+        "seed": 11,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": -0.03012598325350535,
+          "sheet_level": -0.03206835089340563
+        },
+        "mean_improvement": -0.03109716707345549,
+        "scenario": "small_loss",
+        "seed": 12,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": -0.03150795478063576,
+          "sheet_level": -0.028931997489899462
+        },
+        "mean_improvement": -0.030219976135267612,
+        "scenario": "small_loss",
+        "seed": 13,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": -0.031014486269914893,
+          "sheet_level": -0.02945549910494692
+        },
+        "mean_improvement": -0.030234992687430906,
+        "scenario": "small_loss",
+        "seed": 14,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": -0.030449092555591167,
+          "sheet_level": -0.031542130542590016
+        },
+        "mean_improvement": -0.030995611549090595,
+        "scenario": "small_loss",
+        "seed": 15,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": -0.03214893461555448,
+          "sheet_level": -0.028217681639338833
+        },
+        "mean_improvement": -0.030183308127446656,
+        "scenario": "small_loss",
+        "seed": 16,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": -0.029599902587378397,
+          "sheet_level": -0.03107977851136014
+        },
+        "mean_improvement": -0.03033984054936927,
+        "scenario": "small_loss",
+        "seed": 17,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": -0.031571210265369354,
+          "sheet_level": -0.03036261277654183
+        },
+        "mean_improvement": -0.03096691152095559,
+        "scenario": "small_loss",
+        "seed": 18,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": -0.02784601911482793,
+          "sheet_level": -0.03092963583248256
+        },
+        "mean_improvement": -0.02938782747365525,
+        "scenario": "small_loss",
+        "seed": 19,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "positive_bootstrap_fraction": 0.0
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.0
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.01358135412715655,
+          "sheet_level": 0.008009896882381328
+        },
+        "mean_improvement": 0.01079562550476894,
+        "scenario": "noisy_mixed_gains_losses",
+        "seed": 0,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.712
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": true,
+          "positive_bootstrap_fraction": 0.712
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.010830959669183429,
+          "sheet_level": 0.019647602277775015
+        },
+        "mean_improvement": 0.015239280973479222,
+        "scenario": "noisy_mixed_gains_losses",
+        "seed": 1,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.764
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": true,
+          "positive_bootstrap_fraction": 0.764
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.01018455256063639,
+          "sheet_level": 0.018788802854029982
+        },
+        "mean_improvement": 0.014486677707333185,
+        "scenario": "noisy_mixed_gains_losses",
+        "seed": 2,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.76
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": true,
+          "positive_bootstrap_fraction": 0.76
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.017862357352417764,
+          "sheet_level": 0.01170030729567377
+        },
+        "mean_improvement": 0.014781332324045765,
+        "scenario": "noisy_mixed_gains_losses",
+        "seed": 3,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.812
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": true,
+          "positive_bootstrap_fraction": 0.812
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.0069508148425718504,
+          "sheet_level": 0.016244481863837923
+        },
+        "mean_improvement": 0.011597648353204888,
+        "scenario": "noisy_mixed_gains_losses",
+        "seed": 4,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.692
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": true,
+          "positive_bootstrap_fraction": 0.692
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.018832311794671,
+          "sheet_level": 0.019122026819186917
+        },
+        "mean_improvement": 0.01897716930692896,
+        "scenario": "noisy_mixed_gains_losses",
+        "seed": 5,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.806
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": true,
+          "positive_bootstrap_fraction": 0.806
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.019934421535172275,
+          "sheet_level": 0.015530278280786037
+        },
+        "mean_improvement": 0.017732349907979155,
+        "scenario": "noisy_mixed_gains_losses",
+        "seed": 6,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.794
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": true,
+          "positive_bootstrap_fraction": 0.794
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.011178947333977887,
+          "sheet_level": 0.0211939291652038
+        },
+        "mean_improvement": 0.016186438249590842,
+        "scenario": "noisy_mixed_gains_losses",
+        "seed": 7,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.784
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": true,
+          "positive_bootstrap_fraction": 0.784
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.015923765300530426,
+          "sheet_level": 0.022182213716065623
+        },
+        "mean_improvement": 0.019052989508298025,
+        "scenario": "noisy_mixed_gains_losses",
+        "seed": 8,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.814
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": true,
+          "positive_bootstrap_fraction": 0.814
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.030943671251524175,
+          "sheet_level": 0.020332026032004152
+        },
+        "mean_improvement": 0.02563784864176416,
+        "scenario": "noisy_mixed_gains_losses",
+        "seed": 9,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.878
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": true,
+          "positive_bootstrap_fraction": 0.878
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.020618242735704333,
+          "sheet_level": 0.012108200433847398
+        },
+        "mean_improvement": 0.016363221584775867,
+        "scenario": "noisy_mixed_gains_losses",
+        "seed": 10,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.766
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": true,
+          "positive_bootstrap_fraction": 0.766
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.01231765871612416,
+          "sheet_level": 0.009984648361442352
+        },
+        "mean_improvement": 0.011151153538783256,
+        "scenario": "noisy_mixed_gains_losses",
+        "seed": 11,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.682
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": true,
+          "positive_bootstrap_fraction": 0.682
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.0221467515758893,
+          "sheet_level": 0.013494071454539411
+        },
+        "mean_improvement": 0.01782041151521436,
+        "scenario": "noisy_mixed_gains_losses",
+        "seed": 12,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.838
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": true,
+          "positive_bootstrap_fraction": 0.838
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.0229320864586763,
+          "sheet_level": 0.02085404749293036
+        },
+        "mean_improvement": 0.02189306697580333,
+        "scenario": "noisy_mixed_gains_losses",
+        "seed": 13,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.85
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": true,
+          "positive_bootstrap_fraction": 0.85
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.009520458410035995,
+          "sheet_level": 0.018458007796720632
+        },
+        "mean_improvement": 0.013989233103378313,
+        "scenario": "noisy_mixed_gains_losses",
+        "seed": 14,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.71
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": true,
+          "positive_bootstrap_fraction": 0.71
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.017050594403233532,
+          "sheet_level": 0.009742760809144565
+        },
+        "mean_improvement": 0.01339667760618905,
+        "scenario": "noisy_mixed_gains_losses",
+        "seed": 15,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.716
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": true,
+          "positive_bootstrap_fraction": 0.716
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.011383136705473274,
+          "sheet_level": 0.011502117305119236
+        },
+        "mean_improvement": 0.011442627005296255,
+        "scenario": "noisy_mixed_gains_losses",
+        "seed": 16,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.728
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": true,
+          "positive_bootstrap_fraction": 0.728
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.02279080026597624,
+          "sheet_level": 0.016869835789396558
+        },
+        "mean_improvement": 0.0198303180276864,
+        "scenario": "noisy_mixed_gains_losses",
+        "seed": 17,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.822
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": true,
+          "positive_bootstrap_fraction": 0.822
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.005209128065644264,
+          "sheet_level": 0.02055774141029223
+        },
+        "mean_improvement": 0.012883434737968246,
+        "scenario": "noisy_mixed_gains_losses",
+        "seed": 18,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.708
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": true,
+          "positive_bootstrap_fraction": 0.708
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.02196495520286207,
+          "sheet_level": 0.006364574113665922
+        },
+        "mean_improvement": 0.014164764658263995,
+        "scenario": "noisy_mixed_gains_losses",
+        "seed": 19,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.736
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "noninferiority_passed": true,
+          "positive_bootstrap_fraction": 0.736
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.19621115695239996,
+          "sheet_level": -0.15597905686640984
+        },
+        "mean_improvement": 0.020116050042995055,
+        "scenario": "subgroup_regression_masked_by_gains",
+        "seed": 0,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.796
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "sheet_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.796
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.19881048890193603,
+          "sheet_level": -0.1499979996647169
+        },
+        "mean_improvement": 0.024406244618609567,
+        "scenario": "subgroup_regression_masked_by_gains",
+        "seed": 1,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.798
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "sheet_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.798
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.20281791667128335,
+          "sheet_level": -0.14515597099074895
+        },
+        "mean_improvement": 0.0288309728402672,
+        "scenario": "subgroup_regression_masked_by_gains",
+        "seed": 2,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.838
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "sheet_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.838
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.2026572797657467,
+          "sheet_level": -0.15358749829468063
+        },
+        "mean_improvement": 0.024534890735533034,
+        "scenario": "subgroup_regression_masked_by_gains",
+        "seed": 3,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.786
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "sheet_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.786
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.21095443060586497,
+          "sheet_level": -0.14878724632691487
+        },
+        "mean_improvement": 0.031083592139475036,
+        "scenario": "subgroup_regression_masked_by_gains",
+        "seed": 4,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.878
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "sheet_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.878
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.19473924585967098,
+          "sheet_level": -0.15829246567441851
+        },
+        "mean_improvement": 0.018223390092626243,
+        "scenario": "subgroup_regression_masked_by_gains",
+        "seed": 5,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.752
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "sheet_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.752
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.20644617696128842,
+          "sheet_level": -0.15478786345518158
+        },
+        "mean_improvement": 0.0258291567530534,
+        "scenario": "subgroup_regression_masked_by_gains",
+        "seed": 6,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.81
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "sheet_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.81
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.2022309339382553,
+          "sheet_level": -0.14816416117339812
+        },
+        "mean_improvement": 0.02703338638242859,
+        "scenario": "subgroup_regression_masked_by_gains",
+        "seed": 7,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.828
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "sheet_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.828
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.19348010977956603,
+          "sheet_level": -0.1462596748522351
+        },
+        "mean_improvement": 0.023610217463665463,
+        "scenario": "subgroup_regression_masked_by_gains",
+        "seed": 8,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.796
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "sheet_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.796
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.19549479301906908,
+          "sheet_level": -0.15464510510464097
+        },
+        "mean_improvement": 0.020424843957214056,
+        "scenario": "subgroup_regression_masked_by_gains",
+        "seed": 9,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.762
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "sheet_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.762
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.2034720526776425,
+          "sheet_level": -0.15192627744967432
+        },
+        "mean_improvement": 0.02577288761398409,
+        "scenario": "subgroup_regression_masked_by_gains",
+        "seed": 10,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.77
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "sheet_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.77
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.19848440175199494,
+          "sheet_level": -0.15177967944452878
+        },
+        "mean_improvement": 0.023352361153733077,
+        "scenario": "subgroup_regression_masked_by_gains",
+        "seed": 11,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.812
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "sheet_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.812
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.20460193423913225,
+          "sheet_level": -0.1523784960068704
+        },
+        "mean_improvement": 0.026111719116130933,
+        "scenario": "subgroup_regression_masked_by_gains",
+        "seed": 12,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.796
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "sheet_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.796
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.20327674978781732,
+          "sheet_level": -0.15327697149161262
+        },
+        "mean_improvement": 0.024999889148102354,
+        "scenario": "subgroup_regression_masked_by_gains",
+        "seed": 13,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.82
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "sheet_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.82
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.20533527515877714,
+          "sheet_level": -0.14808722016125406
+        },
+        "mean_improvement": 0.02862402749876154,
+        "scenario": "subgroup_regression_masked_by_gains",
+        "seed": 14,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.85
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "sheet_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.85
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.19880923515537638,
+          "sheet_level": -0.1495792081477027
+        },
+        "mean_improvement": 0.02461501350383686,
+        "scenario": "subgroup_regression_masked_by_gains",
+        "seed": 15,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.808
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "sheet_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.808
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.1997457618898038,
+          "sheet_level": -0.1505681977359924
+        },
+        "mean_improvement": 0.024588782076905718,
+        "scenario": "subgroup_regression_masked_by_gains",
+        "seed": 16,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.84
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "sheet_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.84
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.1983550627285044,
+          "sheet_level": -0.15133931074645368
+        },
+        "mean_improvement": 0.023507875991025363,
+        "scenario": "subgroup_regression_masked_by_gains",
+        "seed": 17,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.814
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "sheet_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.814
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.19597670674269244,
+          "sheet_level": -0.1502166859073873
+        },
+        "mean_improvement": 0.02288001041765256,
+        "scenario": "subgroup_regression_masked_by_gains",
+        "seed": 18,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.816
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "sheet_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.816
+        }
+      },
+      {
+        "group_mean_improvements": {
+          "cell_level": 0.19791409632729726,
+          "sheet_level": -0.15564048569143604
+        },
+        "mean_improvement": 0.021136805317930607,
+        "scenario": "subgroup_regression_masked_by_gains",
+        "seed": 19,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "positive_bootstrap_fraction": 0.758
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "sheet_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "noninferiority_passed": null,
+          "positive_bootstrap_fraction": 0.758
+        }
+      }
+    ]
+  },
+  "interpretation_limit": "No SpreadsheetBench accuracy, calibration, or generalization claim is supported.",
+  "label": "synthetic mechanism verification only",
+  "mechanism_findings": [
+    "All six scenario outcomes are generated synthetic score data; they do not estimate real-task performance.",
+    "In small_loss, the paired bootstrap returned reject in all 20 seeds. This follows the gate's conservative precedence: statistically demonstrated harm is rejected; the 0.05 noninferiority margin is considered for bootstrap-inconclusive candidates.",
+    "The subgroup-regression fixture had aggregate mean improvement near +0.025 while sheet_level regressed near -0.15; v2 soft-accepted all 20 runs and the v3 group guard requested reevaluation in all 20."
+  ],
+  "memory_fixture": {
+    "bundle_metadata": {
+      "evidence_v3": [
+        {
+          "attribution_scope": "update_bundle",
+          "memory_id": "mechanism-fixture:e1:s1:bundle",
+          "stored_edit_count": 3,
+          "supporting_task_ids": [
+            "train-1",
+            "train-2"
+          ]
+        }
+      ],
+      "legacy": [
+        {
+          "attribution_scope": "per_edit",
+          "memory_id": "mechanism-fixture:e1:s1:r0",
+          "stored_edit_count": 1,
+          "supporting_task_ids": []
+        },
+        {
+          "attribution_scope": "per_edit",
+          "memory_id": "mechanism-fixture:e1:s1:r1",
+          "stored_edit_count": 1,
+          "supporting_task_ids": []
+        },
+        {
+          "attribution_scope": "per_edit",
+          "memory_id": "mechanism-fixture:e1:s1:r2",
+          "stored_edit_count": 1,
+          "supporting_task_ids": []
+        }
+      ]
+    },
+    "bundle_record_count": {
+      "evidence_v3": 1,
+      "legacy": 3
+    },
+    "retrieval": {
+      "evidence_v3": {
+        "context_prepared": true,
+        "context_sha256": "53def0d4a2eb613daf6124af947482a1d947d29739bef8a7136994294c7c33ca",
+        "cross_type_hit": false,
+        "hit_count": 1,
+        "hit_ids": [
+          "cell-zero"
+        ],
+        "zero_delta_hit": true
+      },
+      "legacy": {
+        "context_prepared": true,
+        "context_sha256": "3cc7c7db13a39d46cf18291051a1812d591e25a285a744c07cd44d3009067bd8",
+        "cross_type_hit": true,
+        "hit_count": 2,
+        "hit_ids": [
+          "sheet-distractor",
+          "cell-zero"
+        ],
+        "zero_delta_hit": true
+      }
+    }
+  },
+  "metadata": {
+    "code_sha256": {
+      "scripts\\validate_cam_v3_mechanisms.py": "96e850f7a603aa0ff213edbd7253a71d9fbef148f6fb0a93c77f1c4b514226de",
+      "skillopt\\cam\\adaptive_budget.py": "ca667cbfc5ef604c31abc41350fb8c0e34e7b65a25aa466b1197edec8cd70cc8",
+      "skillopt\\cam\\bootstrap_gate.py": "7b532902b290a9bd0c713f539277ff08ce0b28d41121724eee3f55dcd20125ed",
+      "skillopt\\cam\\memory_context.py": "7a45fb09d0f7a36136fd53c6b4a30e53daeb669e8438271df7272f28fe7c0c01",
+      "skillopt\\cam\\rejected_memory.py": "fa46beecf73d9056ad6347441bb7412137a4d6511addc6fd90c4e51eae4167eb",
+      "skillopt\\cam\\selection_guard.py": "d130d4805a9b49f85a40fe9cb924102b57d79e382901bb4a7d12f635f5f4cf2e"
+    },
+    "completed_utc": "2026-10-18T11:54:06.937439+00:00",
+    "model_api_imports": "none",
+    "offline_guards": [
+      "socket.socket.connect/connect_ex",
+      "socket.create_connection",
+      "subprocess.Popen/run/call/check_call/check_output",
+      "os.system/popen"
+    ],
+    "protocol_sha256": "b2d2d1e5364857fdfe04b4c605febc70d0937972ee2576c99aa9e1a7706c57c4",
+    "runtime": {
+      "implementation": "CPython",
+      "platform": "Windows-11-10.0.26200-SP0",
+      "python": "3.12.15 | packaged by Anaconda, Inc. | (main, Oct  1 2026, 20:14:50) [MSC v.1942 64 bit (AMD64)]"
+    }
+  },
+  "prespecified_hypotheses": {
+    "budget": {
+      "conflict": "different edits at the same explicit target are excluded",
+      "duplicate": "identical edits collapse and task IDs union",
+      "explicit_ids": "distinct validated task IDs establish candidate support",
+      "no_provenance": "unknown provenance uses min-budget fallback bounded by unique edits"
+    },
+    "gate": {
+      "clear_improvement": "v2 accepts; v3 accepts if bootstrap and group checks pass",
+      "clear_loss": "both policies reject a clearly harmful candidate",
+      "noisy_mixed_gains_losses": "both subgroup means are near +0.015; decisions depend on paired uncertainty",
+      "small_loss": "v2 requests reevaluation; v3 can soft-accept if its LCB clears -0.05",
+      "subgroup_regression_masked_by_gains": "positive aggregate can pass v2 bootstrap; v3 group guard flags sheet regression",
+      "unchanged": "v2 requests reevaluation; v3 may soft-accept within its noninferiority margin"
+    },
+    "memory": "evidence_v3 scopes away the sheet distractor and retains the matching zero-delta record",
+    "memory_bundle": "legacy stores one record per edit; evidence_v3 stores one update-bundle record"
+  }
+}

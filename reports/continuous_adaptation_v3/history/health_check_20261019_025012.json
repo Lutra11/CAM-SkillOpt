@@ -1,0 +1,131 @@
+{
+  "created_at_utc": "2026-10-18T18:20:22.124370+00:00",
+  "study_id": "continuous_adaptation_v3",
+  "audit_scope": "offline audit; no model/API calls, no other-cell revalidation, no quality comparison beyond CAM43 descriptive test count",
+  "original_freeze": {
+    "sha256": "3e36613b9d9db411f806cca95a6644a6a66612924c925add240d44ffcd0bb597",
+    "source_fingerprints": 1378,
+    "verify_freeze_passed": true,
+    "verify_freeze_passed_after_reporter": true
+  },
+  "supplemental_prompt_observation": {
+    "path": "outputs/studies/continuous_adaptation_v3/prompt_observation_20261019_0125/observation.json",
+    "count": 21,
+    "current_files_all_match_recorded_hash_and_length": true,
+    "original_freeze_changed": false,
+    "historical_content_proven": false,
+    "caveat": "Current clean Git state and old file timestamps do not retrospectively prove prompt contents at every previous request",
+    "scope": "separate supplemental observation; current file hashes do not establish historical prompt content or add prompts to original freeze."
+  },
+  "queue": {
+    "sha256_at_audit_start": "d0edaacb08b5efbc25a38b5d933fe4e5543a5f78b7a8866eae18bd7124779dc9",
+    "sha256_after_reporter": "d0edaacb08b5efbc25a38b5d933fe4e5543a5f78b7a8866eae18bd7124779dc9",
+    "cell_statuses": {
+      "baseline_seed42": "accepted",
+      "cam_v3_seed42": "accepted",
+      "cam_v3_seed43": "accepted",
+      "baseline_seed43": "running"
+    },
+    "unchanged_during_audit": true,
+    "cell_statuses_after_reporter": {
+      "baseline_seed42": "accepted",
+      "cam_v3_seed42": "accepted",
+      "cam_v3_seed43": "accepted",
+      "baseline_seed43": "running"
+    }
+  },
+  "cam_v3_seed43": {
+    "queue_status": "accepted",
+    "validate_complete_cell": true,
+    "validation_reason": "accepted: four train steps, paired A/B/A/B plan and exact fixed-test evidence verified",
+    "test_evaluation": {
+      "rows": 120,
+      "unique_ids": true,
+      "exact_fixed_120_ids": true,
+      "frozen_id_hash_matches_summary_and_manifest": true,
+      "task_type_counts": {
+        "cell_level": 83,
+        "sheet_level": 37
+      },
+      "hard_passes": 70,
+      "total": 120
+    },
+    "final_selection": {
+      "best_step": 1,
+      "best_origin": "step_0001",
+      "best_score": 0.55,
+      "final_selection_hard": 0.675,
+      "best_skill_matches_step_candidate": true,
+      "promotion_authorized_best_step": true
+    },
+    "auxiliary_slow_update_failures": {
+      "cam_v3_seed42_epoch3": "no_content after three retries (NoneType subscript error)",
+      "cam_v3_seed43_epoch2": "no_content after three retries (NoneType subscript error)",
+      "cam_v3_seed43_epoch3": "no_content after three retries (NoneType subscript error)"
+    },
+    "token_accounting_caveat": "Returned token totals may be partial and do not imply complete per-request billing."
+  },
+  "baseline_seed43": {
+    "queue_status": "running",
+    "config": {
+      "seed": 43,
+      "num_epochs": 4,
+      "train_size": 20,
+      "batch_size": 20,
+      "eval_test": false,
+      "final_selection": true,
+      "cam_enabled": false
+    },
+    "progress": [
+      {
+        "step": 1,
+        "row_count": 20,
+        "exact_20_frozen_ids": true,
+        "task_type_exact": true,
+        "recorded": true
+      },
+      {
+        "step": 2,
+        "row_count": 0,
+        "exact_20_frozen_ids": false,
+        "task_type_exact": false,
+        "recorded": false
+      },
+      {
+        "step": 3,
+        "row_count": 0,
+        "exact_20_frozen_ids": false,
+        "task_type_exact": false,
+        "recorded": false
+      },
+      {
+        "step": 4,
+        "row_count": 0,
+        "exact_20_frozen_ids": false,
+        "task_type_exact": false,
+        "recorded": false
+      }
+    ],
+    "cam_gate_artifacts": [],
+    "log": {
+      "exists": true,
+      "size_bytes": 10503,
+      "last_write_utc": "2026-10-18T18:19:50.212609+00:00",
+      "line_count": 165,
+      "fatal_exception_markers": [],
+      "nonempty": true
+    }
+  },
+  "reporter_refresh": {
+    "status": "awaiting_complete_seed_pairs",
+    "complete_seed_pair_count": 1,
+    "overall_contrast_interpretation": "No overall comparison is reported until baseline_seed43 completes and is validated."
+  },
+  "validity": {
+    "cam43_cell_valid": true,
+    "baseline43_config_cam_disabled": true,
+    "baseline43_latest_log_nonempty_no_fatal_exception": true,
+    "critical_blocker": null
+  },
+  "no_overall_comparison_claim": true
+}

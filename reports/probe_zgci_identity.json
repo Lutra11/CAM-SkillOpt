@@ -1,0 +1,184 @@
+{
+  "results": [
+    {
+      "model": "glm",
+      "identity": [
+        {
+          "text": "",
+          "reported": "glm-5.3-private-19428658",
+          "elapsed_s": 1.73
+        },
+        {
+          "text": "",
+          "reported": "glm-5.3-private-19428658",
+          "elapsed_s": 2.22
+        },
+        {
+          "text": "",
+          "reported": "glm-5.3-private-19428658",
+          "elapsed_s": 1.87
+        }
+      ],
+      "json_ok": true,
+      "tool_ok": true,
+      "json_parsed": {
+        "status": "ok",
+        "value": 42
+      },
+      "tool_sample": "{\"function\": {\"arguments\": \"{\\\"edit\\\": \\\"hello world\\\"}\", \"name\": \"submit_edit\"}, \"id\": \"call_d236658182ee46d396f1701d\", \"index\": 0, \"type\": \"function\"}"
+    },
+    {
+      "model": "glm-anthropic",
+      "identity": [
+        {
+          "text": "",
+          "reported": "glm-5.3-private-19428658",
+          "elapsed_s": 17.17
+        },
+        {
+          "text": "",
+          "reported": "glm-5.3-private-19428658",
+          "elapsed_s": 1.63
+        },
+        {
+          "text": "",
+          "reported": "glm-5.3-private-19428658",
+          "elapsed_s": 4.93
+        }
+      ],
+      "json_ok": true,
+      "tool_ok": true,
+      "json_parsed": {
+        "status": "ok",
+        "value": 42
+      },
+      "tool_sample": "{\"function\": {\"arguments\": \"{\\\"edit\\\": \\\"hello world\\\"}\", \"name\": \"submit_edit\"}, \"id\": \"call_847f881f34f247e792c23060\", \"index\": 0, \"type\": \"function\"}"
+    },
+    {
+      "model": "qwen",
+      "identity": [
+        {
+          "text": "",
+          "reported": "Qwen3.6-35B-A3B",
+          "elapsed_s": 0.69
+        },
+        {
+          "text": "",
+          "reported": "Qwen3.6-35B-A3B",
+          "elapsed_s": 0.56
+        },
+        {
+          "text": "",
+          "reported": "Qwen3.6-35B-A3B",
+          "elapsed_s": 0.54
+        }
+      ],
+      "json_ok": false,
+      "tool_ok": true,
+      "json_raw": "",
+      "tool_sample": "{\"id\": \"chatcmpl-tool-b45bb9e5e44be5bf\", \"type\": \"function\", \"function\": {\"name\": \"submit_edit\", \"arguments\": \"{\\\"edit\\\": \\\"hello world\\\"}\"}}"
+    },
+    {
+      "model": "minimax",
+      "identity": [
+        {
+          "text": "",
+          "reported": "Qwen3.6-35B-A3B",
+          "elapsed_s": 0.65
+        },
+        {
+          "text": "",
+          "reported": "Qwen3.6-35B-A3B",
+          "elapsed_s": 0.54
+        },
+        {
+          "text": "",
+          "reported": "Qwen3.6-35B-A3B",
+          "elapsed_s": 0.54
+        }
+      ],
+      "json_ok": false,
+      "tool_ok": true,
+      "json_raw": "",
+      "tool_sample": "{\"id\": \"chatcmpl-tool-9b6e11af9bdbd8ff\", \"type\": \"function\", \"function\": {\"name\": \"submit_edit\", \"arguments\": \"{\\\"edit\\\": \\\"hello world\\\"}\"}}"
+    },
+    {
+      "model": "smart-router",
+      "identity": [
+        {
+          "text": "",
+          "reported": "smart-router",
+          "elapsed_s": 0.55
+        },
+        {
+          "text": "",
+          "reported": "smart-router",
+          "elapsed_s": 0.6
+        },
+        {
+          "text": "",
+          "reported": "smart-router",
+          "elapsed_s": 0.54
+        }
+      ],
+      "json_ok": true,
+      "tool_ok": true,
+      "json_parsed": {
+        "status": "ok",
+        "value": 42
+      },
+      "tool_sample": "{\"function\": {\"arguments\": \"{\\\"edit\\\": \\\"hello world\\\"}\", \"name\": \"submit_edit\"}, \"id\": \"chatcmpl-tool-8fa1fb7813ef10d9\", \"type\": \"function\"}"
+    },
+    {
+      "model": "smart-router-v2",
+      "identity": [
+        {
+          "text": "",
+          "reported": "glm-5.3-private-19428658",
+          "elapsed_s": 1.54
+        },
+        {
+          "text": "",
+          "reported": "glm-5.3-private-19428658",
+          "elapsed_s": 1.83
+        },
+        {
+          "text": "",
+          "reported": "glm-5.3-private-19428658",
+          "elapsed_s": 2.14
+        }
+      ],
+      "json_ok": true,
+      "tool_ok": true,
+      "json_parsed": {
+        "status": "ok",
+        "value": 42
+      },
+      "tool_sample": "{\"function\": {\"arguments\": \"{\\\"edit\\\": \\\"hello world\\\"}\", \"name\": \"submit_edit\"}, \"id\": \"call_6125c4ec03f444a79146aa33\", \"index\": 0, \"type\": \"function\"}"
+    },
+    {
+      "model": "gemma4:26b",
+      "identity": [
+        {
+          "text": "",
+          "reported": "gemma4:26b",
+          "elapsed_s": 2.12
+        },
+        {
+          "text": "",
+          "reported": "gemma4:26b",
+          "elapsed_s": 1.96
+        },
+        {
+          "text": "",
+          "reported": "gemma4:26b",
+          "elapsed_s": 1.95
+        }
+      ],
+      "json_ok": false,
+      "tool_ok": true,
+      "json_raw": "{\"status\": \"ok\", \"value\": 42",
+      "tool_sample": "{\"index\": 0, \"function\": {\"arguments\": \"{\\\"edit\\\":\\\"hello world\\\"}\", \"name\": \"submit_edit\"}, \"id\": \"call_b7t261ur\", \"type\": \"function\"}"
+    }
+  ]
+}

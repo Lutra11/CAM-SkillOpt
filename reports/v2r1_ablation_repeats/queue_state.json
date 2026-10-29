@@ -1,0 +1,59 @@
+{
+  "study_id": "cam_v2r1_qwen_ablation_repeats",
+  "status": "prepared_waiting_parent",
+  "updated_at": "2026-10-18T04:07:13.419864+00:00",
+  "manifest": "E:\\Programs\\CAM\\CAM-SkillOpt\\outputs\\studies\\cam_v2r1_qwen_ablation_repeats\\manifest.json",
+  "parent_driver_pid": 23632,
+  "parent_supervisor_pid": 31788,
+  "lanes": 2,
+  "cells": [
+    {
+      "cell_id": "qwen_cam_no_bootstrap_43",
+      "method": "cam_no_bootstrap",
+      "seed": 43,
+      "out_root": "outputs/studies/cam_v2r1_qwen_ablation_repeats/cells/cam_no_bootstrap_seed43",
+      "config_sha256": "550affd6da6051d0d63db63b1d9301afc3cf405cbf2ae48732a636313b464ca3",
+      "status": "pending"
+    },
+    {
+      "cell_id": "qwen_cam_no_bootstrap_44",
+      "method": "cam_no_bootstrap",
+      "seed": 44,
+      "out_root": "outputs/studies/cam_v2r1_qwen_ablation_repeats/cells/cam_no_bootstrap_seed44",
+      "config_sha256": "06a29c0502880e0bf1681bbdd20e78e494cad4f618684f07abef72f90bec0781",
+      "status": "pending"
+    },
+    {
+      "cell_id": "qwen_cam_no_memory_43",
+      "method": "cam_no_memory",
+      "seed": 43,
+      "out_root": "outputs/studies/cam_v2r1_qwen_ablation_repeats/cells/cam_no_memory_seed43",
+      "config_sha256": "69048dc2227e3b7fd4c2c9322a21741e72becf94ecf622a39881431741bba5f0",
+      "status": "pending"
+    },
+    {
+      "cell_id": "qwen_cam_no_memory_44",
+      "method": "cam_no_memory",
+      "seed": 44,
+      "out_root": "outputs/studies/cam_v2r1_qwen_ablation_repeats/cells/cam_no_memory_seed44",
+      "config_sha256": "a43d5234a3e2dee480fff3cae7d714067937466e6dfb530ace032a1ffa4e7f81",
+      "status": "pending"
+    },
+    {
+      "cell_id": "qwen_cam_no_adaptive_budget_43",
+      "method": "cam_no_adaptive_budget",
+      "seed": 43,
+      "out_root": "outputs/studies/cam_v2r1_qwen_ablation_repeats/cells/cam_no_adaptive_budget_seed43",
+      "config_sha256": "0fab9160fa45d5dd836302bfd4cd651fc752739103d59b511bc3db2a0ef3a6a1",
+      "status": "pending"
+    },
+    {
+      "cell_id": "qwen_cam_no_adaptive_budget_44",
+      "method": "cam_no_adaptive_budget",
+      "seed": 44,
+      "out_root": "outputs/studies/cam_v2r1_qwen_ablation_repeats/cells/cam_no_adaptive_budget_seed44",
+      "config_sha256": "48927ae4b6137454c9ecc154b6f0fa2f9cec13763b1f09a8fe73e49e148ef98d",
+      "status": "pending"
+    }
+  ]
+}

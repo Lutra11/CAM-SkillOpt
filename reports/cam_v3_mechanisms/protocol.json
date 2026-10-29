@@ -1,0 +1,149 @@
+{
+  "budget_fixtures": [
+    {
+      "name": "duplicate",
+      "static_hypothesis": "identical edits collapse and task IDs union"
+    },
+    {
+      "name": "conflict",
+      "static_hypothesis": "different edits at the same explicit target are excluded"
+    },
+    {
+      "name": "no_provenance",
+      "static_hypothesis": "unknown provenance uses min-budget fallback bounded by unique edits"
+    },
+    {
+      "name": "explicit_ids",
+      "static_hypothesis": "distinct validated task IDs establish candidate support"
+    }
+  ],
+  "design": {
+    "bootstrap_samples": 500,
+    "candidate_scores_clipped_to": [
+      0.0,
+      1.0
+    ],
+    "confidence_level": 0.95,
+    "current_score": 0.6,
+    "paired_items_per_run": 40,
+    "scenario_count": 6,
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19
+    ],
+    "task_type_balance": {
+      "cell_level": 20,
+      "sheet_level": 20
+    },
+    "v2_policy": "paired-bootstrap with legacy soft acceptance (default)",
+    "v3_group_mean_regression_tolerance": 0.1,
+    "v3_group_min_pairs": 5,
+    "v3_noninferiority_margin": 0.05,
+    "v3_policy": "noninferiority"
+  },
+  "fixed_before_outcomes": true,
+  "memory_bundle_fixture": {
+    "kind": "inconclusive",
+    "rejected_edits": [
+      "edit A",
+      "edit B",
+      "edit C"
+    ],
+    "static_hypothesis": "legacy stores one record per edit; evidence_v3 stores one update-bundle record",
+    "supporting_task_ids": [
+      "train-1",
+      "train-2"
+    ]
+  },
+  "memory_fixture": {
+    "fixture_records": [
+      {
+        "failure_pattern": "formula reference range mismatch",
+        "memory_id": "cell-zero",
+        "score_change": 0.0,
+        "supporting_task_ids": [
+          "train-1",
+          "train-2"
+        ],
+        "task_type": "cell_level"
+      },
+      {
+        "failure_pattern": "formula reference range mismatch",
+        "memory_id": "sheet-distractor",
+        "score_change": -0.2,
+        "supporting_task_ids": [
+          "train-3",
+          "train-4"
+        ],
+        "task_type": "sheet_level"
+      }
+    ],
+    "query_type": "cell_level",
+    "static_hypothesis": "evidence_v3 scopes away the sheet distractor and retains the matching zero-delta record"
+  },
+  "protocol_version": 1,
+  "scenarios": [
+    {
+      "base_delta": 0.12,
+      "construction": "40 balanced pairs; independent seeded Gaussian perturbation per pair",
+      "name": "clear_improvement",
+      "noise_sd": 0.025,
+      "static_hypothesis": "v2 accepts; v3 accepts if bootstrap and group checks pass"
+    },
+    {
+      "base_delta": -0.12,
+      "construction": "40 balanced pairs; independent seeded Gaussian perturbation per pair",
+      "name": "clear_loss",
+      "noise_sd": 0.025,
+      "static_hypothesis": "both policies reject a clearly harmful candidate"
+    },
+    {
+      "base_delta": 0.0,
+      "construction": "all paired scores equal",
+      "name": "unchanged",
+      "noise_sd": 0.0,
+      "static_hypothesis": "v2 requests reevaluation; v3 may soft-accept within its noninferiority margin"
+    },
+    {
+      "base_delta": -0.03,
+      "construction": "40 balanced pairs; independent seeded Gaussian perturbation per pair",
+      "name": "small_loss",
+      "noise_sd": 0.008,
+      "static_hypothesis": "v2 requests reevaluation; v3 can soft-accept if its LCB clears -0.05"
+    },
+    {
+      "base_delta": null,
+      "construction": "each type has 10 +0.15 and 10 -0.12 items; seeded jitter and within-type shuffle",
+      "name": "noisy_mixed_gains_losses",
+      "noise_sd": 0.02,
+      "static_hypothesis": "both subgroup means are near +0.015; decisions depend on paired uncertainty"
+    },
+    {
+      "base_delta": null,
+      "construction": "cell_level +0.20 and sheet_level -0.15, with seeded jitter",
+      "name": "subgroup_regression_masked_by_gains",
+      "noise_sd": 0.02,
+      "static_hypothesis": "positive aggregate can pass v2 bootstrap; v3 group guard flags sheet regression"
+    }
+  ],
+  "scope": "offline synthetic mechanism check; not benchmark accuracy, calibration, or generalization evidence",
+  "title": "CAM v3 synthetic mechanism verification"
+}

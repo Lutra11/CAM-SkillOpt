@@ -1,0 +1,108 @@
+# CAM-SkillOpt 正式实验配置 —— ZGCI Model Hub 后端
+#
+# 用途：本实验矩阵的**唯一**正式配置。方法（Static/SkillOpt/CAM-Full/消融）
+#       与考生模型（target）一律通过 --cfg-options 点号键指定，不另建配置副本。
+#
+# 关键约束（改动会破坏可比性，详见 docs/experiments/CAM_SKILLOPT_ZGCI_EXPERIMENT_PLAN.md）：
+#   1. optimizer 固定 glm —— 本网关唯一能输出严格 JSON 的模型
+#   2. evaluation.sel_env_num 必须 >0 且等于 val split 实际大小
+#      （cam_full.yaml 继承 sel_env_num:0，trainer.py:1282 会抛 SelectionEvidenceError）
+#   3. env.mode 必须显式 single
+#   4. cam.max_budget 必须等于 optimizer.learning_rate，否则 adaptive budget
+#      机制性饱和会把"预算翻倍"混进机制收益
+#   5. --cfg-options 必须用点号键，平坦键会被 flatten_config 静默丢弃
+
+_base_: ../_base_/default.yaml
+
+model:
+  # ── 后端：标准 OpenAI 兼容 HTTP，无 Azure 依赖 ──
+  optimizer_backend: openai_chat
+  target_backend: openai_chat
+  optimizer_azure_openai_endpoint: "https://hub.zgci.org/v1"
+  target_azure_openai_endpoint: "https://hub.zgci.org/v1"
+  optimizer_azure_openai_auth_mode: openai_compatible
+  target_azure_openai_auth_mode: openai_compatible
+  # 密钥来自 .env（OPTIMIZER_/TARGET_AZURE_OPENAI_API_KEY），不写进 YAML
+
+  # ── 模型 ──
+  # optimizer 固定 glm；target 在矩阵脚本里逐单元覆盖
+  optimizer: glm
+  target: glm
+  # 置空 => 不发送该参数。注意 reasoning_effort 是**二值**开关：
+  #   "none" = 真关思考    其他值/省略 = 开思考（low/medium/high 实测等价）
+  #   想要"关思考"必须显式写 "none"，写 "" 得不到关闭效果
+  reasoning_effort: ""
+
+train:
+  num_epochs: 4
+  train_size: 80          # 必须等于已加载 train split 大小（trainer.py:470-474 强校验）
+  # 上游原版值。train_size 80 / batch 40 = 2 步每 epoch，4 epoch = **8 步**。
+  # 选 40 而非 20 的理由：20 会让步数翻倍到 16，而网关的 token 吞吐（≈900 tok/s）
+  # 是硬约束、加 workers 无法突破，步数翻倍≈总时长翻倍。40 同时对齐上游协议。
+  batch_size: 40
+  accumulation: 1
+  seed: 42
+
+gradient:
+  minibatch_size: 8
+  merge_batch_size: 8
+  analyst_workers: 8      # 本项目选定值（该键进 _cam_signature，全程不可变）
+  max_analyst_rounds: 3
+  failure_only: false
+
+optimizer:
+  learning_rate: 4
+  min_learning_rate: 2
+  lr_scheduler: cosine
+  lr_control_mode: fixed
+  skill_update_mode: patch
+  use_slow_update: true
+  slow_update_samples: 20
+  slow_update_gate_with_selection: false
+  longitudinal_pair_policy: mixed
+  use_meta_skill: true
+  use_skill_aware_reflection: false
+
+evaluation:
+  use_gate: true
+  sel_env_num: 40         # 必须 >0。val 共 40，拉满以获得最强成对统计功效
+  test_env_num: 280       # test 共 280，全测
+  eval_test: true
+
+cam:
+  # 方法开关一律由 --cfg-options 覆盖；此处给 CAM-Full 基线值
+  enabled: true
+  bootstrap_gate: true
+  confidence_level: 0.95
+  meaningful_improvement: 0.0
+  bootstrap_samples: 10000
+  seed: 42
+  adaptive_budget: true
+  min_budget: 2
+  max_budget: 4           # = optimizer.learning_rate，消除预算混淆变量
+  memory_enabled: true
+  memory_top_k: 3
+  soft_accept: true
+  drift_patience: 2
+  drift_tolerance: 0.0
+  memory_inconclusive: true
+
+env:
+  name: spreadsheetbench
+  skill_init: skillopt/envs/spreadsheetbench/skills/initial.md
+  split_mode: split_dir
+  split_dir: data/spreadsheetbench_split
+  data_path: ""
+  split_output_dir: ""
+  data_root: data/spreadsheetbench_verified_400
+  mode: single            # 必须显式 single
+  max_turns: 30
+  # 保持上游默认 16384。实测部分题确实需要 13–16k token 才能产出正文
+  # （4096 会让它们 finish=length 且正文为空），所以**不能**下调。
+  # 相应地，codegen_agent.run_single 的单次调用超时已从 120 s 提到 600 s
+  # （该文件不在 _cam_signature 保护范围内）。两个值对所有实验臂一致。
+  max_completion_tokens: 16384
+  exec_timeout: 1200
+  workers: 8
+  limit: 0                # 0 = 不截断，用完整 split（80/40/280）
+  out_root: ""            # 每个单元必须唯一，由矩阵脚本指定

@@ -44,6 +44,13 @@ from skillopt.envs.spreadsheetbench.executor import run_generated_code
 from skillopt.envs.spreadsheetbench.evaluator import evaluate
 
 
+# Extra attempts when the target returns no extractable code block. An empty
+# answer stores an assistant turn with no content, which makes
+# `SpreadsheetBenchAdapter.reflect` raise `artifact_missing` and abort the whole
+# training run, so one bad answer must not be fatal.
+_EMPTY_RESPONSE_RETRIES = 2
+
+
 # ── Eval feedback helper (no golden value leakage) ─────────────────────────
 
 def _build_eval_feedback(verify_report: str) -> str:
@@ -508,7 +515,7 @@ def run_single(
     answer_position: str = "",
     skill_content: str = "",
     max_output_tokens: int = 16384,
-    llm_timeout: int | None = 120,
+    llm_timeout: int | None = 600,
     task_timeout: int | None = 300,
     diagnostic_mode: bool = False,
     diagnostic_instruction: str = "",
@@ -517,7 +524,11 @@ def run_single(
     """Single-round code generation. One LLM call, no tools.
 
     Args:
-        llm_timeout: Per-LLM-call timeout in seconds (default 120).
+        llm_timeout: Per-LLM-call timeout in seconds (default 600). Raised from
+            120 because some SpreadsheetBench prompts make this gateway generate
+            13k-16k tokens before emitting content, which measured 236-285 s.
+            The old 120 s default turned those into `llm_timeout` infra errors
+            that aborted the whole evaluation.
         task_timeout: Total task timeout in seconds (default 300).
 
     Returns ``{"code": str, "raw": str, "n_turns": 1}``.
@@ -613,14 +624,55 @@ def run_single(
     else:
         remaining = max(10, int(deadline - time.time()))
         effective_timeout = min(llm_timeout or remaining, remaining)
-    raw = _chat_call(client, deployment, messages, max_output_tokens, llm_timeout=effective_timeout)
-    time.sleep(3)  # Rate-limit cooldown after successful LLM call
-    code = extract_code(raw)
+
+    # Retry when the model returns nothing usable.
+    #
+    # An empty answer happens when the model spends its whole token budget on
+    # reasoning and never emits content (`finish_reason="length"`). The raw
+    # response is then the empty string, so the rollout stores an assistant turn
+    # with no content. `SpreadsheetBenchAdapter.reflect` rejects such a task
+    # ("Target trajectory has no captured assistant response") and raises an
+    # InfraError that aborts the entire training run -- a single empty answer out
+    # of 20 would otherwise kill the experiment.
+    #
+    # Each retry appends the failed attempt plus an explicit instruction to skip
+    # the deliberation and emit the code block directly, which is what makes the
+    # retry effective rather than a repeat of the same request.
+    attempts: list[str] = []
+    raw = ""
+    code = ""
+    for retry_index in range(_EMPTY_RESPONSE_RETRIES + 1):
+        raw = _chat_call(client, deployment, messages, max_output_tokens, llm_timeout=effective_timeout)
+        time.sleep(3)  # Rate-limit cooldown after successful LLM call
+        attempts.append(raw)
+        code = extract_code(raw)
+        if code.strip():
+            break
+        if retry_index >= _EMPTY_RESPONSE_RETRIES:
+            break
+        if deadline is not None:
+            remaining = int(deadline - time.time())
+            if remaining <= 10:
+                break
+            effective_timeout = min(llm_timeout or remaining, remaining)
+        messages = messages + [
+            {"role": "assistant", "content": raw or "(empty response)"},
+            {"role": "user", "content": (
+                "Your previous reply contained no Python code block. "
+                "Do not explain or deliberate. Respond immediately with exactly one "
+                "```python fenced code block that reads INPUT_PATH and writes OUTPUT_PATH."
+            )},
+        ]
+
+    if len(attempts) > 1:
+        # Keep every attempt so the stored trajectory is never empty even when the
+        # model produced nothing, and so reflection can see what went wrong.
+        raw = "\n\n===== RETRY =====\n".join(attempt or "(empty response)" for attempt in attempts)
 
     return {
         "code": code,
         "raw": raw,
-        "n_turns": 1,
+        "n_turns": len(attempts),
         "conversation": [{"role": "assistant", "content": raw}],
         "target_system_prompt": system,
         "target_user_prompt": user,

@@ -1,0 +1,23 @@
+# New, opt-in mechanism protocol. Do not use with v2/v1 output directories.
+_base_: zgci_cam_matrix.yaml
+
+model:
+  target: qwen
+
+evaluation:
+  # Final validation is independent of held-out test evaluation in both arms.
+  final_selection: true
+  eval_test: false
+
+cam:
+  soft_accept_policy: noninferiority
+  noninferiority_margin: 0.05
+  # Descriptive subgroup safeguard, not a simultaneous confidence guarantee.
+  group_guard: true
+  group_max_regression: 0.10
+  group_min_pairs: 5
+  memory_policy: evidence_v3
+  memory_min_similarity: 0.15
+  memory_half_life_steps: 8
+  budget_policy: evidence_v3
+  budget_min_support_tasks: 2

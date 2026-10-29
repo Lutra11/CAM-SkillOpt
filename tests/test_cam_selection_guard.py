@@ -76,6 +76,7 @@ class CAMSelectionGuardTests(unittest.TestCase):
                          best_results=rows(current if best is None else best), best_step=0, global_step=2,
                          cfg={"cam_bootstrap_samples": 500, "cam_seed": 42})
         arguments.update(overrides)
+        arguments["cfg"] = {"cam_soft_accept": False, **arguments["cfg"]}
         return decide_cam_update(**arguments)
 
     def test_pairing_is_by_id_not_candidate_list_position(self):

@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "severity": "nonfatal_warning",
+  "status": "contained_nonfatal",
+  "cell_id": "baseline_seed43",
+  "epoch": 3,
+  "observed_at_utc": "2026-10-18T19:20:38.698528+00:00",
+  "cell_status_at_capture": "running",
+  "queue_status_at_capture": "running",
+  "provider_backend": "azure_openai",
+  "optimizer_model": "glm",
+  "target_model": "qwen",
+  "reasoning": "off",
+  "configured_attempts": 3,
+  "sanitized_exception_signature": "NoneType object not subscriptable",
+  "cause": "unconfirmed; the saved artifact contains no provider response or inner exception payload",
+  "request_id_saved": false,
+  "response_status_saved": false,
+  "response_headers_or_body_saved": false,
+  "trajectory_replayed": false,
+  "no_content_contract": "The trainer records action=no_content and continues; this auxiliary generation produced no content.",
+  "incident_id": "baseline_seed43_epoch03_slow_update",
+  "stage": "slow_update",
+  "result_path": "outputs/continuous_adaptation_v3/spreadsheetbench/qwen/baseline_seed43/slow_update/epoch_03/slow_result.json",
+  "action": "no_content",
+  "time_s": 382.8,
+  "saved_result_keys": [
+    "action",
+    "time_s"
+  ],
+  "saved_guidance_chars": 0,
+  "impact": "No epoch-3 slow-update guidance was injected; the main epoch-4 rollout completed using the available skill state. The later epoch-4 slow update produced guidance.",
+  "log_exception_line": 481,
+  "current_latest_stage": {
+    "path": "outputs/continuous_adaptation_v3/spreadsheetbench/qwen/baseline_seed43/final_selection_eval/stage_stats.json",
+    "stage": "final_selection_eval",
+    "status": "running",
+    "n_expected": 40,
+    "n_recorded": 39,
+    "n_not_run": 1
+  },
+  "later_auxiliary_slow_update": {
+    "action": "force_accept",
+    "time_s": 491.5,
+    "guidance_chars": 5397
+  }
+}

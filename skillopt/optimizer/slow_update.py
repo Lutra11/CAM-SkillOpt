@@ -20,12 +20,98 @@ from __future__ import annotations
 
 import json
 import os
-import traceback
+import hashlib
 
 from skillopt.model import chat_optimizer
-from skillopt.model.infra_errors import InfraError, classify_infra_error
+from skillopt.model.infra_errors import InfraError, classify_infra_error, persist_infra_error
 from skillopt.prompts import load_prompt
 from skillopt.utils import extract_json
+
+
+def _response_error(stage: str, kind: str, response=None, exc: BaseException | None = None) -> InfraError:
+    """Build a credential-safe auxiliary generation/schema failure artifact."""
+    text = response if isinstance(response, str) else ""
+    details = {"error_kind": kind, "response_length": len(text)}
+    if text:
+        details["response_sha256"] = hashlib.sha256(text.encode("utf-8", errors="replace")).hexdigest()
+    if exc is not None:
+        details["exception_type"] = type(exc).__name__
+    error = InfraError(
+        "provider_error", f"{stage} auxiliary response was invalid ({kind})",
+        stage=stage, details=details,
+    )
+    # Persist only fixed metadata. Model output and exception text can contain
+    # credentials or task data, so neither is included in the artifact.
+    return persist_infra_error(error, raw=json.dumps(details, ensure_ascii=False))
+
+
+def parse_auxiliary_result(response, *, stage: str, content_field: str) -> dict:
+    """Validate an auxiliary JSON result, including an explicit no-update choice."""
+    if not isinstance(response, str):
+        raise _response_error(stage, "non_string_response", response)
+    try:
+        result = extract_json(response)
+    except Exception as exc:  # malformed output must be a typed stage failure
+        raise _response_error(stage, "json_parse_error", response, exc) from None
+    if not isinstance(result, dict):
+        raise _response_error(stage, "invalid_json_object", response)
+
+    outcome = result.get("outcome")
+    # Preserve compatibility with the previous output contract for a valid
+    # content-bearing object that omitted the newly introduced outcome field.
+    legacy_content = outcome is None and content_field in result
+    if legacy_content:
+        outcome = "update"
+    reasoning = result.get("reasoning", "" if legacy_content else None)
+    if not isinstance(reasoning, str):
+        raise _response_error(stage, "invalid_reasoning", response)
+    if outcome == "update":
+        content = result.get(content_field)
+        if not isinstance(content, str) or not content.strip():
+            raise _response_error(stage, "invalid_update_content", response)
+        return {
+            "outcome_kind": "validated_update",
+            "reasoning": reasoning.strip(),
+            content_field: content.strip(),
+        }
+    if outcome == "no_update":
+        if content_field in result:
+            raise _response_error(stage, "contradictory_no_update_content", response)
+        reason = result.get("no_update_reason")
+        if not isinstance(reason, str) or not reason.strip():
+            raise _response_error(stage, "invalid_no_update_reason", response)
+        return {
+            "outcome_kind": "validated_no_update",
+            "reasoning": reasoning.strip(),
+            "no_update_reason": reason.strip(),
+        }
+    raise _response_error(stage, "invalid_outcome", response)
+
+
+def _call_auxiliary_optimizer(*, auxiliary_stage: str, **kwargs):
+    chat_fn = kwargs.pop("chat_fn", chat_optimizer)
+    try:
+        returned = chat_fn(**kwargs)
+    except InfraError as exc:
+        classify_infra_error(exc, stage=auxiliary_stage)
+        raise
+    except Exception as exc:  # backend owns request attempts; never retry here
+        infra = classify_infra_error(exc, stage=auxiliary_stage)
+        failure_type = infra.failure_type if infra is not None else "provider_error"
+        details = {
+            "error_kind": "generation_call_failure",
+            "exception_type": type(exc).__name__,
+            "classified_failure_type": failure_type,
+        }
+        safe_error = InfraError(
+            failure_type, f"{auxiliary_stage} backend call failed",
+            stage=auxiliary_stage, details=details,
+        )
+        persist_infra_error(safe_error, raw=json.dumps(details, ensure_ascii=False))
+        raise safe_error from None
+    if not isinstance(returned, (tuple, list)) or len(returned) != 2:
+        raise _response_error(auxiliary_stage, "invalid_backend_return")
+    return returned
 
 # ── Protected field markers ─────────────────────────────────────────────────
 
@@ -319,7 +405,7 @@ def run_slow_update(
     curr_rollout_dir: str = "",
     comparison_pairs: list[dict] | None = None,
     system_prompt: str | None = None,
-) -> dict | None:
+) -> dict:
     """Run the slow update optimizer call for one epoch boundary.
 
     Parameters
@@ -345,9 +431,9 @@ def run_slow_update(
 
     Returns
     -------
-    dict | None
-        Conforms to :class:`~skillopt.types.SlowUpdateResult`:
-        ``{"reasoning": str, "slow_update_content": str}`` or ``None``.
+    dict
+        A validated update or explicit validated no-update outcome, including
+        ``outcome_kind`` to preserve the distinction in saved artifacts.
     """
     actual_system = system_prompt if system_prompt is not None else load_prompt("slow_update")
 
@@ -377,26 +463,14 @@ def run_slow_update(
         f"{comparison_text}"
     )
 
-    try:
-        response, _ = chat_optimizer(
-            system=actual_system,
-            user=user,
-            max_completion_tokens=16384,
-            retries=3,
-            stage="slow_update",
-        )
-        result = extract_json(response)
-        if result and result.get("slow_update_content"):
-            return {
-                "reasoning": str(result.get("reasoning", "")).strip(),
-                "slow_update_content": str(result["slow_update_content"]).strip(),
-            }
-    except InfraError:
-        raise
-    except Exception as exc:  # noqa: BLE001
-        infra = classify_infra_error(exc, stage="slow_update") if isinstance(exc, (RuntimeError, TimeoutError, ConnectionError)) else None
-        if infra is not None:
-            raise infra from exc
-        traceback.print_exc()
-
-    return None
+    response, _ = _call_auxiliary_optimizer(
+        auxiliary_stage="slow_update",
+        system=actual_system,
+        user=user,
+        max_completion_tokens=16384,
+        retries=3,
+        stage="slow_update",
+    )
+    return parse_auxiliary_result(
+        response, stage="slow_update", content_field="slow_update_content",
+    )

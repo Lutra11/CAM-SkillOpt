@@ -1,0 +1,84 @@
+{
+  "observed_at_utc": "2026-10-18T14:49:49.6489033Z",
+  "automation_id": "cam-20",
+  "queue_status": "running",
+  "supervisor_status": "running",
+  "supervisor_error": null,
+  "cells": [
+    {
+      "cell_id": "baseline_seed42",
+      "status": "accepted",
+      "started_at": "2026-10-18T20:42:51.58752+08:00",
+      "finished_at": "2026-10-18T22:34:01.583141+08:00"
+    },
+    {
+      "cell_id": "cam_v3_seed42",
+      "status": "running",
+      "started_at": "2026-10-18T22:34:02.244942+08:00",
+      "finished_at": null
+    },
+    {
+      "cell_id": "cam_v3_seed43",
+      "status": "pending",
+      "started_at": null,
+      "finished_at": null
+    },
+    {
+      "cell_id": "baseline_seed43",
+      "status": "pending",
+      "started_at": null,
+      "finished_at": null
+    }
+  ],
+  "processes": [
+    {
+      "ProcessId": 20616,
+      "ParentProcessId": 35548,
+      "CreationDate": "2026-10-18T20:42:48.692339+08:00",
+      "ExecutablePath": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "CommandLine": "\"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe\" -NoProfile -ExecutionPolicy Bypass -File E:\\Programs\\CAM\\CAM-SkillOpt\\outputs\\studies\\continuous_adaptation_v3\\supervise_v3.ps1"
+    },
+    {
+      "ProcessId": 38372,
+      "ParentProcessId": 20616,
+      "CreationDate": "2026-10-18T20:42:49.372388+08:00",
+      "ExecutablePath": "E:\\MiniConda\\envs\\skillopt\\python.exe",
+      "CommandLine": "\"E:\\MiniConda\\envs\\skillopt\\python.exe\" -X utf8 E:\\Programs\\CAM\\CAM-SkillOpt\\scripts\\run_continuous_adaptation_v3.py --run --lanes 1 "
+    },
+    {
+      "ProcessId": 37136,
+      "ParentProcessId": 38372,
+      "CreationDate": "2026-10-18T22:34:02.25375+08:00",
+      "ExecutablePath": "E:\\MiniConda\\envs\\skillopt\\python.exe",
+      "CommandLine": "E:\\MiniConda\\envs\\skillopt\\python.exe -X utf8 E:\\Programs\\CAM\\CAM-SkillOpt\\scripts\\run_continuous_adaptation_v3.py --cell cam_v3_seed42"
+    }
+  ],
+  "current_cell": "cam_v3_seed42",
+  "latest_stage_path": "E:\\Programs\\CAM\\CAM-SkillOpt\\outputs\\continuous_adaptation_v3\\spreadsheetbench\\qwen\\cam_v3_seed42\\steps\\step_0001\\selection_eval\\stage_stats.json",
+  "latest_stage_updated_utc": "2026-10-18T14:49:44.7080785Z",
+  "latest_stage": {
+    "stage": "selection_eval",
+    "status": "running",
+    "n_expected": 40,
+    "n_recorded": 27,
+    "n_scored": 27,
+    "n_not_run": 13,
+    "failure_types": {
+      "none": 18,
+      "score_mismatch": 7,
+      "execution_error": 2
+    },
+    "phase_counts": {
+      "exec": 27
+    },
+    "llm_ok": 27,
+    "code_ok": 27,
+    "exec_ok": 25,
+    "hard": null,
+    "soft": null,
+    "wall_time_s": 229.494
+  },
+  "fatal_log_pattern_matches": [],
+  "recovery_action": "none: progressing, no runtime failure observed",
+  "result_interpretation": "baseline accepted; no complete baseline/CAM seed pair yet"
+}

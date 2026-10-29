@@ -1,0 +1,135 @@
+{
+  "created_at_utc": "2026-10-18T19:20:38.698528+00:00",
+  "study_id": "continuous_adaptation_v3",
+  "audit_scope": "offline runtime/incident audit only; no model/API calls, no test score inspection, no accepted-cell revalidation, no queue/frozen-input mutation",
+  "original_freeze": {
+    "sha256": "3e36613b9d9db411f806cca95a6644a6a66612924c925add240d44ffcd0bb597",
+    "source_fingerprints": 1378,
+    "verify_freeze_passed": true,
+    "verify_freeze_passed_after_reporter": true
+  },
+  "supplemental_prompt_observation": {
+    "path": "outputs/studies/continuous_adaptation_v3/prompt_observation_20261019_0125/observation.json",
+    "file_count": 21,
+    "current_files_match_observation": true,
+    "historical_content_proven": false,
+    "scope_caveat": "Current clean Git state and old file timestamps do not retrospectively prove prompt contents at every previous request",
+    "separate_from_original_freeze": true
+  },
+  "queue": {
+    "sha256_at_audit_start": "d0edaacb08b5efbc25a38b5d933fe4e5543a5f78b7a8866eae18bd7124779dc9",
+    "sha256_after_reporter": "d0edaacb08b5efbc25a38b5d933fe4e5543a5f78b7a8866eae18bd7124779dc9",
+    "cell_statuses": {
+      "baseline_seed42": "accepted",
+      "cam_v3_seed42": "accepted",
+      "cam_v3_seed43": "accepted",
+      "baseline_seed43": "running"
+    },
+    "cell_statuses_after_reporter": {
+      "baseline_seed42": "accepted",
+      "cam_v3_seed42": "accepted",
+      "cam_v3_seed43": "accepted",
+      "baseline_seed43": "running"
+    },
+    "unchanged_during_audit": true
+  },
+  "baseline_seed43": {
+    "queue_status": "running",
+    "config": {
+      "seed": 43,
+      "num_epochs": 4,
+      "train_size": 20,
+      "batch_size": 20,
+      "eval_test": false,
+      "final_selection": true,
+      "cam_enabled": false
+    },
+    "main_steps": [
+      {
+        "step": 1,
+        "row_count": 20,
+        "exact_frozen_ids": true,
+        "task_type_exact": true,
+        "train_test_overlap": []
+      },
+      {
+        "step": 2,
+        "row_count": 20,
+        "exact_frozen_ids": true,
+        "task_type_exact": true,
+        "train_test_overlap": []
+      },
+      {
+        "step": 3,
+        "row_count": 20,
+        "exact_frozen_ids": true,
+        "task_type_exact": true,
+        "train_test_overlap": []
+      },
+      {
+        "step": 4,
+        "row_count": 20,
+        "exact_frozen_ids": true,
+        "task_type_exact": true,
+        "train_test_overlap": []
+      }
+    ],
+    "history_entries": 4,
+    "final_selection_eval": {
+      "status": "running",
+      "n_expected": 40,
+      "n_recorded": 39,
+      "n_not_run": 1,
+      "fixed_test_overlap_count": 0,
+      "interpretation": "final-selection evaluation is not the fixed post-training test; cell is not complete or accepted until post-training fixed 120-ID test evidence validates."
+    },
+    "test_evaluation_started": false,
+    "epoch3_auxiliary_failures": {
+      "slow_update": {
+        "action": "no_content",
+        "time_s": 382.8,
+        "content_present": false
+      },
+      "meta_skill": {
+        "action": "no_content",
+        "time_s": 29.2,
+        "content_present": false
+      }
+    },
+    "epoch4_auxiliary_successes": {
+      "slow_update": {
+        "action": "force_accept",
+        "guidance_present": true
+      },
+      "meta_skill": {
+        "action": "write_meta_skill",
+        "content_present": true
+      }
+    }
+  },
+  "auxiliary_failure_count": 7,
+  "auxiliary_failure_breakdown": {
+    "slow_update_no_content": 5,
+    "meta_skill_no_content": 2
+  },
+  "new_incident_records": [
+    "incidents/baseline_seed43_epoch03_slow_update.json",
+    "incidents/baseline_seed43_epoch03_meta_skill.json"
+  ],
+  "reporter_refresh": {
+    "status": "awaiting_complete_seed_pairs",
+    "complete_seed_pair_count": 1,
+    "overall_comparison_deferred_until_baseline43_is_test_validated": true
+  },
+  "validity": {
+    "all_four_main_rollouts_match_frozen_order_and_types": true,
+    "no_train_test_overlap": true,
+    "cam_disabled": true,
+    "no_test_rollout_started": true,
+    "no_cam_gate_artifacts": true,
+    "final_selection_not_complete": true,
+    "critical_blocker": null
+  },
+  "incident_interpretation": "All seven recorded auxiliary no_content events remain visible; epoch 4 subsequently produced guidance/meta content, but the two epoch 3 failures are not retrospectively repaired. No stage was replayed or backfilled.",
+  "token_accounting_caveat": "Returned token totals may be partial and do not establish full per-request billing."
+}

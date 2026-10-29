@@ -1,0 +1,48 @@
+{
+  "study_id": "continuous_adaptation_v1",
+  "status": "needs_attention",
+  "started_at": "2026-10-18T10:54:58.704421+00:00",
+  "cells": [
+    {
+      "cell_id": "baseline_seed42",
+      "method": "baseline",
+      "seed": 42,
+      "block": "paired_seed42",
+      "out_root": "outputs/continuous_adaptation_v1/spreadsheetbench/qwen/baseline_seed42",
+      "status": "failed",
+      "acceptance": "child process failed",
+      "started_at": "2026-10-18T10:54:59.347816+00:00",
+      "exit_code": 2,
+      "finished_at": "2026-10-18T10:55:05.609239+00:00",
+      "log": "reports/continuous_adaptation_v1/logs/baseline_seed42.log"
+    },
+    {
+      "cell_id": "cam_full_seed42",
+      "method": "cam_full",
+      "seed": 42,
+      "block": "paired_seed42",
+      "out_root": "outputs/continuous_adaptation_v1/spreadsheetbench/qwen/cam_full_seed42",
+      "status": "pending",
+      "acceptance": "fresh output directory"
+    },
+    {
+      "cell_id": "cam_full_seed43",
+      "method": "cam_full",
+      "seed": 43,
+      "block": "paired_seed43",
+      "out_root": "outputs/continuous_adaptation_v1/spreadsheetbench/qwen/cam_full_seed43",
+      "status": "pending",
+      "acceptance": "fresh output directory"
+    },
+    {
+      "cell_id": "baseline_seed43",
+      "method": "baseline",
+      "seed": 43,
+      "block": "paired_seed43",
+      "out_root": "outputs/continuous_adaptation_v1/spreadsheetbench/qwen/baseline_seed43",
+      "status": "pending",
+      "acceptance": "fresh output directory"
+    }
+  ],
+  "finished_at": "2026-10-18T10:55:05.611241+00:00"
+}

@@ -1,0 +1,280 @@
+[
+  {
+    "benchmark": "spreadsheetbench",
+    "target": "qwen",
+    "target_dir": "qwen",
+    "arm": "baseline",
+    "seed": 42,
+    "out_root": "outputs/matrix_v2r1/spreadsheetbench/qwen/baseline_seed42",
+    "run_state": "done",
+    "progress": "step 8/8 · selection_eval 40/40",
+    "batch_size": 40,
+    "num_epochs": 4,
+    "cam_enabled": false,
+    "sel_env_num": 40,
+    "train_size": 80,
+    "status": null,
+    "total_steps": 8,
+    "total_accepts": 1,
+    "total_soft_accepts": 0,
+    "total_rejects": 7,
+    "total_skips": 0,
+    "actions": [
+      "accept_new_best",
+      "reject"
+    ],
+    "cam_gate_used_steps": 0,
+    "test_hard": 0.5321428571428571,
+    "final_test_hard": 0.49642857142857144,
+    "best_selection_hard": 0.6,
+    "expected_steps": 8,
+    "rows_total": 1728,
+    "rows_llm_ok_true": 1680,
+    "rows_parse_failed": 0,
+    "token_total": 18192623,
+    "cam_evidence": {
+      "gate_events_nonempty": false,
+      "gate_events_count": null,
+      "rejected_memory_exists": false
+    },
+    "acceptance": {
+      "complete_evidence": {
+        "ok": true,
+        "reason": "complete; steps, actions, test IDs and scores verified"
+      },
+      "train_completeness": {
+        "ok": true,
+        "reason": "total_steps=8，expected_steps=8"
+      },
+      "real_edits": {
+        "ok": true,
+        "reason": "accepts+soft_accepts+rejects=8（actions=['accept_new_best', 'reject']）"
+      },
+      "real_calls": {
+        "ok": true,
+        "reason": "token_total=18192623，llm_ok=true 行数=1680"
+      },
+      "validity": {
+        "ok": true,
+        "reason": "summary 无 status 字段（正常完成，未标记 invalid/infra_error）"
+      },
+      "cam_evidence": {
+        "ok": null,
+        "reason": "cam_enabled=False（未启用），不要求 cam_gate_events；history 中 cam_gate_used=true 的步数 0/8"
+      },
+      "no_unexpected_gate": {
+        "ok": true,
+        "reason": "unexpected gate files: []"
+      },
+      "no_secret_leak": {
+        "ok": true,
+        "reason": "全部文本产物未发现 sk- 开头的 32+ 位字符串"
+      }
+    },
+    "acceptance_all_ok": true,
+    "secret_leak_files": []
+  },
+  {
+    "benchmark": "spreadsheetbench",
+    "target": "qwen",
+    "target_dir": "qwen",
+    "arm": "baseline",
+    "seed": 43,
+    "out_root": "outputs/matrix_v2r1/spreadsheetbench/qwen/baseline_seed43",
+    "run_state": "running",
+    "progress": "step 1/8 · rollout 39/40",
+    "batch_size": 40,
+    "num_epochs": 4,
+    "cam_enabled": false,
+    "sel_env_num": 40,
+    "train_size": 80,
+    "status": null,
+    "total_steps": null,
+    "total_accepts": null,
+    "total_soft_accepts": null,
+    "total_rejects": null,
+    "total_skips": null,
+    "actions": null,
+    "cam_gate_used_steps": null,
+    "test_hard": null,
+    "final_test_hard": null,
+    "best_selection_hard": null,
+    "expected_steps": 8,
+    "rows_total": 79,
+    "rows_llm_ok_true": 79,
+    "rows_parse_failed": 0,
+    "token_total": null,
+    "cam_evidence": {
+      "gate_events_nonempty": false,
+      "gate_events_count": null,
+      "rejected_memory_exists": false
+    },
+    "acceptance": {
+      "train_completeness": {
+        "ok": null,
+        "reason": "运行中（尚不可判）：history.json/summary.json 尚未落盘"
+      },
+      "real_edits": {
+        "ok": null,
+        "reason": "运行中（尚不可判）：history.json 尚未落盘"
+      },
+      "real_calls": {
+        "ok": true,
+        "reason": "token_total=None，llm_ok=true 行数=79"
+      },
+      "validity": {
+        "ok": null,
+        "reason": "运行中（尚不可判）：最终 summary 尚未写出"
+      },
+      "cam_evidence": {
+        "ok": null,
+        "reason": "cam_enabled=False（未启用），不要求 cam_gate_events"
+      },
+      "no_unexpected_gate": {
+        "ok": true,
+        "reason": "unexpected gate files: []"
+      },
+      "no_secret_leak": {
+        "ok": true,
+        "reason": "全部文本产物未发现 sk- 开头的 32+ 位字符串"
+      }
+    },
+    "acceptance_all_ok": null,
+    "secret_leak_files": []
+  },
+  {
+    "benchmark": "spreadsheetbench",
+    "target": "qwen",
+    "target_dir": "qwen",
+    "arm": "cam_full",
+    "seed": 42,
+    "out_root": "outputs/matrix_v2r1/spreadsheetbench/qwen/cam_full_seed42",
+    "run_state": "done",
+    "progress": "step 8/8 · selection_eval 40/40",
+    "batch_size": 40,
+    "num_epochs": 4,
+    "cam_enabled": true,
+    "sel_env_num": 40,
+    "train_size": 80,
+    "status": null,
+    "total_steps": 8,
+    "total_accepts": 1,
+    "total_soft_accepts": 7,
+    "total_rejects": 0,
+    "total_skips": 0,
+    "actions": [
+      "accept_new_best",
+      "soft_accept"
+    ],
+    "cam_gate_used_steps": 8,
+    "test_hard": 0.5321428571428571,
+    "final_test_hard": 0.5464285714285714,
+    "best_selection_hard": 0.6,
+    "expected_steps": 8,
+    "rows_total": 1807,
+    "rows_llm_ok_true": 1760,
+    "rows_parse_failed": 0,
+    "token_total": 18174410,
+    "cam_evidence": {
+      "gate_events_nonempty": true,
+      "gate_events_count": 12,
+      "rejected_memory_exists": true
+    },
+    "acceptance": {
+      "complete_evidence": {
+        "ok": true,
+        "reason": "complete; steps, actions, test IDs and scores verified"
+      },
+      "train_completeness": {
+        "ok": true,
+        "reason": "total_steps=8，expected_steps=8"
+      },
+      "real_edits": {
+        "ok": true,
+        "reason": "accepts+soft_accepts+rejects=8（actions=['accept_new_best', 'soft_accept']）"
+      },
+      "real_calls": {
+        "ok": true,
+        "reason": "token_total=18174410，llm_ok=true 行数=1760"
+      },
+      "validity": {
+        "ok": true,
+        "reason": "summary 无 status 字段（正常完成，未标记 invalid/infra_error）"
+      },
+      "cam_evidence": {
+        "ok": true,
+        "reason": "cam_gate_events.json 非空（12 条）；history 中 cam_gate_used=true 的步数 8/8"
+      },
+      "no_secret_leak": {
+        "ok": true,
+        "reason": "全部文本产物未发现 sk- 开头的 32+ 位字符串"
+      }
+    },
+    "acceptance_all_ok": true,
+    "secret_leak_files": []
+  },
+  {
+    "benchmark": "spreadsheetbench",
+    "target": "qwen",
+    "target_dir": "qwen",
+    "arm": "cam_full",
+    "seed": 43,
+    "out_root": "outputs/matrix_v2r1/spreadsheetbench/qwen/cam_full_seed43",
+    "run_state": "running",
+    "progress": "step 1/8 · rollout 39/40",
+    "batch_size": 40,
+    "num_epochs": 4,
+    "cam_enabled": true,
+    "sel_env_num": 40,
+    "train_size": 80,
+    "status": null,
+    "total_steps": null,
+    "total_accepts": null,
+    "total_soft_accepts": null,
+    "total_rejects": null,
+    "total_skips": null,
+    "actions": null,
+    "cam_gate_used_steps": null,
+    "test_hard": null,
+    "final_test_hard": null,
+    "best_selection_hard": null,
+    "expected_steps": 8,
+    "rows_total": 79,
+    "rows_llm_ok_true": 79,
+    "rows_parse_failed": 0,
+    "token_total": null,
+    "cam_evidence": {
+      "gate_events_nonempty": false,
+      "gate_events_count": null,
+      "rejected_memory_exists": false
+    },
+    "acceptance": {
+      "train_completeness": {
+        "ok": null,
+        "reason": "运行中（尚不可判）：history.json/summary.json 尚未落盘"
+      },
+      "real_edits": {
+        "ok": null,
+        "reason": "运行中（尚不可判）：history.json 尚未落盘"
+      },
+      "real_calls": {
+        "ok": true,
+        "reason": "token_total=None，llm_ok=true 行数=79"
+      },
+      "validity": {
+        "ok": null,
+        "reason": "运行中（尚不可判）：最终 summary 尚未写出"
+      },
+      "cam_evidence": {
+        "ok": null,
+        "reason": "运行中（尚不可判）：cam_gate_events.json 在首个选评完成后才写"
+      },
+      "no_secret_leak": {
+        "ok": true,
+        "reason": "全部文本产物未发现 sk- 开头的 32+ 位字符串"
+      }
+    },
+    "acceptance_all_ok": null,
+    "secret_leak_files": []
+  }
+]

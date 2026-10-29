@@ -1,0 +1,86 @@
+{
+  "created_at_utc": "2026-10-18T16:49:59.867289+00:00",
+  "study_id": "continuous_adaptation_v3",
+  "audit_scope": "offline validation only; no model/API calls, queue edits, or frozen-input edits",
+  "freeze": {
+    "sha256": "3e36613b9d9db411f806cca95a6644a6a66612924c925add240d44ffcd0bb597",
+    "source_fingerprints": 1378,
+    "verify_freeze_passed": true
+  },
+  "queue": {
+    "sha256_at_audit_start": "0ed0ab3c1ae5621012511547aaecbc664f5e77ce6bd79fa6581a2f51800b2544",
+    "sha256_after_reporter": "0ed0ab3c1ae5621012511547aaecbc664f5e77ce6bd79fa6581a2f51800b2544",
+    "cell_statuses": {
+      "baseline_seed42": "accepted",
+      "cam_v3_seed42": "accepted",
+      "cam_v3_seed43": "running",
+      "baseline_seed43": "pending"
+    },
+    "unchanged_during_audit": true
+  },
+  "seed42_checkpoint": {
+    "baseline_validation": "accepted",
+    "cam_v3_validation": "accepted",
+    "test_size": 120,
+    "task_type_counts": {
+      "cell_level": 83,
+      "sheet_level": 37
+    },
+    "same_frozen_test_ids": true,
+    "fixed_test_ids_sha256": "e1820c785583dc9aebf09c826edac0e9a3f4d99b12ce91d700625f850901129f",
+    "baseline_hard_passes": 68,
+    "cam_v3_hard_passes": 64,
+    "descriptive_paired_hard_outcomes": {
+      "cam_wins": 13,
+      "cam_losses": 17,
+      "ties": 90,
+      "by_type": {
+        "cell_level": {
+          "wins": 9,
+          "losses": 9,
+          "ties": 65
+        },
+        "sheet_level": {
+          "wins": 4,
+          "losses": 8,
+          "ties": 25
+        }
+      },
+      "interpretation": "seed42 descriptive paired outcomes only; no overall study conclusion before seed43 pair is complete"
+    },
+    "cam_final_selection": {
+      "best_step": 1,
+      "best_origin": "step_0001",
+      "best_score": 0.65,
+      "current_origin": "step_0001",
+      "current_score": 0.65,
+      "step4_action": "cam_re_evaluate"
+    },
+    "known_protocol_incident": "Epoch 3 auxiliary slow update produced no_content after a three-retry RuntimeError (NoneType is not subscriptable); disclosed in prior health snapshot and remains an interpretation limitation.",
+    "token_accounting_caveat": "returned token totals may be partial and do not establish complete per-request billing."
+  },
+  "cam_v3_seed43": {
+    "queue_status": "running",
+    "completed_history_steps": 1,
+    "last_completed_step": 1,
+    "steps": [
+      {
+        "step": 1,
+        "rows": 20,
+        "ids_exact_unique": true,
+        "task_types_exact": true,
+        "action": "accept_new_best",
+        "reason": null
+      }
+    ],
+    "config_protocol_ok": true,
+    "test_eval_started": false
+  },
+  "reporter_refresh": {
+    "status": "awaiting_complete_seed_pairs",
+    "complete_seed_pair_count": 1,
+    "interpretation": "No performance conclusion is reported until both seed pairs contain validated accepted cells."
+  },
+  "overall_interpretation": "One validated seed pair is available. Seed42 paired outcomes are descriptive only; do not report an overall treatment conclusion until seed43 baseline and CAM cells are both accepted.",
+  "critical_blocker": null
+}

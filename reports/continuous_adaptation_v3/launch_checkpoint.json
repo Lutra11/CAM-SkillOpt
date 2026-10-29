@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "study_id": "continuous_adaptation_v3",
+  "observed_at_utc": "2026-10-18T12:47:15.101060+00:00",
+  "supervisor_pid": 20616,
+  "driver_pid": 38372,
+  "driver_identity_verified": true,
+  "driver_handle_retained": true,
+  "driver_executable": "E:\\MiniConda\\envs\\skillopt\\python.exe",
+  "driver_command_verified": true,
+  "supervisor_status": "running",
+  "queue_status": "running",
+  "first_cell_id": "baseline_seed42",
+  "first_cell_status": "running",
+  "first_cell_exit_code": null,
+  "first_cell_finished_at": null,
+  "result_report_status": "awaiting_complete_seed_pairs",
+  "first_cell_result_status": "not_accepted",
+  "first_cell_completed_rows": 29,
+  "row_status_counts": {
+    "completed": 29
+  },
+  "phase_counts": {
+    "exec": 29
+  },
+  "task_type_counts": {
+    "sheet_level": 7,
+    "cell_level": 22
+  },
+  "fatal_auth_401_seen_in_driver_logs": false,
+  "note": "Initial baseline selection evaluation rows are present; queue cell remains in progress until runner acceptance."
+}

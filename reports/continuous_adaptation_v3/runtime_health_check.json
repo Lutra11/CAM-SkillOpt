@@ -1,0 +1,194 @@
+{
+  "schema_version": 1,
+  "study_id": "continuous_adaptation_v3",
+  "observed_at_utc": "2026-10-18T13:51:30.416833+00:00",
+  "supervisor_pid": 20616,
+  "driver_pid": 38372,
+  "child_pid": 36348,
+  "supervisor_status": "running",
+  "queue_status": "running",
+  "driver_handle_retained": true,
+  "processes": [
+    {
+      "pid": 20616,
+      "parent_pid": 35548,
+      "role": "supervisor",
+      "creation_utc": "2026-10-18T12:42:48.692000+00:00",
+      "exe": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "command_verified": true
+    },
+    {
+      "pid": 38372,
+      "parent_pid": 20616,
+      "role": "driver",
+      "creation_utc": "2026-10-18T12:42:49.372000+00:00",
+      "exe": "E:\\MiniConda\\envs\\skillopt\\python.exe",
+      "command_verified": true
+    },
+    {
+      "pid": 36348,
+      "parent_pid": 38372,
+      "role": "cell_child",
+      "creation_utc": "2026-10-18T12:42:51.591000+00:00",
+      "exe": "E:\\MiniConda\\envs\\skillopt\\python.exe",
+      "command_verified": true
+    }
+  ],
+  "cell_id": "baseline_seed42",
+  "cell_status": "running",
+  "cell_started_at": "2026-10-18T12:42:51.587520+00:00",
+  "elapsed_cell_seconds": 4094.7,
+  "latest_stage": {
+    "path": "outputs\\continuous_adaptation_v3\\spreadsheetbench\\qwen\\baseline_seed42\\steps\\step_0004\\patches\\stage_stats.json",
+    "stage": "reflect",
+    "status": "running",
+    "n_expected": null,
+    "n_recorded": null,
+    "n_scored": null,
+    "n_not_run": null,
+    "wall_time_s": 26.178,
+    "modified_utc": "2026-10-18T13:50:09.012876+00:00"
+  },
+  "recent_stage_history": [
+    {
+      "path": "outputs\\continuous_adaptation_v3\\spreadsheetbench\\qwen\\baseline_seed42\\steps\\step_0004\\patches\\stage_stats.json",
+      "stage": "reflect",
+      "status": "running",
+      "n_expected": null,
+      "n_recorded": null,
+      "n_scored": null,
+      "n_not_run": null,
+      "wall_time_s": 26.178,
+      "modified_utc": "2026-10-18T13:50:09.012876+00:00"
+    },
+    {
+      "path": "outputs\\continuous_adaptation_v3\\spreadsheetbench\\qwen\\baseline_seed42\\steps\\step_0004\\rollout\\stage_stats.json",
+      "stage": "rollout",
+      "status": "completed",
+      "n_expected": 20,
+      "n_recorded": 20,
+      "n_scored": 20,
+      "n_not_run": 0,
+      "wall_time_s": 269.992,
+      "modified_utc": "2026-10-18T13:49:42.822000+00:00"
+    },
+    {
+      "path": "outputs\\continuous_adaptation_v3\\spreadsheetbench\\qwen\\baseline_seed42\\slow_update\\epoch_03\\rollout_curr\\stage_stats.json",
+      "stage": "rollout_curr",
+      "status": "completed",
+      "n_expected": 20,
+      "n_recorded": 20,
+      "n_scored": 20,
+      "n_not_run": 0,
+      "wall_time_s": 286.176,
+      "modified_utc": "2026-10-18T13:39:45.650411+00:00"
+    },
+    {
+      "path": "outputs\\continuous_adaptation_v3\\spreadsheetbench\\qwen\\baseline_seed42\\slow_update\\epoch_03\\rollout_prev\\stage_stats.json",
+      "stage": "rollout_prev",
+      "status": "completed",
+      "n_expected": 20,
+      "n_recorded": 20,
+      "n_scored": 20,
+      "n_not_run": 0,
+      "wall_time_s": 191.986,
+      "modified_utc": "2026-10-18T13:34:59.467734+00:00"
+    },
+    {
+      "path": "outputs\\continuous_adaptation_v3\\spreadsheetbench\\qwen\\baseline_seed42\\steps\\step_0003\\selection_eval\\stage_stats.json",
+      "stage": "selection_eval",
+      "status": "completed",
+      "n_expected": 40,
+      "n_recorded": 40,
+      "n_scored": 40,
+      "n_not_run": 0,
+      "wall_time_s": 296.064,
+      "modified_utc": "2026-10-18T13:31:47.462843+00:00"
+    },
+    {
+      "path": "outputs\\continuous_adaptation_v3\\spreadsheetbench\\qwen\\baseline_seed42\\steps\\step_0003\\patches\\stage_stats.json",
+      "stage": "reflect",
+      "status": "completed",
+      "n_expected": null,
+      "n_recorded": null,
+      "n_scored": null,
+      "n_not_run": null,
+      "wall_time_s": 120.891,
+      "modified_utc": "2026-10-18T13:25:08.774156+00:00"
+    },
+    {
+      "path": "outputs\\continuous_adaptation_v3\\spreadsheetbench\\qwen\\baseline_seed42\\steps\\step_0003\\rollout\\stage_stats.json",
+      "stage": "rollout",
+      "status": "completed",
+      "n_expected": 20,
+      "n_recorded": 20,
+      "n_scored": 20,
+      "n_not_run": 0,
+      "wall_time_s": 162.496,
+      "modified_utc": "2026-10-18T13:23:07.870403+00:00"
+    },
+    {
+      "path": "outputs\\continuous_adaptation_v3\\spreadsheetbench\\qwen\\baseline_seed42\\slow_update\\epoch_02\\rollout_curr\\stage_stats.json",
+      "stage": "rollout_curr",
+      "status": "completed",
+      "n_expected": 20,
+      "n_recorded": 20,
+      "n_scored": 20,
+      "n_not_run": 0,
+      "wall_time_s": 173.399,
+      "modified_utc": "2026-10-18T13:16:57.663159+00:00"
+    }
+  ],
+  "initial_validation": {
+    "stage": "selection_eval_baseline",
+    "status": "completed",
+    "n_recorded": 40,
+    "n_expected": 40,
+    "hard": 0.4,
+    "wall_time_s": 315.658
+  },
+  "cell_log": {
+    "file": "reports\\continuous_adaptation_v3\\logs\\baseline_seed42.log",
+    "bytes": 32244,
+    "modified_utc": "2026-10-18T13:50:09.013876+00:00",
+    "line_count": 487,
+    "pattern_counts_all": {
+      "auth_401": 0,
+      "rate_limit": 0,
+      "transport": 1,
+      "aux_slow_updates": 15,
+      "meta_update": 0,
+      "generated_code_execution_error": 17
+    },
+    "pattern_counts_recent_250_lines": {
+      "auth_401": 0,
+      "rate_limit": 0,
+      "transport": 0,
+      "aux_slow_updates": 12,
+      "meta_update": 0,
+      "generated_code_execution_error": 12
+    },
+    "interpretation": "No auth 401 or rate-limit matches; no recent transport matches. The one historical transport-pattern event is a task_timeout with llm_ok=true. Generated-code/execution errors appear as task outcomes, distinct from model/API failures."
+  },
+  "structured_result_failures": {
+    "score_mismatch": 145,
+    "generated_code_or_task_execution": 18
+  },
+  "result_files_scanned": 16,
+  "auxiliary_update_stage_totals": {
+    "slow_update": {
+      "stages": 4,
+      "completed": 4,
+      "in_progress": 0,
+      "n_expected": 80,
+      "n_recorded": 80,
+      "wall_time_s": 823.727
+    }
+  },
+  "critical_findings": [],
+  "interpretation": "Cell is progressing through nested training and rollout stages. The latest nested stage_stats file is used for current progress; top-level selection evaluation is an earlier completed stage. Driver stdout/stderr are empty because cell-specific logs are written separately. Recent cell-log scan shows no auth, rate-limit, or transport failure indicators; execution-error lines are treated as task-level generated-code outcomes, not API failures. No reliable remaining-time estimate is available from one cell.",
+  "remaining_time_estimate": "Not estimated; remaining sequential cell durations are not established.",
+  "historical_transport_pattern_classification": "One historical transport-pattern match is in step_0001/selection_eval; its structured row has llm_ok=true and failure_type=task_timeout, so it is a task-level timeout, not evidence of an API transport outage.",
+  "cost_and_slowdown_note": "Observed 4 completed slow_update stages totaling 823.7 seconds (~13.7 minutes) in the baseline cell. The cell log contains 15 slow-update markers (12 in its last 250 lines). No reliable monetary cost is derived from these progress files; meta-update runtime was not labeled in the inspected stage_stats paths.",
+  "current_stage_progress_note": "At capture, latest nested stage is step_0004/patches reflect, status running, latest write 2026-10-18T13:50:09Z; the prior step_0004 rollout had reached 20/20 according to the live row files. This is active progress, not a hang."
+}

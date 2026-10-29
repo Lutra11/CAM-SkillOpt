@@ -1,0 +1,16 @@
+{
+    "study_id":  "cam_v2r1_qwen_ablation_repeats",
+    "status":  "waiting_for_parent",
+    "updated_at":  "2026-10-18T10:32:33.9817972Z",
+    "supervisor_pid":  31948,
+    "parent_driver_pid":  13872,
+    "parent_supervisor_pid":  27012,
+    "manifest":  "E:\\Programs\\CAM\\CAM-SkillOpt\\outputs\\studies\\cam_v2r1_qwen_ablation_repeats\\manifest.json",
+    "extension_stdout":  "E:\\Programs\\CAM\\CAM-SkillOpt\\reports\\v2r1_ablation_repeats\\logs\\extension_driver.stdout.log",
+    "extension_stderr":  "E:\\Programs\\CAM\\CAM-SkillOpt\\reports\\v2r1_ablation_repeats\\logs\\extension_driver.stderr.log",
+    "parent_driver_creation_date":  "2026/10/18 18:32:18",
+    "parent_driver_command":  "\"E:\\MiniConda\\envs\\skillopt\\python.exe\" -X utf8 scripts/run_study.py --run --lanes 2 ",
+    "parent_identity_verified":  true,
+    "parent_supervisor_command":  "\"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe\" -NoProfile -ExecutionPolicy Bypass -File E:\\Programs\\CAM\\CAM-SkillOpt\\outputs\\studies\\cam_v2r1_qwen\\supervise_v2r1.ps1 -Resume -SmokePid 36960",
+    "parent_supervisor_creation_date":  "2026/10/18 18:32:16"
+}

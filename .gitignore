@@ -65,3 +65,17 @@ codex_probe_last_message.txt
 tests/run_*.sh
 tests/launch_*.py
 *.launch.log
+
+# ---- DSH local recovery artifacts (2026-10-29) ----
+# ACL 修复回滚记录：本机专属
+.dsh-acl-recovery/
+# DSH 配置备份：**含 .credentials.yaml，绝不能提交**
+.dsh-config-backup/
+
+# 本机实验归档（被取代的旧实验，磁盘保留、不入库）
+_archive/
+
+# 运行时状态与 supervise 日志（每次跑都会变，不是源码）
+reports/queue_state.json
+reports/v2r1/logs/
+reports/v2r1/smoke_check/

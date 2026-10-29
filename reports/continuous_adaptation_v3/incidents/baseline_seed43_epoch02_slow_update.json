@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "severity": "nonfatal_warning",
+  "status": "contained_nonfatal",
+  "incident_id": "baseline_seed43_epoch02_slow_update",
+  "stage": "slow_update",
+  "epoch": 2,
+  "result_path": "outputs/continuous_adaptation_v3/spreadsheetbench/qwen/baseline_seed43/slow_update/epoch_02/slow_result.json",
+  "action": "no_content",
+  "time_s": 370.7,
+  "saved_result_keys": [
+    "action",
+    "time_s"
+  ],
+  "saved_guidance_chars": 0,
+  "impact": "No slow-update block was injected; current target skill remained the pre-update skill; run continued.",
+  "observed_at_utc": "2026-10-18T18:50:26.301149+00:00",
+  "cell_id": "baseline_seed43",
+  "cell_status_at_capture": "running",
+  "queue_status_at_capture": "running",
+  "provider_backend": "azure_openai",
+  "optimizer_model": "glm",
+  "target_model": "qwen",
+  "reasoning": "off",
+  "configured_attempts": 3,
+  "sanitized_exception_signature": "NoneType object not subscriptable",
+  "cause": "unconfirmed; inner traceback and provider response payload were not persisted",
+  "request_id_saved": false,
+  "response_status_saved": false,
+  "response_headers_or_body_saved": false,
+  "log_category_counts": {
+    "none_type_mentions": 2,
+    "llm_call_failed_mentions": 4,
+    "auth_401_mentions": 0,
+    "rate_limit_mentions": 0,
+    "transport_mentions": 0
+  },
+  "auth_rate_transport_assessment": "No auth 401 or rate-limit indicators in the cell log; this evidence does not establish the actual response status.",
+  "trajectory_replayed": false,
+  "current_latest_stage": {
+    "path": "outputs\\continuous_adaptation_v3\\spreadsheetbench\\qwen\\baseline_seed43\\slow_update\\epoch_03\\rollout_prev\\stage_stats.json",
+    "stage": "rollout_prev",
+    "status": "running",
+    "n_expected": 20,
+    "n_recorded": 12,
+    "modified_utc": "2026-10-18T18:50:26.327152+00:00"
+  },
+  "no_content_contract": "Existing trainer records action=no_content and proceeds; the optimizer call did not yield guidance."
+}

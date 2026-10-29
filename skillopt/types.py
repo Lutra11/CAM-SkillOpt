@@ -261,6 +261,8 @@ class SlowUpdateResult:
     candidate_hash: str = ""
     update_origin: str = ""
     update_target: str = ""
+    outcome_kind: str = ""
+    no_update_reason: str = ""
 
     @classmethod
     def from_dict(cls, d: dict | None) -> SlowUpdateResult | None:
@@ -278,6 +280,8 @@ class SlowUpdateResult:
             candidate_hash=d.get("candidate_hash", ""),
             update_origin=d.get("update_origin", ""),
             update_target=d.get("update_target", ""),
+            outcome_kind=d.get("outcome_kind", ""),
+            no_update_reason=d.get("no_update_reason", ""),
         )
 
     def to_dict(self) -> dict:
@@ -285,6 +289,12 @@ class SlowUpdateResult:
             "reasoning": self.reasoning,
             "slow_update_content": self.slow_update_content,
         }
+        if self.outcome_kind:
+            d["outcome_kind"] = self.outcome_kind
+        if self.no_update_reason:
+            d["no_update_reason"] = self.no_update_reason
+        if self.outcome_kind == "validated_no_update":
+            d.pop("slow_update_content")
         if self.action:
             d["action"] = self.action
         if self.time_s is not None:

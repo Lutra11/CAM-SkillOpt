@@ -1,0 +1,178 @@
+{
+  "created_at_utc": "2026-10-18T13:48:36.663440+00:00",
+  "study_id": "continuous_adaptation_v3",
+  "audit_scope": "read-only health snapshot; no full-cell acceptance or performance conclusion",
+  "freeze": {
+    "path": "outputs/studies/continuous_adaptation_v3/freeze.json",
+    "sha256": "3e36613b9d9db411f806cca95a6644a6a66612924c925add240d44ffcd0bb597",
+    "source_fingerprints_expected": 1378,
+    "source_fingerprints_valid": true,
+    "config_cells_valid": true
+  },
+  "queue": {
+    "status": "running",
+    "cells": [
+      {
+        "cell_id": "baseline_seed42",
+        "method": "baseline",
+        "seed": 42,
+        "status": "running",
+        "started_at": "2026-10-18T12:42:51.587520+00:00",
+        "acceptance": "fresh output directory"
+      },
+      {
+        "cell_id": "cam_v3_seed42",
+        "method": "cam_v3",
+        "seed": 42,
+        "status": "pending",
+        "acceptance": "fresh output directory"
+      },
+      {
+        "cell_id": "cam_v3_seed43",
+        "method": "cam_v3",
+        "seed": 43,
+        "status": "pending",
+        "acceptance": "fresh output directory"
+      },
+      {
+        "cell_id": "baseline_seed43",
+        "method": "baseline",
+        "seed": 43,
+        "status": "pending",
+        "acceptance": "fresh output directory"
+      }
+    ]
+  },
+  "test_scope": {
+    "fixed_n": 120,
+    "fixed_ids_sha256": "e1820c785583dc9aebf09c826edac0e9a3f4d99b12ce91d700625f850901129f",
+    "test_leak_ids_found": [],
+    "unexpected_test_evaluation_dirs": []
+  },
+  "cells": [
+    {
+      "cell_id": "baseline_seed42",
+      "method": "baseline",
+      "seed": 42,
+      "queue_status": "running",
+      "completed_history_steps": 3,
+      "step_checks": [
+        {
+          "step": 1,
+          "expected_n": 20,
+          "results_path_exists": true,
+          "id_set_exact": true,
+          "ids_unique": true,
+          "task_types_exact": true,
+          "observed_n": 20,
+          "observed_task_type_counts": {
+            "cell_level": 20,
+            "sheet_level": 0
+          }
+        },
+        {
+          "step": 2,
+          "expected_n": 20,
+          "results_path_exists": true,
+          "id_set_exact": true,
+          "ids_unique": true,
+          "task_types_exact": true,
+          "observed_n": 20,
+          "observed_task_type_counts": {
+            "cell_level": 0,
+            "sheet_level": 20
+          }
+        },
+        {
+          "step": 3,
+          "expected_n": 20,
+          "results_path_exists": true,
+          "id_set_exact": true,
+          "ids_unique": true,
+          "task_types_exact": true,
+          "observed_n": 20,
+          "observed_task_type_counts": {
+            "cell_level": 20,
+            "sheet_level": 0
+          }
+        }
+      ],
+      "test_evaluations": [],
+      "full_cell_validation_accepted": false,
+      "config_matches_freeze": true,
+      "runtime_progress": {
+        "last_completed_step": 3,
+        "current_score": 0.55,
+        "best_score": 0.55,
+        "best_step": 3,
+        "current_origin": "slow_update_epoch_03",
+        "best_origin": "step_0003"
+      },
+      "latest_history": {
+        "step": 3,
+        "action": "accept_new_best",
+        "current_score": 0.55,
+        "best_score": 0.55,
+        "best_step": 3,
+        "selection_hard": 0.55,
+        "candidate_gate_score": 0.55
+      },
+      "step4_started": true,
+      "baseline_validation": {
+        "initial_hard": 0.4,
+        "best_hard": 0.55,
+        "best_step": 3,
+        "current_origin": "slow_update_epoch_03",
+        "best_origin": "step_0003"
+      }
+    },
+    {
+      "cell_id": "cam_v3_seed42",
+      "method": "cam_v3",
+      "seed": 42,
+      "queue_status": "pending",
+      "completed_history_steps": 0,
+      "step_checks": [],
+      "test_evaluations": [],
+      "full_cell_validation_accepted": false,
+      "config_matches_freeze": null
+    },
+    {
+      "cell_id": "cam_v3_seed43",
+      "method": "cam_v3",
+      "seed": 43,
+      "queue_status": "pending",
+      "completed_history_steps": 0,
+      "step_checks": [],
+      "test_evaluations": [],
+      "full_cell_validation_accepted": false,
+      "config_matches_freeze": null
+    },
+    {
+      "cell_id": "baseline_seed43",
+      "method": "baseline",
+      "seed": 43,
+      "queue_status": "pending",
+      "completed_history_steps": 0,
+      "step_checks": [],
+      "test_evaluations": [],
+      "full_cell_validation_accepted": false,
+      "config_matches_freeze": null
+    }
+  ],
+  "overall": "healthy_in_progress",
+  "baseline_selection_state": {
+    "cell_id": "baseline_seed42",
+    "initial_validation_hard": 0.4,
+    "initial_validation_n": 40,
+    "latest_best_validation_hard": 0.55,
+    "best_step": 3,
+    "best_origin": "step_0003",
+    "best_skill_sha256": "9cc8648c70926f8d172ffff9cc7af1dea52063de8ab6bc3d7d9867787cc5b32f",
+    "best_skill_matches_step3_candidate": true,
+    "current_skill_origin": "slow_update_epoch_03",
+    "current_skill_sha256": "de0c42ea4c90fc6b066aaeff52cee31dde7ed8a9b5031a0b22498b3a2f54bf3c",
+    "current_and_best_skill_distinct_after_slow_update": true,
+    "note": "Selection validation progress only; no completed-cell or method-effect conclusion."
+  }
+}

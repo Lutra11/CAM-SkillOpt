@@ -1,0 +1,141 @@
+{
+  "created_at_utc": "2026-10-18T18:50:12.369979+00:00",
+  "study_id": "continuous_adaptation_v3",
+  "audit_scope": "offline health check; no API/model calls, no task-score review, no accepted-cell revalidation, no queue/frozen input changes",
+  "original_freeze": {
+    "sha256": "3e36613b9d9db411f806cca95a6644a6a66612924c925add240d44ffcd0bb597",
+    "source_fingerprints": 1378,
+    "verify_freeze_passed": true,
+    "verify_freeze_passed_after_reporter": true
+  },
+  "supplemental_prompt_observation": {
+    "path": "outputs/studies/continuous_adaptation_v3/prompt_observation_20261019_0125/observation.json",
+    "file_count": 21,
+    "current_files_match_hashes_and_lengths": true,
+    "historical_content_proven": false,
+    "scope_caveat": "Current clean Git state and old file timestamps do not retrospectively prove prompt contents at every previous request",
+    "separate_from_original_freeze": true
+  },
+  "queue": {
+    "sha256_at_audit_start": "d0edaacb08b5efbc25a38b5d933fe4e5543a5f78b7a8866eae18bd7124779dc9",
+    "cell_statuses": {
+      "baseline_seed42": "accepted",
+      "cam_v3_seed42": "accepted",
+      "cam_v3_seed43": "accepted",
+      "baseline_seed43": "running"
+    },
+    "sha256_after_reporter": "d0edaacb08b5efbc25a38b5d933fe4e5543a5f78b7a8866eae18bd7124779dc9",
+    "cell_statuses_after_reporter": {
+      "baseline_seed42": "accepted",
+      "cam_v3_seed42": "accepted",
+      "cam_v3_seed43": "accepted",
+      "baseline_seed43": "running"
+    },
+    "unchanged_during_audit": true
+  },
+  "baseline_seed43": {
+    "queue_status": "running",
+    "config": {
+      "seed": 43,
+      "num_epochs": 4,
+      "train_size": 20,
+      "batch_size": 20,
+      "eval_test": false,
+      "final_selection": true,
+      "cam_enabled": false
+    },
+    "main_steps": [
+      {
+        "step": 1,
+        "row_count": 20,
+        "exact_frozen_ids": true,
+        "task_type_exact": true,
+        "train_test_overlap": []
+      },
+      {
+        "step": 2,
+        "row_count": 20,
+        "exact_frozen_ids": true,
+        "task_type_exact": true,
+        "train_test_overlap": []
+      },
+      {
+        "step": 3,
+        "row_count": 20,
+        "exact_frozen_ids": true,
+        "task_type_exact": true,
+        "train_test_overlap": []
+      }
+    ],
+    "history_entries": 3,
+    "last_completed_step": 3,
+    "current_score": 0.575,
+    "best_score": 0.575,
+    "test_evaluation_started": false,
+    "train_test_overlap": [],
+    "cam_gate_event_artifact_exists": false,
+    "cam_gate_file_count": 0,
+    "epoch2_auxiliary_failures": {
+      "slow_update": {
+        "action": "no_content",
+        "time_s": 370.7,
+        "content_present": false
+      },
+      "meta_skill": {
+        "action": "no_content",
+        "time_s": 22.4,
+        "content_present": false
+      }
+    },
+    "log": {
+      "exists": true,
+      "nonempty": true,
+      "line_count": 436,
+      "last_write_utc": "2026-10-18T18:50:03.275104+00:00",
+      "exception_tracebacks": [
+        {
+          "line": 302,
+          "text": "Traceback (most recent call last):"
+        },
+        {
+          "line": 314,
+          "text": "RuntimeError: LLM call failed after 3 retries: 'NoneType' object is not subscriptable"
+        },
+        {
+          "line": 315,
+          "text": "Traceback (most recent call last):"
+        },
+        {
+          "line": 327,
+          "text": "RuntimeError: LLM call failed after 3 retries: 'NoneType' object is not subscriptable"
+        }
+      ]
+    }
+  },
+  "auxiliary_failure_count": 5,
+  "auxiliary_failures": {
+    "CAM seed42 epoch3 slow_update": "CAM seed42 epoch3 slow_update no_content after three retries: NoneType subscript error.",
+    "CAM seed43 epoch2 slow_update": "no_content after three retries (428.1 s; NoneType subscript error)",
+    "CAM seed43 epoch3 slow_update": "no_content after three retries (507.4 s; NoneType subscript error)",
+    "baseline seed43 epoch2 slow_update": "no_content after 370.7 s; no guidance content",
+    "baseline seed43 epoch2 meta_skill": "no_content after 22.4 s; no meta-skill content"
+  },
+  "cam43_prior_auxiliary_failures": {
+    "cam_v3_seed42_epoch3": "no_content after three retries (NoneType subscript error)",
+    "cam_v3_seed43_epoch2": "no_content after three retries (NoneType subscript error)",
+    "cam_v3_seed43_epoch3": "no_content after three retries (NoneType subscript error)"
+  },
+  "reporter_refresh": {
+    "status": "awaiting_complete_seed_pairs",
+    "complete_seed_pair_count": 1,
+    "overall_conclusion_deferred_until_baseline_seed43_validation": true
+  },
+  "validity": {
+    "baseline43_steps_1_to_3_exact_frozen_ids_and_types": true,
+    "no_train_test_leak": true,
+    "config_cam_disabled": true,
+    "no_cam_artifacts": true,
+    "critical_blocker": null
+  },
+  "token_accounting_caveat": "Returned token totals may be partial and do not establish full per-request billing."
+}

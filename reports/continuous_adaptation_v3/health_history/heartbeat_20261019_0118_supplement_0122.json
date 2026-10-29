@@ -1,0 +1,27 @@
+{
+  "observed_at_utc": "2026-10-18T17:22:26.1463473Z",
+  "automation_id": "cam-20",
+  "supplement_to": "heartbeat_20261019_0118.json",
+  "confirmed_total_auxiliary_generation_failures": 3,
+  "seed43_incidents": [
+    {
+      "cell": "cam_v3_seed43",
+      "epoch": "epoch_02",
+      "action": "no_content",
+      "time_s": 428.1,
+      "artifact": "outputs/continuous_adaptation_v3/spreadsheetbench/qwen/cam_v3_seed43/slow_update/epoch_02/slow_result.json"
+    },
+    {
+      "cell": "cam_v3_seed43",
+      "epoch": "epoch_03",
+      "action": "no_content",
+      "time_s": 507.4,
+      "artifact": "outputs/continuous_adaptation_v3/spreadsheetbench/qwen/cam_v3_seed43/slow_update/epoch_03/slow_result.json"
+    }
+  ],
+  "previous_incident": "cam_v3_seed42 epoch03",
+  "original_error": "LLM call failed after 3 retries: 'NoneType' object is not subscriptable",
+  "root_cause": "unconfirmed",
+  "handling": "Frozen no_content path preserves skill; no retrospective replay, source change or false fixed claim",
+  "impact": "Disclose all missing auxiliary updates; do not interpret as fault-free complete mechanism execution"
+}

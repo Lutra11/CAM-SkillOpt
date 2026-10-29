@@ -1,0 +1,274 @@
+{
+  "generated_at": "2026-10-18 18:32:51",
+  "unit_count": 4,
+  "alarm_count": 0,
+  "units": [
+    {
+      "unit": "spreadsheetbench/qwen/baseline_seed42",
+      "benchmark": "spreadsheetbench",
+      "target": "qwen",
+      "arm": "baseline",
+      "seed": 42,
+      "run_state": "done",
+      "completed_steps": 8,
+      "expected_steps": 8,
+      "action_counts": {
+        "accept": 0,
+        "accept_new_best": 1,
+        "soft_accept": 0,
+        "reject": 7,
+        "skip": 0,
+        "cam_re_evaluate": 0,
+        "other": 0
+      },
+      "other_actions": [],
+      "evaluated_steps": 8,
+      "update_steps": 1,
+      "update_ratio": 0.125,
+      "edit_budgets": [
+        4,
+        4,
+        3,
+        3,
+        3,
+        2,
+        2,
+        2
+      ],
+      "lr_control_modes": [
+        "fixed"
+      ],
+      "gate_expected": false,
+      "gate": {
+        "exists": false,
+        "unparseable": false,
+        "count": null,
+        "promotion_true": null,
+        "promotion_ratio": null,
+        "pending_true": null,
+        "pending_ratio": null,
+        "n_pairs_values": null,
+        "lcb_mean": null,
+        "ucb_mean": null,
+        "cross_zero": null,
+        "cross_zero_ratio": null,
+        "by_action": null
+      },
+      "memory": {
+        "rejected_memory_exists": false,
+        "rejected_items": null,
+        "kind_distribution": null,
+        "retrieval_files": 48,
+        "retrieval_enabled_true": 0,
+        "retrieval_hit_gt0": 0,
+        "status_distribution": {
+          "disabled": 48
+        },
+        "retrieval_unparseable": 0
+      },
+      "persistent_memory_enabled": [
+        false
+      ],
+      "memory_possible": false,
+      "gate_used_true": 0,
+      "gate_used_false": 8,
+      "gate_used_missing": 0,
+      "cam_re_evaluate_steps": 0,
+      "consistency_ok": true,
+      "alarms": []
+    },
+    {
+      "unit": "spreadsheetbench/qwen/baseline_seed43",
+      "benchmark": "spreadsheetbench",
+      "target": "qwen",
+      "arm": "baseline",
+      "seed": 43,
+      "run_state": "running",
+      "completed_steps": null,
+      "expected_steps": 8,
+      "action_counts": null,
+      "other_actions": null,
+      "evaluated_steps": null,
+      "update_steps": null,
+      "update_ratio": null,
+      "edit_budgets": null,
+      "lr_control_modes": null,
+      "gate_expected": false,
+      "gate": {
+        "exists": false,
+        "unparseable": false,
+        "count": null,
+        "promotion_true": null,
+        "promotion_ratio": null,
+        "pending_true": null,
+        "pending_ratio": null,
+        "n_pairs_values": null,
+        "lcb_mean": null,
+        "ucb_mean": null,
+        "cross_zero": null,
+        "cross_zero_ratio": null,
+        "by_action": null
+      },
+      "memory": {
+        "rejected_memory_exists": false,
+        "rejected_items": null,
+        "kind_distribution": null,
+        "retrieval_files": 0,
+        "retrieval_enabled_true": null,
+        "retrieval_hit_gt0": null,
+        "status_distribution": null,
+        "retrieval_unparseable": 0
+      },
+      "persistent_memory_enabled": null,
+      "memory_possible": false,
+      "gate_used_true": null,
+      "gate_used_false": null,
+      "gate_used_missing": null,
+      "cam_re_evaluate_steps": null,
+      "consistency_ok": true,
+      "alarms": []
+    },
+    {
+      "unit": "spreadsheetbench/qwen/cam_full_seed42",
+      "benchmark": "spreadsheetbench",
+      "target": "qwen",
+      "arm": "cam_full",
+      "seed": 42,
+      "run_state": "done",
+      "completed_steps": 8,
+      "expected_steps": 8,
+      "action_counts": {
+        "accept": 0,
+        "accept_new_best": 1,
+        "soft_accept": 7,
+        "reject": 0,
+        "skip": 0,
+        "cam_re_evaluate": 0,
+        "other": 0
+      },
+      "other_actions": [],
+      "evaluated_steps": 8,
+      "update_steps": 8,
+      "update_ratio": 1.0,
+      "edit_budgets": [
+        2,
+        2,
+        2,
+        3,
+        3,
+        2,
+        3,
+        2
+      ],
+      "lr_control_modes": [
+        "cam_adaptive"
+      ],
+      "gate_expected": true,
+      "gate": {
+        "exists": true,
+        "unparseable": false,
+        "count": 12,
+        "promotion_true": 1,
+        "promotion_ratio": 0.08333333333333333,
+        "pending_true": 0,
+        "pending_ratio": 0.0,
+        "n_pairs_values": [
+          40
+        ],
+        "lcb_mean": -0.15208333333333332,
+        "ucb_mean": 0.14583333333333334,
+        "cross_zero": 11,
+        "cross_zero_ratio": 0.9166666666666666,
+        "by_action": {
+          "accept_new_best": {
+            "count": 1,
+            "mean_score_diff": 0.3,
+            "mean_improvement": 0.3
+          },
+          "soft_accept": {
+            "count": 11,
+            "mean_score_diff": -0.02954545454545452,
+            "mean_improvement": -0.029545454545454545
+          }
+        }
+      },
+      "memory": {
+        "rejected_memory_exists": true,
+        "rejected_items": 17,
+        "kind_distribution": {
+          "inconclusive": 17
+        },
+        "retrieval_files": 47,
+        "retrieval_enabled_true": 47,
+        "retrieval_hit_gt0": 18,
+        "status_distribution": {
+          "empty_history": 7,
+          "hit": 18,
+          "no_failure_evidence": 22
+        },
+        "retrieval_unparseable": 0
+      },
+      "persistent_memory_enabled": [
+        true
+      ],
+      "memory_possible": true,
+      "gate_used_true": 8,
+      "gate_used_false": 0,
+      "gate_used_missing": 0,
+      "cam_re_evaluate_steps": 0,
+      "consistency_ok": true,
+      "alarms": []
+    },
+    {
+      "unit": "spreadsheetbench/qwen/cam_full_seed43",
+      "benchmark": "spreadsheetbench",
+      "target": "qwen",
+      "arm": "cam_full",
+      "seed": 43,
+      "run_state": "running",
+      "completed_steps": null,
+      "expected_steps": 8,
+      "action_counts": null,
+      "other_actions": null,
+      "evaluated_steps": null,
+      "update_steps": null,
+      "update_ratio": null,
+      "edit_budgets": null,
+      "lr_control_modes": null,
+      "gate_expected": true,
+      "gate": {
+        "exists": false,
+        "unparseable": false,
+        "count": null,
+        "promotion_true": null,
+        "promotion_ratio": null,
+        "pending_true": null,
+        "pending_ratio": null,
+        "n_pairs_values": null,
+        "lcb_mean": null,
+        "ucb_mean": null,
+        "cross_zero": null,
+        "cross_zero_ratio": null,
+        "by_action": null
+      },
+      "memory": {
+        "rejected_memory_exists": false,
+        "rejected_items": null,
+        "kind_distribution": null,
+        "retrieval_files": 0,
+        "retrieval_enabled_true": null,
+        "retrieval_hit_gt0": null,
+        "status_distribution": null,
+        "retrieval_unparseable": 0
+      },
+      "persistent_memory_enabled": null,
+      "memory_possible": true,
+      "gate_used_true": null,
+      "gate_used_false": null,
+      "gate_used_missing": null,
+      "cam_re_evaluate_steps": null,
+      "consistency_ok": true,
+      "alarms": []
+    }
+  ]
+}

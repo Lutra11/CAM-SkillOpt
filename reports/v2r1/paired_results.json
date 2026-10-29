@@ -1,0 +1,313 @@
+{
+  "study_id": "cam_v2r1_qwen",
+  "protocol": "docs/experiments/CAM_V2_PLAN.md",
+  "status": "incomplete",
+  "primary_endpoint": "test_hard (validation-gate-authorized incumbent)",
+  "secondary_endpoint": "final_test_hard",
+  "selection_rule": "Report test_eval for the validation-gate-authorized incumbent as primary and test_eval_final as secondary; never select the larger test result.",
+  "inference": {
+    "training_seeds": [
+      42,
+      43,
+      44
+    ],
+    "paired_item_bootstrap_resamples": 20000,
+    "confidence_level": 0.95,
+    "scope": "Exploratory: three paired training seeds on one fixed test split. Per-seed intervals resample paired test items and do not estimate training randomness.",
+    "mcnemar": "Descriptive paired discordance summary; not a strong significance claim."
+  },
+  "cells": [
+    {
+      "cell_id": "qwen_baseline_42",
+      "method": "baseline",
+      "seed": 42,
+      "block": "paired_seed42",
+      "out_root": "outputs/matrix_v2r1/spreadsheetbench/qwen/baseline_seed42",
+      "queue_status": "skipped_done",
+      "integrity_valid": true,
+      "eligible": true,
+      "reason": "complete; steps, actions, test IDs and scores verified",
+      "scores": {
+        "test_hard": 0.5321428571428571,
+        "final_test_hard": 0.49642857142857144
+      },
+      "baseline_test_hard": 0.36428571428571427,
+      "actions": {
+        "accept": 0,
+        "accept_new_best": 1,
+        "soft_accept": 0,
+        "reject": 7,
+        "skip": 0
+      },
+      "drift_guard_rollbacks": null,
+      "cost": {
+        "source": "cost_summary.json",
+        "token_totals": {
+          "prompt_tokens": 7469841,
+          "completion_tokens": 10722782,
+          "total_tokens": 18192623,
+          "input_tokens": 7469841,
+          "output_tokens": 10722782,
+          "calls": 1770
+        },
+        "attempts": 1,
+        "wall_time_s": 20639.164054632187,
+        "coverage": "returned_provider_usage_across_recorded_attempts; unreturned/killed requests not measurable"
+      },
+      "persistent_memory": {
+        "enabled": false,
+        "stored_item_count": 0,
+        "stored_item_kinds": null,
+        "retrieval_files": 48,
+        "retrieval_hit_calls": 0,
+        "retrieval_hits": 0,
+        "retrieval_evidence_incomplete_files": 0,
+        "injected_groups": 0,
+        "injected_items": 0,
+        "completed_injected_groups": 0,
+        "memory_coverage": "complete"
+      }
+    },
+    {
+      "cell_id": "qwen_cam_full_42",
+      "method": "cam_full",
+      "seed": 42,
+      "block": "paired_seed42",
+      "out_root": "outputs/matrix_v2r1/spreadsheetbench/qwen/cam_full_seed42",
+      "queue_status": "skipped_done",
+      "integrity_valid": true,
+      "eligible": true,
+      "reason": "complete; steps, actions, test IDs and scores verified",
+      "scores": {
+        "test_hard": 0.5321428571428571,
+        "final_test_hard": 0.5464285714285714
+      },
+      "baseline_test_hard": 0.37142857142857144,
+      "actions": {
+        "accept": 0,
+        "accept_new_best": 1,
+        "soft_accept": 7,
+        "reject": 0,
+        "skip": 0
+      },
+      "drift_guard_rollbacks": 3,
+      "cost": {
+        "source": "cost_summary.json",
+        "token_totals": {
+          "prompt_tokens": 6674540,
+          "completion_tokens": 11499870,
+          "total_tokens": 18174410,
+          "input_tokens": 6674540,
+          "output_tokens": 11499870,
+          "calls": 1846
+        },
+        "attempts": 1,
+        "wall_time_s": 21564.81905412674,
+        "coverage": "returned_provider_usage_across_recorded_attempts; unreturned/killed requests not measurable"
+      },
+      "persistent_memory": {
+        "enabled": true,
+        "stored_item_count": 17,
+        "stored_item_kinds": {
+          "inconclusive": 17
+        },
+        "retrieval_files": 47,
+        "retrieval_hit_calls": 18,
+        "retrieval_hits": 51,
+        "retrieval_evidence_incomplete_files": 0,
+        "injected_groups": 18,
+        "injected_items": 51,
+        "completed_injected_groups": 16,
+        "memory_coverage": "complete"
+      }
+    },
+    {
+      "cell_id": "qwen_baseline_43",
+      "method": "baseline",
+      "seed": 43,
+      "block": "paired_seed43",
+      "out_root": "outputs/matrix_v2r1/spreadsheetbench/qwen/baseline_seed43",
+      "queue_status": "pending",
+      "integrity_valid": false,
+      "eligible": false,
+      "reason": "[Errno 2] No such file or directory: 'E:\\\\Programs\\\\CAM\\\\CAM-SkillOpt\\\\outputs\\\\matrix_v2r1\\\\spreadsheetbench\\\\qwen\\\\baseline_seed43\\\\summary.json'"
+    },
+    {
+      "cell_id": "qwen_cam_full_43",
+      "method": "cam_full",
+      "seed": 43,
+      "block": "paired_seed43",
+      "out_root": "outputs/matrix_v2r1/spreadsheetbench/qwen/cam_full_seed43",
+      "queue_status": "pending",
+      "integrity_valid": false,
+      "eligible": false,
+      "reason": "[Errno 2] No such file or directory: 'E:\\\\Programs\\\\CAM\\\\CAM-SkillOpt\\\\outputs\\\\matrix_v2r1\\\\spreadsheetbench\\\\qwen\\\\cam_full_seed43\\\\summary.json'"
+    },
+    {
+      "cell_id": "qwen_baseline_44",
+      "method": "baseline",
+      "seed": 44,
+      "block": "paired_seed44",
+      "out_root": "outputs/matrix_v2r1/spreadsheetbench/qwen/baseline_seed44",
+      "queue_status": "pending",
+      "integrity_valid": false,
+      "eligible": false,
+      "reason": "cell directory is missing"
+    },
+    {
+      "cell_id": "qwen_cam_full_44",
+      "method": "cam_full",
+      "seed": 44,
+      "block": "paired_seed44",
+      "out_root": "outputs/matrix_v2r1/spreadsheetbench/qwen/cam_full_seed44",
+      "queue_status": "pending",
+      "integrity_valid": false,
+      "eligible": false,
+      "reason": "cell directory is missing"
+    },
+    {
+      "cell_id": "qwen_cam_no_bootstrap_42",
+      "method": "cam_no_bootstrap",
+      "seed": 42,
+      "block": "ablations",
+      "out_root": "outputs/matrix_v2r1/spreadsheetbench/qwen/cam_no_bootstrap_seed42",
+      "queue_status": "pending",
+      "integrity_valid": false,
+      "eligible": false,
+      "reason": "cell directory is missing"
+    },
+    {
+      "cell_id": "qwen_cam_no_memory_42",
+      "method": "cam_no_memory",
+      "seed": 42,
+      "block": "ablations",
+      "out_root": "outputs/matrix_v2r1/spreadsheetbench/qwen/cam_no_memory_seed42",
+      "queue_status": "pending",
+      "integrity_valid": false,
+      "eligible": false,
+      "reason": "cell directory is missing"
+    },
+    {
+      "cell_id": "qwen_cam_no_adaptive_budget_42",
+      "method": "cam_no_adaptive_budget",
+      "seed": 42,
+      "block": "ablations",
+      "out_root": "outputs/matrix_v2r1/spreadsheetbench/qwen/cam_no_adaptive_budget_seed42",
+      "queue_status": "pending",
+      "integrity_valid": false,
+      "eligible": false,
+      "reason": "cell directory is missing"
+    }
+  ],
+  "analysis": {
+    "primary": {
+      "comparison": "cam_full - baseline",
+      "per_seed": [
+        {
+          "n_items": 280,
+          "score_a": 0.5321428571428571,
+          "score_b": 0.5321428571428571,
+          "delta_b_minus_a": 0.0,
+          "task_item_bootstrap_95_ci": [
+            -0.05357142857142857,
+            0.05357142857142857
+          ],
+          "only_a_correct": 29,
+          "only_b_correct": 29,
+          "mcnemar_exact_p_descriptive": 1.0,
+          "seed": 42,
+          "available": true
+        },
+        {
+          "seed": 43,
+          "available": false,
+          "missing_cells": [
+            "qwen_baseline_43",
+            "qwen_cam_full_43"
+          ]
+        },
+        {
+          "seed": 44,
+          "available": false,
+          "missing_cells": [
+            "qwen_baseline_44",
+            "qwen_cam_full_44"
+          ]
+        }
+      ],
+      "across_training_seeds": {
+        "mean": 0.0,
+        "sample_sd": null
+      },
+      "training_seed_count": 1,
+      "interpretation": "Item bootstrap intervals describe test-item uncertainty within each trained seed. The across-seed mean and sample SD describe variation across the observed training seeds; they are distinct quantities."
+    },
+    "secondary": {
+      "comparison": "cam_full - baseline",
+      "per_seed": [
+        {
+          "n_items": 280,
+          "score_a": 0.49642857142857144,
+          "score_b": 0.5464285714285714,
+          "delta_b_minus_a": 0.05,
+          "task_item_bootstrap_95_ci": [
+            -0.007142857142857143,
+            0.10714285714285714
+          ],
+          "only_a_correct": 29,
+          "only_b_correct": 43,
+          "mcnemar_exact_p_descriptive": 0.12491820036864003,
+          "seed": 42,
+          "available": true
+        },
+        {
+          "seed": 43,
+          "available": false,
+          "missing_cells": [
+            "qwen_baseline_43",
+            "qwen_cam_full_43"
+          ]
+        },
+        {
+          "seed": 44,
+          "available": false,
+          "missing_cells": [
+            "qwen_baseline_44",
+            "qwen_cam_full_44"
+          ]
+        }
+      ],
+      "across_training_seeds": {
+        "mean": 0.05,
+        "sample_sd": null
+      },
+      "training_seed_count": 1,
+      "interpretation": "Item bootstrap intervals describe test-item uncertainty within each trained seed. The across-seed mean and sample SD describe variation across the observed training seeds; they are distinct quantities."
+    },
+    "ablations_seed42": {
+      "cam_no_bootstrap": {
+        "available": false,
+        "missing_cells": [
+          "qwen_cam_no_bootstrap_42"
+        ]
+      },
+      "cam_no_memory": {
+        "available": false,
+        "missing_cells": [
+          "qwen_cam_no_memory_42"
+        ]
+      },
+      "cam_no_adaptive_budget": {
+        "available": false,
+        "missing_cells": [
+          "qwen_cam_no_adaptive_budget_42"
+        ]
+      }
+    }
+  },
+  "warnings": [
+    "Ablations: Holm-adjusted p-values withheld until all 3 planned seed-42 comparisons are available",
+    "final_test_hard: only 1/3 complete paired training seeds; no full-study conclusion is available",
+    "test_hard: only 1/3 complete paired training seeds; no full-study conclusion is available"
+  ]
+}

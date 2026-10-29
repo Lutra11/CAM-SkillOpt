@@ -7,13 +7,9 @@ improve future optimizer behavior when proposing, merging, and ranking edits.
 """
 from __future__ import annotations
 
-import traceback
-
 from skillopt.model import chat_optimizer
-from skillopt.model.infra_errors import InfraError, classify_infra_error
-from skillopt.optimizer.slow_update import format_comparison_text
+from skillopt.optimizer.slow_update import _call_auxiliary_optimizer, format_comparison_text, parse_auxiliary_result
 from skillopt.prompts import load_prompt
-from skillopt.utils import extract_json
 
 
 def format_meta_skill_context(meta_skill_content: str) -> str:
@@ -38,7 +34,7 @@ def run_meta_skill(
     *,
     prev_meta_skill_content: str = "",
     system_prompt: str | None = None,
-) -> dict | None:
+) -> dict:
     """Produce updated optimizer-side meta skill from adjacent epochs."""
     actual_system = system_prompt if system_prompt is not None else load_prompt("meta_skill")
 
@@ -60,26 +56,15 @@ def run_meta_skill(
         f"{comparison_text}"
     )
 
-    try:
-        response, _ = chat_optimizer(
-            system=actual_system,
-            user=user,
-            max_completion_tokens=16384,
-            retries=3,
-            stage="meta_skill",
-        )
-        result = extract_json(response)
-        if result and result.get("meta_skill_content"):
-            return {
-                "reasoning": str(result.get("reasoning", "")).strip(),
-                "meta_skill_content": str(result["meta_skill_content"]).strip(),
-            }
-    except InfraError:
-        raise
-    except Exception as exc:  # noqa: BLE001
-        infra = classify_infra_error(exc, stage="meta_skill") if isinstance(exc, (RuntimeError, TimeoutError, ConnectionError)) else None
-        if infra is not None:
-            raise infra from exc
-        traceback.print_exc()
-
-    return None
+    response, _ = _call_auxiliary_optimizer(
+        auxiliary_stage="meta_skill",
+        chat_fn=chat_optimizer,
+        system=actual_system,
+        user=user,
+        max_completion_tokens=16384,
+        retries=3,
+        stage="meta_skill",
+    )
+    return parse_auxiliary_result(
+        response, stage="meta_skill", content_field="meta_skill_content",
+    )

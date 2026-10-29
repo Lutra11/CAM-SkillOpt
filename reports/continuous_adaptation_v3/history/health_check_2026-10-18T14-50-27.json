@@ -1,0 +1,199 @@
+{
+  "created_at_utc": "2026-10-18T14:50:27.964106+00:00",
+  "study_id": "continuous_adaptation_v3",
+  "audit_scope": "read-only offline runtime validation; test outputs summarized for verification only, not training decisions",
+  "freeze": {
+    "path": "outputs/studies/continuous_adaptation_v3/freeze.json",
+    "sha256": "3e36613b9d9db411f806cca95a6644a6a66612924c925add240d44ffcd0bb597",
+    "frozen_source_count": 1378,
+    "all_fingerprints_valid": true,
+    "all_four_configs_match_freeze": true,
+    "all_fingerprints_valid_after_reporter": true
+  },
+  "queue": {
+    "status": "running",
+    "cell_statuses": {
+      "baseline_seed42": "accepted",
+      "cam_v3_seed42": "running",
+      "cam_v3_seed43": "pending",
+      "baseline_seed43": "pending"
+    },
+    "unchanged_during_audit": true,
+    "sha256_after_reporter": "ac854ada152f1937d1f905eeafe94014601397f3895d6e5d30717efaa91ad2d8",
+    "cell_statuses_after_reporter": {
+      "baseline_seed42": "accepted",
+      "cam_v3_seed42": "running",
+      "cam_v3_seed43": "pending",
+      "baseline_seed43": "pending"
+    },
+    "statuses_unchanged_by_audit_and_reporter": true
+  },
+  "train_test_leakage": {
+    "frozen_train_task_ids_over_fixed_test_ids": [],
+    "canonical_source_train_test_overlap": []
+  },
+  "fixed_test_protocol": {
+    "n": 120,
+    "ids_sha256": "e1820c785583dc9aebf09c826edac0e9a3f4d99b12ce91d700625f850901129f",
+    "expected_type_counts": {
+      "cell_level": 83,
+      "sheet_level": 37
+    }
+  },
+  "cells": [
+    {
+      "cell_id": "baseline_seed42",
+      "method": "baseline",
+      "seed": 42,
+      "queue_status": "accepted",
+      "full_cell_validation_accepted": true,
+      "config_matches_freeze": true,
+      "completed_history_steps": 4,
+      "completed_step_actions": {
+        "accept_new_best": 3,
+        "reject": 1
+      },
+      "step_checks": [
+        {
+          "step": 1,
+          "action": "accept_new_best",
+          "rollout_exact_20_ids_and_type": true,
+          "rollout_exists": true,
+          "task_type_counts": {
+            "cell_level": 20,
+            "sheet_level": 0
+          }
+        },
+        {
+          "step": 2,
+          "action": "reject",
+          "rollout_exact_20_ids_and_type": true,
+          "rollout_exists": true,
+          "task_type_counts": {
+            "cell_level": 0,
+            "sheet_level": 20
+          }
+        },
+        {
+          "step": 3,
+          "action": "accept_new_best",
+          "rollout_exact_20_ids_and_type": true,
+          "rollout_exists": true,
+          "task_type_counts": {
+            "cell_level": 20,
+            "sheet_level": 0
+          }
+        },
+        {
+          "step": 4,
+          "action": "accept_new_best",
+          "rollout_exact_20_ids_and_type": true,
+          "rollout_exists": true,
+          "task_type_counts": {
+            "cell_level": 0,
+            "sheet_level": 20
+          }
+        }
+      ],
+      "runtime_progress": {
+        "last_completed_step": 4,
+        "current_score": 0.6,
+        "best_score": 0.6,
+        "best_step": 4,
+        "current_origin": "slow_update_epoch_04",
+        "best_origin": "step_0004"
+      },
+      "runner_validation_reason": "accepted: four train steps, paired A/B/A/B plan and exact fixed-test evidence verified",
+      "primary_baseline_test": {
+        "n": 120,
+        "hard_passes": 68,
+        "hard_rate": 0.5666666666666667,
+        "task_type_counts": {
+          "cell_level": 83,
+          "sheet_level": 37
+        },
+        "task_type_passes": {
+          "cell_level": 46,
+          "sheet_level": 22
+        },
+        "fixed_id_hash_matches": true
+      },
+      "validated_history_action_totals": {
+        "total_steps": 4,
+        "total_accepts": 3,
+        "total_soft_accepts": 0,
+        "total_rejects": 1,
+        "total_skips": 0
+      },
+      "token_accounting_caveat": {
+        "coverage": "partial",
+        "usage_complete": false,
+        "billing_completeness": "not_claimed"
+      }
+    },
+    {
+      "cell_id": "cam_v3_seed42",
+      "method": "cam_v3",
+      "seed": 42,
+      "queue_status": "running",
+      "full_cell_validation_accepted": false,
+      "config_matches_freeze": true,
+      "completed_history_steps": 0,
+      "completed_step_actions": {},
+      "step_checks": [],
+      "runtime_progress": {
+        "last_completed_step": 0,
+        "current_score": 0.35,
+        "best_score": 0.35,
+        "best_step": 0,
+        "current_origin": "initial_skill",
+        "best_origin": "initial_skill"
+      },
+      "strict_v3_config": {
+        "cam_enabled": true,
+        "cam_bootstrap_gate": true,
+        "cam_soft_accept_policy": "noninferiority",
+        "cam_noninferiority_margin": 0.05,
+        "cam_group_guard": true,
+        "cam_group_max_regression": 0.1,
+        "cam_group_min_pairs": 5,
+        "cam_adaptive_budget": true,
+        "cam_budget_policy": "evidence_v3",
+        "cam_memory_enabled": true,
+        "cam_memory_policy": "evidence_v3",
+        "eval_test": false,
+        "final_selection": true
+      },
+      "cam_gate_event_count": 0,
+      "cam_completed_steps_have_expected_gate_audit": true
+    },
+    {
+      "cell_id": "cam_v3_seed43",
+      "method": "cam_v3",
+      "seed": 43,
+      "queue_status": "pending",
+      "full_cell_validation_accepted": false,
+      "config_matches_freeze": null,
+      "completed_history_steps": 0,
+      "completed_step_actions": {},
+      "step_checks": []
+    },
+    {
+      "cell_id": "baseline_seed43",
+      "method": "baseline",
+      "seed": 43,
+      "queue_status": "pending",
+      "full_cell_validation_accepted": false,
+      "config_matches_freeze": null,
+      "completed_history_steps": 0,
+      "completed_step_actions": {},
+      "step_checks": []
+    }
+  ],
+  "interpretation": "Baseline seed 42 passed full runner validation: 68/120 hard passes (56.67%), with 46/83 cell-level and 22/37 sheet-level. CAM seed 42 is running with strict CAM v3 config frozen and verified; no completed CAM training step or paired result is available yet. Legacy token accounting is partial and does not establish complete HTTP billing. No training or performance decisions were made from task-level test details.",
+  "reporter_refresh": {
+    "status": "awaiting_complete_seed_pairs",
+    "complete_seed_pair_count": 0,
+    "performance_conclusion_available": false
+  }
+}

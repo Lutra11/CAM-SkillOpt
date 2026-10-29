@@ -1,0 +1,86 @@
+{
+  "analysis": "Report per-arm decisions and observed subgroup means for all 120 paired runs; do not tune thresholds or reinterpret the continuous-score fixture.",
+  "design": {
+    "bootstrap_samples": 500,
+    "confidence_level": 0.95,
+    "current_passes_per_type": 10,
+    "id_randomization": "one per-seed permutation of 40 fixed IDs; type assignment is first 20 cell_level and next 20 sheet_level; within-type order determines current pass IDs and scenario flip IDs",
+    "paired_items_per_run": 40,
+    "same_pairs_for_both_arms": true,
+    "score_domain": [
+      0,
+      1
+    ],
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19
+    ],
+    "task_type_balance": {
+      "cell_level": 20,
+      "sheet_level": 20
+    },
+    "v3_group_mean_regression_tolerance": 0.1,
+    "v3_group_min_pairs": 5,
+    "v3_noninferiority_margin": 0.05
+  },
+  "protocol_version": 1,
+  "relationship_to_continuous_run": "independent supplement; prior continuous-score report remains unchanged and is a fractional-score diagnostic, not an actual hard-task score distribution",
+  "scenarios": [
+    {
+      "construction": "flip 5 current failures to passes in each type",
+      "expected_delta": 0.25,
+      "hypothesis": "both arms accept",
+      "name": "clear_improvement"
+    },
+    {
+      "construction": "flip 5 current passes to failures in each type",
+      "expected_delta": -0.25,
+      "hypothesis": "both arms reject",
+      "name": "clear_loss"
+    },
+    {
+      "construction": "candidate equals current",
+      "expected_delta": 0.0,
+      "hypothesis": "v2 soft-accepts; v3 may soft-accept under noninferiority",
+      "name": "unchanged"
+    },
+    {
+      "construction": "flip 1 current pass to failure overall",
+      "expected_delta": -0.025,
+      "hypothesis": "tests v3 noninferiority hold on a sparse negative change",
+      "name": "sparse_loss"
+    },
+    {
+      "construction": "per type flip 5 failures to passes and 5 passes to failures",
+      "expected_delta": 0.0,
+      "hypothesis": "v2 and v3 should treat wide uncertainty as inconclusive",
+      "name": "noisy_exchange"
+    },
+    {
+      "construction": "cell: flip 10 failures to passes; sheet: flip 3 passes to failures",
+      "expected_delta": 0.175,
+      "hypothesis": "v3 group guard blocks subgroup regression hidden by aggregate gain",
+      "name": "masked_group_loss"
+    }
+  ],
+  "scope": "offline synthetic mechanism verification only; not SpreadsheetBench accuracy, calibration, or generalization evidence",
+  "title": "CAM v3 binary hard-score gate mechanism supplement"
+}

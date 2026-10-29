@@ -33,8 +33,20 @@ This meta skill should capture things like:
 - Do not output target-facing task instructions.
 - Do not restate the whole skill; summarize editing strategy.
 
-Respond ONLY with a valid JSON object:
+If the comparison provides no durable optimizer lesson that warrants changing
+the current memory, you may explicitly choose `no_update`. Give a concise
+`no_update_reason`; the previous memory will remain active.
+
+Respond ONLY with a valid JSON object. Use exactly one of these forms, with all
+fields shown as strings:
 {
+  "outcome": "update",
   "reasoning": "<brief reflection on what editing directions helped or hurt>",
   "meta_skill_content": "<compact optimizer-side guidance for future edit generation and selection>"
+}
+or
+{
+  "outcome": "no_update",
+  "reasoning": "<brief reflection on the evidence>",
+  "no_update_reason": "<why the current optimizer memory should remain unchanged>"
 }

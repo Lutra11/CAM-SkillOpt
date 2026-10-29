@@ -1,0 +1,55 @@
+{
+  "totals": {
+    "training_steps": 8,
+    "budget_unknown_provenance_steps": 8,
+    "budget_reasons": {
+      "provenance_unknown_minimum_fallback": 6,
+      "provenance_unknown_minimum_fallback; recent_harmful_change_shrink": 2
+    },
+    "memory_injected_steps": 3,
+    "memory_injected_items": 4,
+    "recurrence_opportunities": 4,
+    "recurrence_steps_with_memory": 3,
+    "main_gate_actions": {
+      "accept_new_best": 2,
+      "reject": 3,
+      "cam_re_evaluate": 2,
+      "soft_accept": 1
+    },
+    "legacy_auxiliary_no_content": 7,
+    "auxiliary_no_content_by_family": {
+      "slow_update": 5,
+      "meta_skill": 2
+    }
+  },
+  "model_api_calls": 0,
+  "heldout_predictions_read": false,
+  "report_preservation_all_unchanged": true,
+  "post_run_preservation": [
+    {
+      "path": "outputs/studies/continuous_adaptation_v3/freeze.json",
+      "matches_registration": true,
+      "sha256": "3e36613b9d9db411f806cca95a6644a6a66612924c925add240d44ffcd0bb597"
+    },
+    {
+      "path": "outputs/studies/continuous_adaptation_v3/queue_state.json",
+      "matches_registration": true,
+      "sha256": "d00aaa5dcfbd941708866f51194a862c3aed7d18dfd9ba0ec09107779f30fe9e"
+    },
+    {
+      "path": "reports/continuous_adaptation_v3/results.json",
+      "matches_registration": true,
+      "sha256": "e7834b83e13d9434f33aa56c241d6d8494145c74e125c5b8b0ca3f7ff46512cf"
+    },
+    {
+      "path": "reports/continuous_adaptation_v3/FINAL_ACCEPTANCE.json",
+      "matches_registration": true,
+      "sha256": "1bbb268b9d90acd1a6b3411a069d44a72d25f98a9790a8a024cc043c4d2501ad"
+    },
+    {
+      "path": "reports/continuous_adaptation_v3/FINAL_SUMMARY.md",
+      "matches_registration": true,
+      "sha256": "0533632389d5c2e8fbadeed051f356fc7f69c00946d302b15d5519ef095e50fd"
+    }
+  ]
+}

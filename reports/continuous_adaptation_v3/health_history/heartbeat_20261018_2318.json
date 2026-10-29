@@ -1,0 +1,78 @@
+{
+  "observed_at_utc": "2026-10-18T15:19:37.9124981Z",
+  "automation_id": "cam-20",
+  "queue_status": "running",
+  "supervisor_status": "running",
+  "supervisor_error": null,
+  "cells": [
+    {
+      "cell_id": "baseline_seed42",
+      "status": "accepted"
+    },
+    {
+      "cell_id": "cam_v3_seed42",
+      "status": "running"
+    },
+    {
+      "cell_id": "cam_v3_seed43",
+      "status": "pending"
+    },
+    {
+      "cell_id": "baseline_seed43",
+      "status": "pending"
+    }
+  ],
+  "processes": [
+    {
+      "ProcessId": 20616,
+      "ParentProcessId": 35548,
+      "CreationDate": "2026-10-18T20:42:48.692339+08:00",
+      "ExecutablePath": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "CommandLine": "\"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe\" -NoProfile -ExecutionPolicy Bypass -File E:\\Programs\\CAM\\CAM-SkillOpt\\outputs\\studies\\continuous_adaptation_v3\\supervise_v3.ps1"
+    },
+    {
+      "ProcessId": 38372,
+      "ParentProcessId": 20616,
+      "CreationDate": "2026-10-18T20:42:49.372388+08:00",
+      "ExecutablePath": "E:\\MiniConda\\envs\\skillopt\\python.exe",
+      "CommandLine": "\"E:\\MiniConda\\envs\\skillopt\\python.exe\" -X utf8 E:\\Programs\\CAM\\CAM-SkillOpt\\scripts\\run_continuous_adaptation_v3.py --run --lanes 1 "
+    },
+    {
+      "ProcessId": 37136,
+      "ParentProcessId": 38372,
+      "CreationDate": "2026-10-18T22:34:02.25375+08:00",
+      "ExecutablePath": "E:\\MiniConda\\envs\\skillopt\\python.exe",
+      "CommandLine": "E:\\MiniConda\\envs\\skillopt\\python.exe -X utf8 E:\\Programs\\CAM\\CAM-SkillOpt\\scripts\\run_continuous_adaptation_v3.py --cell cam_v3_seed42"
+    }
+  ],
+  "current_cell": "cam_v3_seed42",
+  "completed_steps": 2,
+  "best_validation_score": 0.65,
+  "latest_stage_path": "E:\\Programs\\CAM\\CAM-SkillOpt\\outputs\\continuous_adaptation_v3\\spreadsheetbench\\qwen\\cam_v3_seed42\\slow_update\\epoch_02\\selection_eval\\stage_stats.json",
+  "latest_stage_updated_utc": "2026-10-18T15:19:32.4388478Z",
+  "latest_stage": {
+    "stage": "selection_eval",
+    "status": "running",
+    "n_expected": 40,
+    "n_recorded": 31,
+    "n_scored": 31,
+    "n_not_run": 9,
+    "failure_types": {
+      "none": 15,
+      "execution_error": 7,
+      "score_mismatch": 9
+    },
+    "phase_counts": {
+      "exec": 31
+    },
+    "llm_ok": 31,
+    "code_ok": 31,
+    "exec_ok": 24,
+    "hard": null,
+    "soft": null,
+    "wall_time_s": 252.571
+  },
+  "fatal_log_pattern_matches": [],
+  "recovery_action": "none: running within configured timeouts with recent writes",
+  "result_interpretation": "1 accepted baseline cell; CAM seed42 in progress, no complete seed pair or CAM performance conclusion"
+}

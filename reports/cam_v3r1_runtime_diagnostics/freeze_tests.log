@@ -1,0 +1,16 @@
+test_actual_cli_prepare_and_verify_work_from_a_temp_workspace (tests.test_continuous_adaptation_v3r1.ContinuousAdaptationV3R1FreezeTests.test_actual_cli_prepare_and_verify_work_from_a_temp_workspace) ... ok
+test_missing_prompt_directory_fails_closed (tests.test_continuous_adaptation_v3r1.ContinuousAdaptationV3R1FreezeTests.test_missing_prompt_directory_fails_closed) ... ok
+test_offline_cli_rejects_run_and_cell_before_project_imports (tests.test_continuous_adaptation_v3r1.ContinuousAdaptationV3R1FreezeTests.test_offline_cli_rejects_run_and_cell_before_project_imports) ... ok
+test_old_study_freeze_at_target_is_refused (tests.test_continuous_adaptation_v3r1.ContinuousAdaptationV3R1FreezeTests.test_old_study_freeze_at_target_is_refused) ... ok
+test_old_study_freeze_is_never_adopted_or_modified (tests.test_continuous_adaptation_v3r1.ContinuousAdaptationV3R1FreezeTests.test_old_study_freeze_is_never_adopted_or_modified) ... ok
+test_prepare_is_idempotent_immutable_and_creates_no_runtime_queue (tests.test_continuous_adaptation_v3r1.ContinuousAdaptationV3R1FreezeTests.test_prepare_is_idempotent_immutable_and_creates_no_runtime_queue) ... ok
+test_recursive_prompt_coverage_includes_all_markdown (tests.test_continuous_adaptation_v3r1.ContinuousAdaptationV3R1FreezeTests.test_recursive_prompt_coverage_includes_all_markdown) ... ok
+test_secret_files_and_values_are_not_frozen (tests.test_continuous_adaptation_v3r1.ContinuousAdaptationV3R1FreezeTests.test_secret_files_and_values_are_not_frozen) ... ok
+test_snapshot_or_derived_artifact_drift_fails_closed (tests.test_continuous_adaptation_v3r1.ContinuousAdaptationV3R1FreezeTests.test_snapshot_or_derived_artifact_drift_fails_closed) ... ok
+test_task_order_subset_and_resolved_config_artifacts_must_match_freeze (tests.test_continuous_adaptation_v3r1.ContinuousAdaptationV3R1FreezeTests.test_task_order_subset_and_resolved_config_artifacts_must_match_freeze) ... ok
+test_verify_detects_prompt_addition_removal_and_change (tests.test_continuous_adaptation_v3r1.ContinuousAdaptationV3R1FreezeTests.test_verify_detects_prompt_addition_removal_and_change) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 2.597s
+
+OK

@@ -1,0 +1,155 @@
+{
+  "created_at_utc": "2026-10-18T19:50:27.461812+00:00",
+  "study_id": "continuous_adaptation_v3",
+  "status": "final_offline_acceptance_passed",
+  "scope": "Offline final acceptance only; no model/API calls, source/config/queue edits, new experiments, or treatment-statistics calculation.",
+  "source_freeze": {
+    "path": "outputs/studies/continuous_adaptation_v3/freeze.json",
+    "sha256": "3e36613b9d9db411f806cca95a6644a6a66612924c925add240d44ffcd0bb597",
+    "source_fingerprints": 1378,
+    "verified_before_and_after_reporter": true
+  },
+  "queue": {
+    "sha256_before_audit": "d00aaa5dcfbd941708866f51194a862c3aed7d18dfd9ba0ec09107779f30fe9e",
+    "sha256_after_reporter": "d00aaa5dcfbd941708866f51194a862c3aed7d18dfd9ba0ec09107779f30fe9e",
+    "statuses_before_audit": {
+      "baseline_seed42": "accepted",
+      "cam_v3_seed42": "accepted",
+      "cam_v3_seed43": "accepted",
+      "baseline_seed43": "accepted"
+    },
+    "statuses_after_reporter": {
+      "baseline_seed42": "accepted",
+      "cam_v3_seed42": "accepted",
+      "cam_v3_seed43": "accepted",
+      "baseline_seed43": "accepted"
+    },
+    "unchanged": true
+  },
+  "validated_cells": [
+    {
+      "cell_id": "baseline_seed42",
+      "validation": {
+        "accepted": true,
+        "reason": "accepted: four train steps, paired A/B/A/B plan and exact fixed-test evidence verified"
+      },
+      "hard_passes": 68,
+      "task_type_counts": {
+        "cell_level": 83,
+        "sheet_level": 37
+      },
+      "hard_passes_by_type": {
+        "cell_level": 46,
+        "sheet_level": 22
+      },
+      "action_counts": {
+        "accept_new_best": 3,
+        "reject": 1
+      },
+      "best_origin": "step_0004",
+      "best_skill_verified": true
+    },
+    {
+      "cell_id": "cam_v3_seed42",
+      "validation": {
+        "accepted": true,
+        "reason": "accepted: four train steps, paired A/B/A/B plan and exact fixed-test evidence verified"
+      },
+      "hard_passes": 64,
+      "task_type_counts": {
+        "cell_level": 83,
+        "sheet_level": 37
+      },
+      "hard_passes_by_type": {
+        "cell_level": 46,
+        "sheet_level": 18
+      },
+      "action_counts": {
+        "accept_new_best": 1,
+        "reject": 2,
+        "cam_re_evaluate": 1
+      },
+      "best_origin": "step_0001",
+      "best_skill_verified": true
+    },
+    {
+      "cell_id": "cam_v3_seed43",
+      "validation": {
+        "accepted": true,
+        "reason": "accepted: four train steps, paired A/B/A/B plan and exact fixed-test evidence verified"
+      },
+      "hard_passes": 70,
+      "task_type_counts": {
+        "cell_level": 83,
+        "sheet_level": 37
+      },
+      "hard_passes_by_type": {
+        "cell_level": 48,
+        "sheet_level": 22
+      },
+      "action_counts": {
+        "accept_new_best": 1,
+        "cam_re_evaluate": 1,
+        "soft_accept": 1,
+        "reject": 1
+      },
+      "best_origin": "step_0001",
+      "best_skill_verified": true
+    },
+    {
+      "cell_id": "baseline_seed43",
+      "validation": {
+        "accepted": true,
+        "reason": "accepted: four train steps, paired A/B/A/B plan and exact fixed-test evidence verified"
+      },
+      "hard_passes": 65,
+      "task_type_counts": {
+        "cell_level": 83,
+        "sheet_level": 37
+      },
+      "hard_passes_by_type": {
+        "cell_level": 45,
+        "sheet_level": 20
+      },
+      "action_counts": {
+        "accept_new_best": 2,
+        "reject": 2
+      },
+      "best_origin": "slow_update_epoch_04",
+      "best_skill_verified": true
+    }
+  ],
+  "supplemental_prompt_observation": {
+    "path": "outputs/studies/continuous_adaptation_v3/prompt_observation_20261019_0125/observation.json",
+    "file_count": 21,
+    "all_current_hashes_and_lengths_match": true,
+    "historical_prompt_contents_proven": false,
+    "not_in_original_freeze": true,
+    "caveat": "Current clean Git state and old file timestamps do not retrospectively prove prompt contents at every previous request"
+  },
+  "auxiliary_incidents": {
+    "no_content_total": 7,
+    "slow_update_no_content": 5,
+    "meta_skill_no_content": 2,
+    "incident_records": {
+      "cam_v3_seed42_epoch03_slow_update": true,
+      "cam_v3_seed43_epoch02_slow_update": true,
+      "cam_v3_seed43_epoch03_slow_update": true,
+      "baseline_seed43_epoch02_slow_update": true,
+      "baseline_seed43_epoch03_slow_update": true,
+      "baseline_seed43_epoch02_meta_skill": true,
+      "baseline_seed43_epoch03_meta_skill": true
+    },
+    "limitation": "These auxiliary no_content events remain part of the observed run; later successful stages did not replay or backfill them."
+  },
+  "reporter": {
+    "status": "complete_seed_pairs",
+    "complete_seed_pair_count": 2,
+    "exit_code": 0
+  },
+  "final_acceptance_artifacts": [
+    "reports/continuous_adaptation_v3/FINAL_ACCEPTANCE.json",
+    "reports/continuous_adaptation_v3/FINAL_ACCEPTANCE.md"
+  ],
+  "token_accounting_caveat": "Returned token totals may be partial and do not establish complete per-request billing."
+}

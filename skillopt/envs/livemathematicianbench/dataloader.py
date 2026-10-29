@@ -100,7 +100,12 @@ def _normalize_item(item: dict, row_idx: int, source_path: str) -> dict:
 
     month = str(item.get("month") or "").strip()
     item_no = item.get("no", row_idx + 1)
-    item_id = f"{month}:{item_no}" if month else str(item_no)
+    # The item id is used verbatim as a directory name by the rollout stage
+    # (`<out_root>/predictions/<id>`). A ':' is illegal in Windows paths, and
+    # `os.makedirs` then fails with WinError 267, which silently scores every
+    # item 0 without ever calling the model. Use '-' so the id is a valid path
+    # segment on every platform.
+    item_id = f"{month}-{item_no}" if month else str(item_no)
 
     return {
         "id": item_id,

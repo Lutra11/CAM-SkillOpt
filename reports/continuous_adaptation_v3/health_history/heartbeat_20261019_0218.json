@@ -1,0 +1,156 @@
+{
+  "observed_at_utc": "2026-10-18T18:19:31.1058017Z",
+  "automation_id": "cam-20",
+  "queue": {
+    "study_id": "continuous_adaptation_v3",
+    "status": "running",
+    "updated_at": "2026-10-19T02:02:24.275139+08:00",
+    "cells": [
+      {
+        "cell_id": "baseline_seed42",
+        "method": "baseline",
+        "seed": 42,
+        "block": "paired_seed42",
+        "out_root": "outputs/continuous_adaptation_v3/spreadsheetbench/qwen/baseline_seed42",
+        "status": "accepted",
+        "acceptance": "accepted: four train steps, paired A/B/A/B plan and exact fixed-test evidence verified",
+        "started_at": "2026-10-18T20:42:51.58752+08:00",
+        "exit_code": 0,
+        "finished_at": "2026-10-18T22:34:01.583141+08:00",
+        "log": "reports/continuous_adaptation_v3/logs/baseline_seed42.log"
+      },
+      {
+        "cell_id": "cam_v3_seed42",
+        "method": "cam_v3",
+        "seed": 42,
+        "block": "paired_seed42",
+        "out_root": "outputs/continuous_adaptation_v3/spreadsheetbench/qwen/cam_v3_seed42",
+        "status": "accepted",
+        "acceptance": "accepted: four train steps, paired A/B/A/B plan and exact fixed-test evidence verified",
+        "started_at": "2026-10-18T22:34:02.244942+08:00",
+        "exit_code": 0,
+        "finished_at": "2026-10-19T00:26:46.091311+08:00",
+        "log": "reports/continuous_adaptation_v3/logs/cam_v3_seed42.log"
+      },
+      {
+        "cell_id": "cam_v3_seed43",
+        "method": "cam_v3",
+        "seed": 43,
+        "block": "paired_seed43",
+        "out_root": "outputs/continuous_adaptation_v3/spreadsheetbench/qwen/cam_v3_seed43",
+        "status": "accepted",
+        "acceptance": "accepted: four train steps, paired A/B/A/B plan and exact fixed-test evidence verified",
+        "started_at": "2026-10-19T00:26:46.761345+08:00",
+        "exit_code": 0,
+        "finished_at": "2026-10-19T02:02:23.6892+08:00",
+        "log": "reports/continuous_adaptation_v3/logs/cam_v3_seed43.log"
+      },
+      {
+        "cell_id": "baseline_seed43",
+        "method": "baseline",
+        "seed": 43,
+        "block": "paired_seed43",
+        "out_root": "outputs/continuous_adaptation_v3/spreadsheetbench/qwen/baseline_seed43",
+        "status": "running",
+        "acceptance": "fresh output directory",
+        "started_at": "2026-10-19T02:02:24.275139+08:00"
+      }
+    ],
+    "started_at": "2026-10-18T20:42:50.969684+08:00",
+    "auth_proof_sha256": "b2d92daeeca77544a92f4f90ece9da9437fa8e71d4805ac7bef701c2b12295bd"
+  },
+  "supervisor": {
+    "schema_version": 1,
+    "study_id": "continuous_adaptation_v3",
+    "supervisor_pid": 20616,
+    "supervisor_created_at_utc": "2026-10-18T12:42:49.0859845Z",
+    "driver_pid": 38372,
+    "driver_creation_time_utc": "2026-10-18T12:42:49.3723889Z",
+    "driver_executable": "E:\\MiniConda\\envs\\skillopt\\python.exe",
+    "driver_command": "\"E:\\MiniConda\\envs\\skillopt\\python.exe\" -X utf8 \"E:\\Programs\\CAM\\CAM-SkillOpt\\scripts\\run_continuous_adaptation_v3.py\" --run --lanes 1",
+    "driver_handle_retained": true,
+    "driver_exit_code": null,
+    "driver_exit_code_known": false,
+    "reporter_exit_code": 0,
+    "queue_status": "running",
+    "queue_cell_ids": [
+      "baseline_seed42",
+      "cam_v3_seed42",
+      "cam_v3_seed43",
+      "baseline_seed43"
+    ],
+    "accepted_cell_ids": [
+      "baseline_seed42",
+      "cam_v3_seed42",
+      "cam_v3_seed43"
+    ],
+    "status": "running",
+    "started_at_utc": "2026-10-18T12:42:49.0895038Z",
+    "updated_at_utc": "2026-10-18T18:19:23.755575Z",
+    "finished_at_utc": null,
+    "error": null
+  },
+  "current_cell": "baseline_seed43",
+  "runtime": {
+    "last_completed_step": 0,
+    "current_skill_path": "E:\\Programs\\CAM\\CAM-SkillOpt\\outputs\\continuous_adaptation_v3\\spreadsheetbench\\qwen\\baseline_seed43\\skills\\skill_v0000.md",
+    "current_score": 0.35,
+    "current_origin": "initial_skill",
+    "best_skill_path": "E:\\Programs\\CAM\\CAM-SkillOpt\\outputs\\continuous_adaptation_v3\\spreadsheetbench\\qwen\\baseline_seed43\\best_skill.md",
+    "best_score": 0.35,
+    "best_step": 0,
+    "best_origin": "initial_skill",
+    "cam_drift_guard": null
+  },
+  "latest_stage_path": "E:\\Programs\\CAM\\CAM-SkillOpt\\outputs\\continuous_adaptation_v3\\spreadsheetbench\\qwen\\baseline_seed43\\steps\\step_0001\\selection_eval\\stage_stats.json",
+  "latest_stage_updated_utc": "2026-10-18T18:19:27.3663735Z",
+  "latest_stage": {
+    "stage": "selection_eval",
+    "status": "running",
+    "n_expected": 40,
+    "n_recorded": 35,
+    "n_scored": 35,
+    "n_not_run": 5,
+    "failure_types": {
+      "none": 19,
+      "score_mismatch": 15,
+      "execution_error": 1
+    },
+    "phase_counts": {
+      "exec": 35
+    },
+    "llm_ok": 35,
+    "code_ok": 35,
+    "exec_ok": 34,
+    "hard": null,
+    "soft": null,
+    "wall_time_s": 302.479
+  },
+  "processes": [
+    {
+      "ProcessId": 20616,
+      "ParentProcessId": 35548,
+      "CreationDate": "2026-10-18T20:42:48.692339+08:00",
+      "ExecutablePath": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "CommandLine": "\"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe\" -NoProfile -ExecutionPolicy Bypass -File E:\\Programs\\CAM\\CAM-SkillOpt\\outputs\\studies\\continuous_adaptation_v3\\supervise_v3.ps1"
+    },
+    {
+      "ProcessId": 38372,
+      "ParentProcessId": 20616,
+      "CreationDate": "2026-10-18T20:42:49.372388+08:00",
+      "ExecutablePath": "E:\\MiniConda\\envs\\skillopt\\python.exe",
+      "CommandLine": "\"E:\\MiniConda\\envs\\skillopt\\python.exe\" -X utf8 E:\\Programs\\CAM\\CAM-SkillOpt\\scripts\\run_continuous_adaptation_v3.py --run --lanes 1 "
+    },
+    {
+      "ProcessId": 20428,
+      "ParentProcessId": 38372,
+      "CreationDate": "2026-10-19T02:02:24.279033+08:00",
+      "ExecutablePath": "E:\\MiniConda\\envs\\skillopt\\python.exe",
+      "CommandLine": "E:\\MiniConda\\envs\\skillopt\\python.exe -X utf8 E:\\Programs\\CAM\\CAM-SkillOpt\\scripts\\run_continuous_adaptation_v3.py --cell baseline_seed43"
+    }
+  ],
+  "new_incidents_detected": 0,
+  "known_aux_skips": 3,
+  "caveats": "See INCIDENTS.md including missing prompt freeze scope; only one complete seed pair at this observation",
+  "action": "Continue last cell, no duplicate process, API probe, source change, or partial result inference"
+}

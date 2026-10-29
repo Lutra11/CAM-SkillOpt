@@ -17,6 +17,8 @@ from skillopt.engine import trainer as trainer_module
 from skillopt.envs.base import EnvAdapter
 from skillopt.gradient import reflect as reflect_module
 from skillopt.optimizer import slow_update as slow_module
+from skillopt.optimizer import meta_skill as meta_module
+from skillopt.model.infra_errors import InfraError
 
 
 INITIAL_SKILL = "# Synthetic Gate Skill\n\n- Preserve initial lookup rules.\n"
@@ -137,11 +139,13 @@ class CAMGateTrainerTests(unittest.TestCase):
             "cam_confidence_level": 0.95, "cam_meaningful_improvement": 0.0,
             "cam_bootstrap_samples": 1000, "cam_seed": 42,
             "cam_adaptive_budget": False, "cam_memory_enabled": False,
+            "cam_soft_accept": False,
         }
         cfg.update(overrides)
         return cfg
 
-    def train(self, cfg, adapter, *, produce_patch=True, appendix_note=""):
+    def train(self, cfg, adapter, *, produce_patch=True, appendix_note="",
+              slow_response=None, meta_response=None):
         requests = []
         def analyst(**kwargs):
             requests.append({"kind": "analyst", **kwargs})
@@ -153,8 +157,27 @@ class CAMGateTrainerTests(unittest.TestCase):
 
         def slow_optimizer(**kwargs):
             requests.append({"kind": "slow_update", **kwargs})
-            return json.dumps({"reasoning": "Synthetic longitudinal guidance.",
-                               "slow_update_content": SLOW_MARKER}), None
+            response = slow_response
+            if isinstance(response, list):
+                response = response.pop(0)
+            if response is None:
+                response = {"outcome": "update", "reasoning": "Synthetic longitudinal guidance.",
+                            "slow_update_content": SLOW_MARKER}
+            if isinstance(response, BaseException):
+                raise response
+            return json.dumps(response) if isinstance(response, dict) else response, None
+
+        def meta_optimizer(**kwargs):
+            requests.append({"kind": "meta_skill", **kwargs})
+            response = meta_response
+            if isinstance(response, list):
+                response = response.pop(0)
+            if response is None:
+                response = {"outcome": "update", "reasoning": "Synthetic optimizer memory.",
+                            "meta_skill_content": "SYNTHETIC_META_MEMORY"}
+            if isinstance(response, BaseException):
+                raise response
+            return json.dumps(response) if isinstance(response, dict) else response, None
 
         setup_names = (
             "configure_azure_openai", "configure_codex_exec", "configure_claude_code_exec",
@@ -167,6 +190,7 @@ class CAMGateTrainerTests(unittest.TestCase):
                 stack.enter_context(patch.object(trainer_module, name))
             stack.enter_context(patch.object(reflect_module, "chat_optimizer", side_effect=analyst))
             stack.enter_context(patch.object(slow_module, "chat_optimizer", side_effect=slow_optimizer))
+            stack.enter_context(patch.object(meta_module, "chat_optimizer", side_effect=meta_optimizer))
             stack.enter_context(patch("socket.socket.connect", side_effect=AssertionError("Unexpected network request")))
             stack.enter_context(patch("subprocess.Popen", side_effect=AssertionError("Unexpected model subprocess")))
             with redirect_stdout(io.StringIO()):
@@ -222,6 +246,77 @@ class CAMGateTrainerTests(unittest.TestCase):
         slow_selections = [e for e in adapter.events if e["split"] == "valid_seen" and SLOW_MARKER in e["skill"]]
         self.assertEqual(len(slow_selections), 1)
         self.assertEqual(sum(slow_selections[0]["scores"]) / 4, 0.75)
+
+    def test_trainer_no_update_preserves_slow_guidance_and_meta_memory_without_candidate_rollout(self):
+        output = self.root / "aux_no_update"
+        cfg = self.config(
+            output, num_epochs=3, use_slow_update=True, use_meta_skill=True,
+            cam_enabled=False, eval_test=False,
+        )
+        no_update_slow = {
+            "outcome": "no_update", "reasoning": "No new regression emerged.",
+            "no_update_reason": "Keep the existing longitudinal guidance.",
+        }
+        no_update_meta = {
+            "outcome": "no_update", "reasoning": "No durable optimizer lesson emerged.",
+            "no_update_reason": "Keep the existing meta memory.",
+        }
+        adapter = SyntheticGateAdapter(baseline=[0, 0, 0, 0], candidate=[1, 1, 1, 1])
+        summary, requests = self.train(
+            cfg, adapter, produce_patch=False,
+            slow_response=[None, no_update_slow],
+            meta_response=[None, no_update_meta],
+        )
+        self.assertEqual(summary["total_steps"], 3)
+        slow_two = json.loads((output / "slow_update" / "epoch_02" / "slow_result.json").read_text())
+        slow_three = json.loads((output / "slow_update" / "epoch_03" / "slow_result.json").read_text())
+        meta_two = json.loads((output / "meta_skill" / "epoch_02" / "meta_skill_result.json").read_text())
+        meta_three = json.loads((output / "meta_skill" / "epoch_03" / "meta_skill_result.json").read_text())
+        self.assertEqual(slow_two["outcome_kind"], "validated_update")
+        self.assertEqual(slow_three["action"], "no_update")
+        self.assertEqual(slow_three["outcome_kind"], "validated_no_update")
+        self.assertEqual(meta_three["action"], "no_update")
+        self.assertEqual(meta_three["outcome_kind"], "validated_no_update")
+        self.assertIn(SLOW_MARKER, (output / "skills" / "skill_v0003.md").read_text(encoding="utf-8"))
+        self.assertIn("SYNTHETIC_META_MEMORY", requests[-1]["user"])
+        self.assertFalse((output / "slow_update" / "epoch_03" / "candidate_skill.md").exists())
+        self.assertFalse((output / "slow_update" / "epoch_03" / "selection_eval").exists())
+        self.assertFalse(any("epoch_03" in event["path"] and "selection_eval" in event["path"]
+                             for event in adapter.events))
+
+    def test_slow_and_meta_failures_abort_real_trainer_before_stage_completion(self):
+        for failed_stage, response in (
+            ("slow_update", "invalid JSON"),
+            ("meta_skill", InfraError("network_error", "synthetic transport failure")),
+        ):
+            with self.subTest(stage=failed_stage):
+                output = self.root / f"aux_failure_{failed_stage}"
+                cfg = self.config(
+                    output, num_epochs=3, use_slow_update=True, use_meta_skill=True,
+                    cam_enabled=False, eval_test=False,
+                )
+                adapter = SyntheticGateAdapter(baseline=[0, 0, 0, 0], candidate=[1, 1, 1, 1])
+                kwargs = {
+                    "produce_patch": False,
+                    "slow_response": response if failed_stage == "slow_update" else None,
+                    "meta_response": response if failed_stage == "meta_skill" else None,
+                }
+                with self.assertRaises(InfraError):
+                    self.train(cfg, adapter, **kwargs)
+                summary = json.loads((output / "summary.json").read_text(encoding="utf-8"))
+                self.assertEqual(summary["status"], "infra_error")
+                self.assertIsNone(summary["hard"])
+                if failed_stage == "slow_update":
+                    stage_dir = output / "slow_update" / "epoch_02"
+                    self.assertTrue((stage_dir / "slow_error.json").exists())
+                    self.assertFalse((stage_dir / "slow_result.json").exists())
+                    self.assertFalse((output / "meta_skill" / "epoch_02" / "meta_skill_result.json").exists())
+                    self.assertFalse((output / "slow_update" / "epoch_03").exists())
+                else:
+                    stage_dir = output / "meta_skill" / "epoch_02"
+                    self.assertTrue((stage_dir / "meta_error.json").exists())
+                    self.assertFalse((stage_dir / "meta_skill_result.json").exists())
+                    self.assertFalse((output / "meta_skill" / "epoch_03").exists())
 
     def test_active_cam_cannot_disable_gate(self):
         output = self.root / "invalid_configuration"
@@ -290,7 +385,7 @@ class CAMGateTrainerTests(unittest.TestCase):
         initial_summary, _ = self.train(cfg, first)
         self.assertEqual(initial_summary["best_selection_hard"], 0.0)
         certificate = json.loads((output / "cam_gate_state.json").read_text(encoding="utf-8"))
-        self.assertEqual(certificate["policy"], "paired_selection_all_updates_v1")
+        self.assertEqual(certificate["policy"], "paired_selection_all_updates_v2r1")
         resumed = SyntheticGateAdapter(baseline=[0, 0, 0, 0], candidate=[0, 0, 0, 0])
         summary, requests = self.train(self.config(output, eval_test=False), resumed)
         self.assertEqual(requests, [])

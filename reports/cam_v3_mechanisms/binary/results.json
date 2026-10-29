@@ -1,0 +1,5171 @@
+{
+  "gate": {
+    "by_scenario": {
+      "clear_improvement": {
+        "mean_cell_delta": 0.25,
+        "mean_delta": 0.25,
+        "mean_sheet_delta": 0.25,
+        "n_runs": 20,
+        "v2_actions": {
+          "accept_new_best": 20
+        },
+        "v3_actions": {
+          "accept_new_best": 20
+        },
+        "v3_group_guard_statuses": {
+          "passed": 20
+        }
+      },
+      "clear_loss": {
+        "mean_cell_delta": -0.25,
+        "mean_delta": -0.25,
+        "mean_sheet_delta": -0.25,
+        "n_runs": 20,
+        "v2_actions": {
+          "reject": 20
+        },
+        "v3_actions": {
+          "reject": 20
+        },
+        "v3_group_guard_statuses": {
+          "blocked": 20
+        }
+      },
+      "masked_group_loss": {
+        "mean_cell_delta": 0.5,
+        "mean_delta": 0.175,
+        "mean_sheet_delta": -0.15,
+        "n_runs": 20,
+        "v2_actions": {
+          "accept_new_best": 9,
+          "soft_accept": 11
+        },
+        "v3_actions": {
+          "cam_re_evaluate": 20
+        },
+        "v3_group_guard_statuses": {
+          "blocked": 20
+        }
+      },
+      "noisy_exchange": {
+        "mean_cell_delta": 0.0,
+        "mean_delta": 0.0,
+        "mean_sheet_delta": 0.0,
+        "n_runs": 20,
+        "v2_actions": {
+          "soft_accept": 20
+        },
+        "v3_actions": {
+          "cam_re_evaluate": 20
+        },
+        "v3_group_guard_statuses": {
+          "passed": 20
+        }
+      },
+      "sparse_loss": {
+        "mean_cell_delta": -0.05,
+        "mean_delta": -0.025,
+        "mean_sheet_delta": 0.0,
+        "n_runs": 20,
+        "v2_actions": {
+          "soft_accept": 20
+        },
+        "v3_actions": {
+          "cam_re_evaluate": 20
+        },
+        "v3_group_guard_statuses": {
+          "passed": 20
+        }
+      },
+      "unchanged": {
+        "mean_cell_delta": 0.0,
+        "mean_delta": 0.0,
+        "mean_sheet_delta": 0.0,
+        "n_runs": 20,
+        "v2_actions": {
+          "soft_accept": 20
+        },
+        "v3_actions": {
+          "soft_accept": 20
+        },
+        "v3_group_guard_statuses": {
+          "passed": 20
+        }
+      }
+    },
+    "runs": [
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 15,
+            "current_passes": 10,
+            "mean_delta": 0.25,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 15,
+            "current_passes": 10,
+            "mean_delta": 0.25,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.25,
+        "scenario": "clear_improvement",
+        "seed": 0,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "lower_confidence_bound": 0.125,
+          "mean_improvement": 0.25,
+          "upper_confidence_bound": 0.4
+        },
+        "v3": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": 0.125,
+          "mean_improvement": 0.25,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": 0.4
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 15,
+            "current_passes": 10,
+            "mean_delta": 0.25,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 15,
+            "current_passes": 10,
+            "mean_delta": 0.25,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.25,
+        "scenario": "clear_improvement",
+        "seed": 1,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "lower_confidence_bound": 0.13687500000000025,
+          "mean_improvement": 0.25,
+          "upper_confidence_bound": 0.4
+        },
+        "v3": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": 0.13687500000000025,
+          "mean_improvement": 0.25,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": 0.4
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 15,
+            "current_passes": 10,
+            "mean_delta": 0.25,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 15,
+            "current_passes": 10,
+            "mean_delta": 0.25,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.25,
+        "scenario": "clear_improvement",
+        "seed": 2,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "lower_confidence_bound": 0.125,
+          "mean_improvement": 0.25,
+          "upper_confidence_bound": 0.38812499999999944
+        },
+        "v3": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": 0.125,
+          "mean_improvement": 0.25,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": 0.38812499999999944
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 15,
+            "current_passes": 10,
+            "mean_delta": 0.25,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 15,
+            "current_passes": 10,
+            "mean_delta": 0.25,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.25,
+        "scenario": "clear_improvement",
+        "seed": 3,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "lower_confidence_bound": 0.125,
+          "mean_improvement": 0.25,
+          "upper_confidence_bound": 0.38812499999999944
+        },
+        "v3": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": 0.125,
+          "mean_improvement": 0.25,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": 0.38812499999999944
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 15,
+            "current_passes": 10,
+            "mean_delta": 0.25,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 15,
+            "current_passes": 10,
+            "mean_delta": 0.25,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.25,
+        "scenario": "clear_improvement",
+        "seed": 4,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "lower_confidence_bound": 0.125,
+          "mean_improvement": 0.25,
+          "upper_confidence_bound": 0.375
+        },
+        "v3": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": 0.125,
+          "mean_improvement": 0.25,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": 0.375
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 15,
+            "current_passes": 10,
+            "mean_delta": 0.25,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 15,
+            "current_passes": 10,
+            "mean_delta": 0.25,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.25,
+        "scenario": "clear_improvement",
+        "seed": 5,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "lower_confidence_bound": 0.125,
+          "mean_improvement": 0.25,
+          "upper_confidence_bound": 0.4
+        },
+        "v3": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": 0.125,
+          "mean_improvement": 0.25,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": 0.4
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 15,
+            "current_passes": 10,
+            "mean_delta": 0.25,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 15,
+            "current_passes": 10,
+            "mean_delta": 0.25,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.25,
+        "scenario": "clear_improvement",
+        "seed": 6,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "lower_confidence_bound": 0.125,
+          "mean_improvement": 0.25,
+          "upper_confidence_bound": 0.4
+        },
+        "v3": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": 0.125,
+          "mean_improvement": 0.25,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": 0.4
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 15,
+            "current_passes": 10,
+            "mean_delta": 0.25,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 15,
+            "current_passes": 10,
+            "mean_delta": 0.25,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.25,
+        "scenario": "clear_improvement",
+        "seed": 7,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "lower_confidence_bound": 0.125,
+          "mean_improvement": 0.25,
+          "upper_confidence_bound": 0.375
+        },
+        "v3": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": 0.125,
+          "mean_improvement": 0.25,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": 0.375
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 15,
+            "current_passes": 10,
+            "mean_delta": 0.25,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 15,
+            "current_passes": 10,
+            "mean_delta": 0.25,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.25,
+        "scenario": "clear_improvement",
+        "seed": 8,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "lower_confidence_bound": 0.125,
+          "mean_improvement": 0.25,
+          "upper_confidence_bound": 0.4
+        },
+        "v3": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": 0.125,
+          "mean_improvement": 0.25,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": 0.4
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 15,
+            "current_passes": 10,
+            "mean_delta": 0.25,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 15,
+            "current_passes": 10,
+            "mean_delta": 0.25,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.25,
+        "scenario": "clear_improvement",
+        "seed": 9,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "lower_confidence_bound": 0.125,
+          "mean_improvement": 0.25,
+          "upper_confidence_bound": 0.4
+        },
+        "v3": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": 0.125,
+          "mean_improvement": 0.25,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": 0.4
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 15,
+            "current_passes": 10,
+            "mean_delta": 0.25,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 15,
+            "current_passes": 10,
+            "mean_delta": 0.25,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.25,
+        "scenario": "clear_improvement",
+        "seed": 10,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "lower_confidence_bound": 0.125,
+          "mean_improvement": 0.25,
+          "upper_confidence_bound": 0.4
+        },
+        "v3": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": 0.125,
+          "mean_improvement": 0.25,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": 0.4
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 15,
+            "current_passes": 10,
+            "mean_delta": 0.25,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 15,
+            "current_passes": 10,
+            "mean_delta": 0.25,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.25,
+        "scenario": "clear_improvement",
+        "seed": 11,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "lower_confidence_bound": 0.125,
+          "mean_improvement": 0.25,
+          "upper_confidence_bound": 0.4
+        },
+        "v3": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": 0.125,
+          "mean_improvement": 0.25,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": 0.4
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 15,
+            "current_passes": 10,
+            "mean_delta": 0.25,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 15,
+            "current_passes": 10,
+            "mean_delta": 0.25,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.25,
+        "scenario": "clear_improvement",
+        "seed": 12,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "lower_confidence_bound": 0.125,
+          "mean_improvement": 0.25,
+          "upper_confidence_bound": 0.375
+        },
+        "v3": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": 0.125,
+          "mean_improvement": 0.25,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": 0.375
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 15,
+            "current_passes": 10,
+            "mean_delta": 0.25,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 15,
+            "current_passes": 10,
+            "mean_delta": 0.25,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.25,
+        "scenario": "clear_improvement",
+        "seed": 13,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "lower_confidence_bound": 0.125,
+          "mean_improvement": 0.25,
+          "upper_confidence_bound": 0.375
+        },
+        "v3": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": 0.125,
+          "mean_improvement": 0.25,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": 0.375
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 15,
+            "current_passes": 10,
+            "mean_delta": 0.25,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 15,
+            "current_passes": 10,
+            "mean_delta": 0.25,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.25,
+        "scenario": "clear_improvement",
+        "seed": 14,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "lower_confidence_bound": 0.125,
+          "mean_improvement": 0.25,
+          "upper_confidence_bound": 0.4
+        },
+        "v3": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": 0.125,
+          "mean_improvement": 0.25,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": 0.4
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 15,
+            "current_passes": 10,
+            "mean_delta": 0.25,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 15,
+            "current_passes": 10,
+            "mean_delta": 0.25,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.25,
+        "scenario": "clear_improvement",
+        "seed": 15,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "lower_confidence_bound": 0.125,
+          "mean_improvement": 0.25,
+          "upper_confidence_bound": 0.375
+        },
+        "v3": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": 0.125,
+          "mean_improvement": 0.25,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": 0.375
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 15,
+            "current_passes": 10,
+            "mean_delta": 0.25,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 15,
+            "current_passes": 10,
+            "mean_delta": 0.25,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.25,
+        "scenario": "clear_improvement",
+        "seed": 16,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "lower_confidence_bound": 0.125,
+          "mean_improvement": 0.25,
+          "upper_confidence_bound": 0.375
+        },
+        "v3": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": 0.125,
+          "mean_improvement": 0.25,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": 0.375
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 15,
+            "current_passes": 10,
+            "mean_delta": 0.25,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 15,
+            "current_passes": 10,
+            "mean_delta": 0.25,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.25,
+        "scenario": "clear_improvement",
+        "seed": 17,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "lower_confidence_bound": 0.125,
+          "mean_improvement": 0.25,
+          "upper_confidence_bound": 0.4
+        },
+        "v3": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": 0.125,
+          "mean_improvement": 0.25,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": 0.4
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 15,
+            "current_passes": 10,
+            "mean_delta": 0.25,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 15,
+            "current_passes": 10,
+            "mean_delta": 0.25,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.25,
+        "scenario": "clear_improvement",
+        "seed": 18,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "lower_confidence_bound": 0.125,
+          "mean_improvement": 0.25,
+          "upper_confidence_bound": 0.4
+        },
+        "v3": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": 0.125,
+          "mean_improvement": 0.25,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": 0.4
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 15,
+            "current_passes": 10,
+            "mean_delta": 0.25,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 15,
+            "current_passes": 10,
+            "mean_delta": 0.25,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.25,
+        "scenario": "clear_improvement",
+        "seed": 19,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "lower_confidence_bound": 0.125,
+          "mean_improvement": 0.25,
+          "upper_confidence_bound": 0.375
+        },
+        "v3": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": 0.125,
+          "mean_improvement": 0.25,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": 0.375
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 5,
+            "current_passes": 10,
+            "mean_delta": -0.25,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 5,
+            "current_passes": 10,
+            "mean_delta": -0.25,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": -0.25,
+        "scenario": "clear_loss",
+        "seed": 0,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "lower_confidence_bound": -0.375,
+          "mean_improvement": -0.25,
+          "upper_confidence_bound": -0.125
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "lower_confidence_bound": -0.375,
+          "mean_improvement": -0.25,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": -0.125
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 5,
+            "current_passes": 10,
+            "mean_delta": -0.25,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 5,
+            "current_passes": 10,
+            "mean_delta": -0.25,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": -0.25,
+        "scenario": "clear_loss",
+        "seed": 1,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "lower_confidence_bound": -0.375,
+          "mean_improvement": -0.25,
+          "upper_confidence_bound": -0.125
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "lower_confidence_bound": -0.375,
+          "mean_improvement": -0.25,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": -0.125
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 5,
+            "current_passes": 10,
+            "mean_delta": -0.25,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 5,
+            "current_passes": 10,
+            "mean_delta": -0.25,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": -0.25,
+        "scenario": "clear_loss",
+        "seed": 2,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "lower_confidence_bound": -0.4,
+          "mean_improvement": -0.25,
+          "upper_confidence_bound": -0.125
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "lower_confidence_bound": -0.4,
+          "mean_improvement": -0.25,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": -0.125
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 5,
+            "current_passes": 10,
+            "mean_delta": -0.25,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 5,
+            "current_passes": 10,
+            "mean_delta": -0.25,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": -0.25,
+        "scenario": "clear_loss",
+        "seed": 3,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "lower_confidence_bound": -0.375,
+          "mean_improvement": -0.25,
+          "upper_confidence_bound": -0.125
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "lower_confidence_bound": -0.375,
+          "mean_improvement": -0.25,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": -0.125
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 5,
+            "current_passes": 10,
+            "mean_delta": -0.25,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 5,
+            "current_passes": 10,
+            "mean_delta": -0.25,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": -0.25,
+        "scenario": "clear_loss",
+        "seed": 4,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "lower_confidence_bound": -0.4,
+          "mean_improvement": -0.25,
+          "upper_confidence_bound": -0.125
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "lower_confidence_bound": -0.4,
+          "mean_improvement": -0.25,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": -0.125
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 5,
+            "current_passes": 10,
+            "mean_delta": -0.25,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 5,
+            "current_passes": 10,
+            "mean_delta": -0.25,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": -0.25,
+        "scenario": "clear_loss",
+        "seed": 5,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "lower_confidence_bound": -0.3881249999999998,
+          "mean_improvement": -0.25,
+          "upper_confidence_bound": -0.125
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "lower_confidence_bound": -0.3881249999999998,
+          "mean_improvement": -0.25,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": -0.125
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 5,
+            "current_passes": 10,
+            "mean_delta": -0.25,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 5,
+            "current_passes": 10,
+            "mean_delta": -0.25,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": -0.25,
+        "scenario": "clear_loss",
+        "seed": 6,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "lower_confidence_bound": -0.3881249999999998,
+          "mean_improvement": -0.25,
+          "upper_confidence_bound": -0.125
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "lower_confidence_bound": -0.3881249999999998,
+          "mean_improvement": -0.25,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": -0.125
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 5,
+            "current_passes": 10,
+            "mean_delta": -0.25,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 5,
+            "current_passes": 10,
+            "mean_delta": -0.25,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": -0.25,
+        "scenario": "clear_loss",
+        "seed": 7,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "lower_confidence_bound": -0.375,
+          "mean_improvement": -0.25,
+          "upper_confidence_bound": -0.125
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "lower_confidence_bound": -0.375,
+          "mean_improvement": -0.25,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": -0.125
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 5,
+            "current_passes": 10,
+            "mean_delta": -0.25,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 5,
+            "current_passes": 10,
+            "mean_delta": -0.25,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": -0.25,
+        "scenario": "clear_loss",
+        "seed": 8,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "lower_confidence_bound": -0.375,
+          "mean_improvement": -0.25,
+          "upper_confidence_bound": -0.125
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "lower_confidence_bound": -0.375,
+          "mean_improvement": -0.25,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": -0.125
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 5,
+            "current_passes": 10,
+            "mean_delta": -0.25,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 5,
+            "current_passes": 10,
+            "mean_delta": -0.25,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": -0.25,
+        "scenario": "clear_loss",
+        "seed": 9,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "lower_confidence_bound": -0.3881249999999998,
+          "mean_improvement": -0.25,
+          "upper_confidence_bound": -0.125
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "lower_confidence_bound": -0.3881249999999998,
+          "mean_improvement": -0.25,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": -0.125
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 5,
+            "current_passes": 10,
+            "mean_delta": -0.25,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 5,
+            "current_passes": 10,
+            "mean_delta": -0.25,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": -0.25,
+        "scenario": "clear_loss",
+        "seed": 10,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "lower_confidence_bound": -0.375,
+          "mean_improvement": -0.25,
+          "upper_confidence_bound": -0.125
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "lower_confidence_bound": -0.375,
+          "mean_improvement": -0.25,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": -0.125
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 5,
+            "current_passes": 10,
+            "mean_delta": -0.25,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 5,
+            "current_passes": 10,
+            "mean_delta": -0.25,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": -0.25,
+        "scenario": "clear_loss",
+        "seed": 11,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "lower_confidence_bound": -0.4,
+          "mean_improvement": -0.25,
+          "upper_confidence_bound": -0.125
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "lower_confidence_bound": -0.4,
+          "mean_improvement": -0.25,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": -0.125
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 5,
+            "current_passes": 10,
+            "mean_delta": -0.25,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 5,
+            "current_passes": 10,
+            "mean_delta": -0.25,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": -0.25,
+        "scenario": "clear_loss",
+        "seed": 12,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "lower_confidence_bound": -0.4,
+          "mean_improvement": -0.25,
+          "upper_confidence_bound": -0.125
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "lower_confidence_bound": -0.4,
+          "mean_improvement": -0.25,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": -0.125
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 5,
+            "current_passes": 10,
+            "mean_delta": -0.25,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 5,
+            "current_passes": 10,
+            "mean_delta": -0.25,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": -0.25,
+        "scenario": "clear_loss",
+        "seed": 13,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "lower_confidence_bound": -0.375,
+          "mean_improvement": -0.25,
+          "upper_confidence_bound": -0.13687500000000058
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "lower_confidence_bound": -0.375,
+          "mean_improvement": -0.25,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": -0.13687500000000058
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 5,
+            "current_passes": 10,
+            "mean_delta": -0.25,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 5,
+            "current_passes": 10,
+            "mean_delta": -0.25,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": -0.25,
+        "scenario": "clear_loss",
+        "seed": 14,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "lower_confidence_bound": -0.375,
+          "mean_improvement": -0.25,
+          "upper_confidence_bound": -0.125
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "lower_confidence_bound": -0.375,
+          "mean_improvement": -0.25,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": -0.125
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 5,
+            "current_passes": 10,
+            "mean_delta": -0.25,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 5,
+            "current_passes": 10,
+            "mean_delta": -0.25,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": -0.25,
+        "scenario": "clear_loss",
+        "seed": 15,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "lower_confidence_bound": -0.4,
+          "mean_improvement": -0.25,
+          "upper_confidence_bound": -0.125
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "lower_confidence_bound": -0.4,
+          "mean_improvement": -0.25,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": -0.125
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 5,
+            "current_passes": 10,
+            "mean_delta": -0.25,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 5,
+            "current_passes": 10,
+            "mean_delta": -0.25,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": -0.25,
+        "scenario": "clear_loss",
+        "seed": 16,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "lower_confidence_bound": -0.375,
+          "mean_improvement": -0.25,
+          "upper_confidence_bound": -0.125
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "lower_confidence_bound": -0.375,
+          "mean_improvement": -0.25,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": -0.125
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 5,
+            "current_passes": 10,
+            "mean_delta": -0.25,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 5,
+            "current_passes": 10,
+            "mean_delta": -0.25,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": -0.25,
+        "scenario": "clear_loss",
+        "seed": 17,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "lower_confidence_bound": -0.3881249999999998,
+          "mean_improvement": -0.25,
+          "upper_confidence_bound": -0.125
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "lower_confidence_bound": -0.3881249999999998,
+          "mean_improvement": -0.25,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": -0.125
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 5,
+            "current_passes": 10,
+            "mean_delta": -0.25,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 5,
+            "current_passes": 10,
+            "mean_delta": -0.25,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": -0.25,
+        "scenario": "clear_loss",
+        "seed": 18,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "lower_confidence_bound": -0.375,
+          "mean_improvement": -0.25,
+          "upper_confidence_bound": -0.125
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "lower_confidence_bound": -0.375,
+          "mean_improvement": -0.25,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": -0.125
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 5,
+            "current_passes": 10,
+            "mean_delta": -0.25,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 5,
+            "current_passes": 10,
+            "mean_delta": -0.25,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": -0.25,
+        "scenario": "clear_loss",
+        "seed": 19,
+        "v2": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "lower_confidence_bound": -0.3881249999999998,
+          "mean_improvement": -0.25,
+          "upper_confidence_bound": -0.125
+        },
+        "v3": {
+          "action": "reject",
+          "bootstrap_action": "reject",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "lower_confidence_bound": -0.3881249999999998,
+          "mean_improvement": -0.25,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": -0.125
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.0,
+        "scenario": "unchanged",
+        "seed": 0,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.0,
+          "upper_confidence_bound": 0.0
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.0,
+          "noninferiority_passed": true,
+          "upper_confidence_bound": 0.0
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.0,
+        "scenario": "unchanged",
+        "seed": 1,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.0,
+          "upper_confidence_bound": 0.0
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.0,
+          "noninferiority_passed": true,
+          "upper_confidence_bound": 0.0
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.0,
+        "scenario": "unchanged",
+        "seed": 2,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.0,
+          "upper_confidence_bound": 0.0
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.0,
+          "noninferiority_passed": true,
+          "upper_confidence_bound": 0.0
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.0,
+        "scenario": "unchanged",
+        "seed": 3,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.0,
+          "upper_confidence_bound": 0.0
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.0,
+          "noninferiority_passed": true,
+          "upper_confidence_bound": 0.0
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.0,
+        "scenario": "unchanged",
+        "seed": 4,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.0,
+          "upper_confidence_bound": 0.0
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.0,
+          "noninferiority_passed": true,
+          "upper_confidence_bound": 0.0
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.0,
+        "scenario": "unchanged",
+        "seed": 5,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.0,
+          "upper_confidence_bound": 0.0
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.0,
+          "noninferiority_passed": true,
+          "upper_confidence_bound": 0.0
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.0,
+        "scenario": "unchanged",
+        "seed": 6,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.0,
+          "upper_confidence_bound": 0.0
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.0,
+          "noninferiority_passed": true,
+          "upper_confidence_bound": 0.0
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.0,
+        "scenario": "unchanged",
+        "seed": 7,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.0,
+          "upper_confidence_bound": 0.0
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.0,
+          "noninferiority_passed": true,
+          "upper_confidence_bound": 0.0
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.0,
+        "scenario": "unchanged",
+        "seed": 8,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.0,
+          "upper_confidence_bound": 0.0
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.0,
+          "noninferiority_passed": true,
+          "upper_confidence_bound": 0.0
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.0,
+        "scenario": "unchanged",
+        "seed": 9,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.0,
+          "upper_confidence_bound": 0.0
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.0,
+          "noninferiority_passed": true,
+          "upper_confidence_bound": 0.0
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.0,
+        "scenario": "unchanged",
+        "seed": 10,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.0,
+          "upper_confidence_bound": 0.0
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.0,
+          "noninferiority_passed": true,
+          "upper_confidence_bound": 0.0
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.0,
+        "scenario": "unchanged",
+        "seed": 11,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.0,
+          "upper_confidence_bound": 0.0
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.0,
+          "noninferiority_passed": true,
+          "upper_confidence_bound": 0.0
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.0,
+        "scenario": "unchanged",
+        "seed": 12,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.0,
+          "upper_confidence_bound": 0.0
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.0,
+          "noninferiority_passed": true,
+          "upper_confidence_bound": 0.0
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.0,
+        "scenario": "unchanged",
+        "seed": 13,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.0,
+          "upper_confidence_bound": 0.0
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.0,
+          "noninferiority_passed": true,
+          "upper_confidence_bound": 0.0
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.0,
+        "scenario": "unchanged",
+        "seed": 14,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.0,
+          "upper_confidence_bound": 0.0
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.0,
+          "noninferiority_passed": true,
+          "upper_confidence_bound": 0.0
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.0,
+        "scenario": "unchanged",
+        "seed": 15,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.0,
+          "upper_confidence_bound": 0.0
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.0,
+          "noninferiority_passed": true,
+          "upper_confidence_bound": 0.0
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.0,
+        "scenario": "unchanged",
+        "seed": 16,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.0,
+          "upper_confidence_bound": 0.0
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.0,
+          "noninferiority_passed": true,
+          "upper_confidence_bound": 0.0
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.0,
+        "scenario": "unchanged",
+        "seed": 17,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.0,
+          "upper_confidence_bound": 0.0
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.0,
+          "noninferiority_passed": true,
+          "upper_confidence_bound": 0.0
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.0,
+        "scenario": "unchanged",
+        "seed": 18,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.0,
+          "upper_confidence_bound": 0.0
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.0,
+          "noninferiority_passed": true,
+          "upper_confidence_bound": 0.0
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.0,
+        "scenario": "unchanged",
+        "seed": 19,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.0,
+          "upper_confidence_bound": 0.0
+        },
+        "v3": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.0,
+          "noninferiority_passed": true,
+          "upper_confidence_bound": 0.0
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 9,
+            "current_passes": 10,
+            "mean_delta": -0.05,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": -0.025,
+        "scenario": "sparse_loss",
+        "seed": 0,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": -0.075,
+          "mean_improvement": -0.025,
+          "upper_confidence_bound": 0.0
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": -0.075,
+          "mean_improvement": -0.025,
+          "noninferiority_passed": false,
+          "upper_confidence_bound": 0.0
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 9,
+            "current_passes": 10,
+            "mean_delta": -0.05,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": -0.025,
+        "scenario": "sparse_loss",
+        "seed": 1,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": -0.075,
+          "mean_improvement": -0.025,
+          "upper_confidence_bound": 0.0
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": -0.075,
+          "mean_improvement": -0.025,
+          "noninferiority_passed": false,
+          "upper_confidence_bound": 0.0
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 9,
+            "current_passes": 10,
+            "mean_delta": -0.05,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": -0.025,
+        "scenario": "sparse_loss",
+        "seed": 2,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": -0.075,
+          "mean_improvement": -0.025,
+          "upper_confidence_bound": 0.0
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": -0.075,
+          "mean_improvement": -0.025,
+          "noninferiority_passed": false,
+          "upper_confidence_bound": 0.0
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 9,
+            "current_passes": 10,
+            "mean_delta": -0.05,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": -0.025,
+        "scenario": "sparse_loss",
+        "seed": 3,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": -0.075,
+          "mean_improvement": -0.025,
+          "upper_confidence_bound": 0.0
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": -0.075,
+          "mean_improvement": -0.025,
+          "noninferiority_passed": false,
+          "upper_confidence_bound": 0.0
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 9,
+            "current_passes": 10,
+            "mean_delta": -0.05,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": -0.025,
+        "scenario": "sparse_loss",
+        "seed": 4,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": -0.075,
+          "mean_improvement": -0.025,
+          "upper_confidence_bound": 0.0
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": -0.075,
+          "mean_improvement": -0.025,
+          "noninferiority_passed": false,
+          "upper_confidence_bound": 0.0
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 9,
+            "current_passes": 10,
+            "mean_delta": -0.05,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": -0.025,
+        "scenario": "sparse_loss",
+        "seed": 5,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": -0.075,
+          "mean_improvement": -0.025,
+          "upper_confidence_bound": 0.0
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": -0.075,
+          "mean_improvement": -0.025,
+          "noninferiority_passed": false,
+          "upper_confidence_bound": 0.0
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 9,
+            "current_passes": 10,
+            "mean_delta": -0.05,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": -0.025,
+        "scenario": "sparse_loss",
+        "seed": 6,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": -0.075,
+          "mean_improvement": -0.025,
+          "upper_confidence_bound": 0.0
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": -0.075,
+          "mean_improvement": -0.025,
+          "noninferiority_passed": false,
+          "upper_confidence_bound": 0.0
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 9,
+            "current_passes": 10,
+            "mean_delta": -0.05,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": -0.025,
+        "scenario": "sparse_loss",
+        "seed": 7,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": -0.075,
+          "mean_improvement": -0.025,
+          "upper_confidence_bound": 0.0
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": -0.075,
+          "mean_improvement": -0.025,
+          "noninferiority_passed": false,
+          "upper_confidence_bound": 0.0
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 9,
+            "current_passes": 10,
+            "mean_delta": -0.05,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": -0.025,
+        "scenario": "sparse_loss",
+        "seed": 8,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": -0.075,
+          "mean_improvement": -0.025,
+          "upper_confidence_bound": 0.0
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": -0.075,
+          "mean_improvement": -0.025,
+          "noninferiority_passed": false,
+          "upper_confidence_bound": 0.0
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 9,
+            "current_passes": 10,
+            "mean_delta": -0.05,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": -0.025,
+        "scenario": "sparse_loss",
+        "seed": 9,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": -0.075,
+          "mean_improvement": -0.025,
+          "upper_confidence_bound": 0.0
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": -0.075,
+          "mean_improvement": -0.025,
+          "noninferiority_passed": false,
+          "upper_confidence_bound": 0.0
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 9,
+            "current_passes": 10,
+            "mean_delta": -0.05,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": -0.025,
+        "scenario": "sparse_loss",
+        "seed": 10,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": -0.075,
+          "mean_improvement": -0.025,
+          "upper_confidence_bound": 0.0
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": -0.075,
+          "mean_improvement": -0.025,
+          "noninferiority_passed": false,
+          "upper_confidence_bound": 0.0
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 9,
+            "current_passes": 10,
+            "mean_delta": -0.05,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": -0.025,
+        "scenario": "sparse_loss",
+        "seed": 11,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": -0.075,
+          "mean_improvement": -0.025,
+          "upper_confidence_bound": 0.0
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": -0.075,
+          "mean_improvement": -0.025,
+          "noninferiority_passed": false,
+          "upper_confidence_bound": 0.0
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 9,
+            "current_passes": 10,
+            "mean_delta": -0.05,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": -0.025,
+        "scenario": "sparse_loss",
+        "seed": 12,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": -0.075,
+          "mean_improvement": -0.025,
+          "upper_confidence_bound": 0.0
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": -0.075,
+          "mean_improvement": -0.025,
+          "noninferiority_passed": false,
+          "upper_confidence_bound": 0.0
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 9,
+            "current_passes": 10,
+            "mean_delta": -0.05,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": -0.025,
+        "scenario": "sparse_loss",
+        "seed": 13,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": -0.075,
+          "mean_improvement": -0.025,
+          "upper_confidence_bound": 0.0
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": -0.075,
+          "mean_improvement": -0.025,
+          "noninferiority_passed": false,
+          "upper_confidence_bound": 0.0
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 9,
+            "current_passes": 10,
+            "mean_delta": -0.05,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": -0.025,
+        "scenario": "sparse_loss",
+        "seed": 14,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": -0.1,
+          "mean_improvement": -0.025,
+          "upper_confidence_bound": 0.0
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": -0.1,
+          "mean_improvement": -0.025,
+          "noninferiority_passed": false,
+          "upper_confidence_bound": 0.0
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 9,
+            "current_passes": 10,
+            "mean_delta": -0.05,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": -0.025,
+        "scenario": "sparse_loss",
+        "seed": 15,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": -0.08812499999999975,
+          "mean_improvement": -0.025,
+          "upper_confidence_bound": 0.0
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": -0.08812499999999975,
+          "mean_improvement": -0.025,
+          "noninferiority_passed": false,
+          "upper_confidence_bound": 0.0
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 9,
+            "current_passes": 10,
+            "mean_delta": -0.05,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": -0.025,
+        "scenario": "sparse_loss",
+        "seed": 16,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": -0.075,
+          "mean_improvement": -0.025,
+          "upper_confidence_bound": 0.0
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": -0.075,
+          "mean_improvement": -0.025,
+          "noninferiority_passed": false,
+          "upper_confidence_bound": 0.0
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 9,
+            "current_passes": 10,
+            "mean_delta": -0.05,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": -0.025,
+        "scenario": "sparse_loss",
+        "seed": 17,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": -0.075,
+          "mean_improvement": -0.025,
+          "upper_confidence_bound": 0.0
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": -0.075,
+          "mean_improvement": -0.025,
+          "noninferiority_passed": false,
+          "upper_confidence_bound": 0.0
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 9,
+            "current_passes": 10,
+            "mean_delta": -0.05,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": -0.025,
+        "scenario": "sparse_loss",
+        "seed": 18,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": -0.075,
+          "mean_improvement": -0.025,
+          "upper_confidence_bound": 0.0
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": -0.075,
+          "mean_improvement": -0.025,
+          "noninferiority_passed": false,
+          "upper_confidence_bound": 0.0
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 9,
+            "current_passes": 10,
+            "mean_delta": -0.05,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": -0.025,
+        "scenario": "sparse_loss",
+        "seed": 19,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": -0.075,
+          "mean_improvement": -0.025,
+          "upper_confidence_bound": 0.0
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": -0.075,
+          "mean_improvement": -0.025,
+          "noninferiority_passed": false,
+          "upper_confidence_bound": 0.0
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.0,
+        "scenario": "noisy_exchange",
+        "seed": 0,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": -0.2,
+          "mean_improvement": 0.0,
+          "upper_confidence_bound": 0.225
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": -0.2,
+          "mean_improvement": 0.0,
+          "noninferiority_passed": false,
+          "upper_confidence_bound": 0.225
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.0,
+        "scenario": "noisy_exchange",
+        "seed": 1,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": -0.2,
+          "mean_improvement": 0.0,
+          "upper_confidence_bound": 0.2
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": -0.2,
+          "mean_improvement": 0.0,
+          "noninferiority_passed": false,
+          "upper_confidence_bound": 0.2
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.0,
+        "scenario": "noisy_exchange",
+        "seed": 2,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": -0.225,
+          "mean_improvement": 0.0,
+          "upper_confidence_bound": 0.225
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": -0.225,
+          "mean_improvement": 0.0,
+          "noninferiority_passed": false,
+          "upper_confidence_bound": 0.225
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.0,
+        "scenario": "noisy_exchange",
+        "seed": 3,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": -0.225,
+          "mean_improvement": 0.0,
+          "upper_confidence_bound": 0.225
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": -0.225,
+          "mean_improvement": 0.0,
+          "noninferiority_passed": false,
+          "upper_confidence_bound": 0.225
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.0,
+        "scenario": "noisy_exchange",
+        "seed": 4,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": -0.225,
+          "mean_improvement": 0.0,
+          "upper_confidence_bound": 0.21312499999999945
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": -0.225,
+          "mean_improvement": 0.0,
+          "noninferiority_passed": false,
+          "upper_confidence_bound": 0.21312499999999945
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.0,
+        "scenario": "noisy_exchange",
+        "seed": 5,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": -0.225,
+          "mean_improvement": 0.0,
+          "upper_confidence_bound": 0.225
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": -0.225,
+          "mean_improvement": 0.0,
+          "noninferiority_passed": false,
+          "upper_confidence_bound": 0.225
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.0,
+        "scenario": "noisy_exchange",
+        "seed": 6,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": -0.25,
+          "mean_improvement": 0.0,
+          "upper_confidence_bound": 0.225
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": -0.25,
+          "mean_improvement": 0.0,
+          "noninferiority_passed": false,
+          "upper_confidence_bound": 0.225
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.0,
+        "scenario": "noisy_exchange",
+        "seed": 7,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": -0.2,
+          "mean_improvement": 0.0,
+          "upper_confidence_bound": 0.225
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": -0.2,
+          "mean_improvement": 0.0,
+          "noninferiority_passed": false,
+          "upper_confidence_bound": 0.225
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.0,
+        "scenario": "noisy_exchange",
+        "seed": 8,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": -0.225,
+          "mean_improvement": 0.0,
+          "upper_confidence_bound": 0.225
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": -0.225,
+          "mean_improvement": 0.0,
+          "noninferiority_passed": false,
+          "upper_confidence_bound": 0.225
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.0,
+        "scenario": "noisy_exchange",
+        "seed": 9,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": -0.225,
+          "mean_improvement": 0.0,
+          "upper_confidence_bound": 0.2
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": -0.225,
+          "mean_improvement": 0.0,
+          "noninferiority_passed": false,
+          "upper_confidence_bound": 0.2
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.0,
+        "scenario": "noisy_exchange",
+        "seed": 10,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": -0.2,
+          "mean_improvement": 0.0,
+          "upper_confidence_bound": 0.225
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": -0.2,
+          "mean_improvement": 0.0,
+          "noninferiority_passed": false,
+          "upper_confidence_bound": 0.225
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.0,
+        "scenario": "noisy_exchange",
+        "seed": 11,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": -0.225,
+          "mean_improvement": 0.0,
+          "upper_confidence_bound": 0.21312499999999945
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": -0.225,
+          "mean_improvement": 0.0,
+          "noninferiority_passed": false,
+          "upper_confidence_bound": 0.21312499999999945
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.0,
+        "scenario": "noisy_exchange",
+        "seed": 12,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": -0.25,
+          "mean_improvement": 0.0,
+          "upper_confidence_bound": 0.225
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": -0.25,
+          "mean_improvement": 0.0,
+          "noninferiority_passed": false,
+          "upper_confidence_bound": 0.225
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.0,
+        "scenario": "noisy_exchange",
+        "seed": 13,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": -0.2,
+          "mean_improvement": 0.0,
+          "upper_confidence_bound": 0.2
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": -0.2,
+          "mean_improvement": 0.0,
+          "noninferiority_passed": false,
+          "upper_confidence_bound": 0.2
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.0,
+        "scenario": "noisy_exchange",
+        "seed": 14,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": -0.2,
+          "mean_improvement": 0.0,
+          "upper_confidence_bound": 0.225
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": -0.2,
+          "mean_improvement": 0.0,
+          "noninferiority_passed": false,
+          "upper_confidence_bound": 0.225
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.0,
+        "scenario": "noisy_exchange",
+        "seed": 15,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": -0.23812499999999975,
+          "mean_improvement": 0.0,
+          "upper_confidence_bound": 0.2
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": -0.23812499999999975,
+          "mean_improvement": 0.0,
+          "noninferiority_passed": false,
+          "upper_confidence_bound": 0.2
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.0,
+        "scenario": "noisy_exchange",
+        "seed": 16,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": -0.175,
+          "mean_improvement": 0.0,
+          "upper_confidence_bound": 0.225
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": -0.175,
+          "mean_improvement": 0.0,
+          "noninferiority_passed": false,
+          "upper_confidence_bound": 0.225
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.0,
+        "scenario": "noisy_exchange",
+        "seed": 17,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": -0.225,
+          "mean_improvement": 0.0,
+          "upper_confidence_bound": 0.25
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": -0.225,
+          "mean_improvement": 0.0,
+          "noninferiority_passed": false,
+          "upper_confidence_bound": 0.25
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.0,
+        "scenario": "noisy_exchange",
+        "seed": 18,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": -0.225,
+          "mean_improvement": 0.0,
+          "upper_confidence_bound": 0.2
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": -0.225,
+          "mean_improvement": 0.0,
+          "noninferiority_passed": false,
+          "upper_confidence_bound": 0.2
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 10,
+            "current_passes": 10,
+            "mean_delta": 0.0,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.0,
+        "scenario": "noisy_exchange",
+        "seed": 19,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": -0.21312499999999976,
+          "mean_improvement": 0.0,
+          "upper_confidence_bound": 0.225
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": null,
+            "status": "passed"
+          },
+          "lower_confidence_bound": -0.21312499999999976,
+          "mean_improvement": 0.0,
+          "noninferiority_passed": false,
+          "upper_confidence_bound": 0.225
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 20,
+            "current_passes": 10,
+            "mean_delta": 0.5,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 7,
+            "current_passes": 10,
+            "mean_delta": -0.15,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.175,
+        "scenario": "masked_group_loss",
+        "seed": 0,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "lower_confidence_bound": 0.011875000000000259,
+          "mean_improvement": 0.175,
+          "upper_confidence_bound": 0.325
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "sheet_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "lower_confidence_bound": 0.011875000000000259,
+          "mean_improvement": 0.175,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": 0.325
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 20,
+            "current_passes": 10,
+            "mean_delta": 0.5,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 7,
+            "current_passes": 10,
+            "mean_delta": -0.15,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.175,
+        "scenario": "masked_group_loss",
+        "seed": 1,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.175,
+          "upper_confidence_bound": 0.325
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "sheet_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.175,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": 0.325
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 20,
+            "current_passes": 10,
+            "mean_delta": 0.5,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 7,
+            "current_passes": 10,
+            "mean_delta": -0.15,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.175,
+        "scenario": "masked_group_loss",
+        "seed": 2,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "lower_confidence_bound": 0.011875000000000259,
+          "mean_improvement": 0.175,
+          "upper_confidence_bound": 0.35
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "sheet_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "lower_confidence_bound": 0.011875000000000259,
+          "mean_improvement": 0.175,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": 0.35
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 20,
+            "current_passes": 10,
+            "mean_delta": 0.5,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 7,
+            "current_passes": 10,
+            "mean_delta": -0.15,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.175,
+        "scenario": "masked_group_loss",
+        "seed": 3,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "lower_confidence_bound": 0.025,
+          "mean_improvement": 0.175,
+          "upper_confidence_bound": 0.33812499999999945
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "sheet_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "lower_confidence_bound": 0.025,
+          "mean_improvement": 0.175,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": 0.33812499999999945
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 20,
+            "current_passes": 10,
+            "mean_delta": 0.5,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 7,
+            "current_passes": 10,
+            "mean_delta": -0.15,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.175,
+        "scenario": "masked_group_loss",
+        "seed": 4,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.175,
+          "upper_confidence_bound": 0.325
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "sheet_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.175,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": 0.325
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 20,
+            "current_passes": 10,
+            "mean_delta": 0.5,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 7,
+            "current_passes": 10,
+            "mean_delta": -0.15,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.175,
+        "scenario": "masked_group_loss",
+        "seed": 5,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "lower_confidence_bound": 0.025,
+          "mean_improvement": 0.175,
+          "upper_confidence_bound": 0.35
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "sheet_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "lower_confidence_bound": 0.025,
+          "mean_improvement": 0.175,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": 0.35
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 20,
+            "current_passes": 10,
+            "mean_delta": 0.5,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 7,
+            "current_passes": 10,
+            "mean_delta": -0.15,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.175,
+        "scenario": "masked_group_loss",
+        "seed": 6,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": -0.025,
+          "mean_improvement": 0.175,
+          "upper_confidence_bound": 0.35
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "sheet_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "lower_confidence_bound": -0.025,
+          "mean_improvement": 0.175,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": 0.35
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 20,
+            "current_passes": 10,
+            "mean_delta": 0.5,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 7,
+            "current_passes": 10,
+            "mean_delta": -0.15,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.175,
+        "scenario": "masked_group_loss",
+        "seed": 7,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "lower_confidence_bound": 0.025,
+          "mean_improvement": 0.175,
+          "upper_confidence_bound": 0.375
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "sheet_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "lower_confidence_bound": 0.025,
+          "mean_improvement": 0.175,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": 0.375
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 20,
+            "current_passes": 10,
+            "mean_delta": 0.5,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 7,
+            "current_passes": 10,
+            "mean_delta": -0.15,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.175,
+        "scenario": "masked_group_loss",
+        "seed": 8,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "lower_confidence_bound": 0.025,
+          "mean_improvement": 0.175,
+          "upper_confidence_bound": 0.35
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "sheet_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "lower_confidence_bound": 0.025,
+          "mean_improvement": 0.175,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": 0.35
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 20,
+            "current_passes": 10,
+            "mean_delta": 0.5,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 7,
+            "current_passes": 10,
+            "mean_delta": -0.15,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.175,
+        "scenario": "masked_group_loss",
+        "seed": 9,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.175,
+          "upper_confidence_bound": 0.35
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "sheet_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.175,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": 0.35
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 20,
+            "current_passes": 10,
+            "mean_delta": 0.5,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 7,
+            "current_passes": 10,
+            "mean_delta": -0.15,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.175,
+        "scenario": "masked_group_loss",
+        "seed": 10,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "lower_confidence_bound": 0.025,
+          "mean_improvement": 0.175,
+          "upper_confidence_bound": 0.325
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "sheet_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "lower_confidence_bound": 0.025,
+          "mean_improvement": 0.175,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": 0.325
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 20,
+            "current_passes": 10,
+            "mean_delta": 0.5,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 7,
+            "current_passes": 10,
+            "mean_delta": -0.15,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.175,
+        "scenario": "masked_group_loss",
+        "seed": 11,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.175,
+          "upper_confidence_bound": 0.325
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "sheet_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.175,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": 0.325
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 20,
+            "current_passes": 10,
+            "mean_delta": 0.5,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 7,
+            "current_passes": 10,
+            "mean_delta": -0.15,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.175,
+        "scenario": "masked_group_loss",
+        "seed": 12,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.175,
+          "upper_confidence_bound": 0.35
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "sheet_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.175,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": 0.35
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 20,
+            "current_passes": 10,
+            "mean_delta": 0.5,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 7,
+            "current_passes": 10,
+            "mean_delta": -0.15,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.175,
+        "scenario": "masked_group_loss",
+        "seed": 13,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.175,
+          "upper_confidence_bound": 0.35
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "sheet_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.175,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": 0.35
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 20,
+            "current_passes": 10,
+            "mean_delta": 0.5,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 7,
+            "current_passes": 10,
+            "mean_delta": -0.15,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.175,
+        "scenario": "masked_group_loss",
+        "seed": 14,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.175,
+          "upper_confidence_bound": 0.35
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "sheet_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.175,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": 0.35
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 20,
+            "current_passes": 10,
+            "mean_delta": 0.5,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 7,
+            "current_passes": 10,
+            "mean_delta": -0.15,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.175,
+        "scenario": "masked_group_loss",
+        "seed": 15,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.175,
+          "upper_confidence_bound": 0.33812499999999945
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "sheet_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.175,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": 0.33812499999999945
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 20,
+            "current_passes": 10,
+            "mean_delta": 0.5,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 7,
+            "current_passes": 10,
+            "mean_delta": -0.15,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.175,
+        "scenario": "masked_group_loss",
+        "seed": 16,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "lower_confidence_bound": 0.025,
+          "mean_improvement": 0.175,
+          "upper_confidence_bound": 0.35
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "sheet_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "lower_confidence_bound": 0.025,
+          "mean_improvement": 0.175,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": 0.35
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 20,
+            "current_passes": 10,
+            "mean_delta": 0.5,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 7,
+            "current_passes": 10,
+            "mean_delta": -0.15,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.175,
+        "scenario": "masked_group_loss",
+        "seed": 17,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.175,
+          "upper_confidence_bound": 0.35
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "sheet_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.175,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": 0.35
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 20,
+            "current_passes": 10,
+            "mean_delta": 0.5,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 7,
+            "current_passes": 10,
+            "mean_delta": -0.15,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.175,
+        "scenario": "masked_group_loss",
+        "seed": 18,
+        "v2": {
+          "action": "soft_accept",
+          "bootstrap_action": "re_evaluate",
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.175,
+          "upper_confidence_bound": 0.325
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "re_evaluate",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "sheet_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "lower_confidence_bound": 0.0,
+          "mean_improvement": 0.175,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": 0.325
+        }
+      },
+      {
+        "group_details": {
+          "cell_level": {
+            "candidate_passes": 20,
+            "current_passes": 10,
+            "mean_delta": 0.5,
+            "n_pairs": 20
+          },
+          "sheet_level": {
+            "candidate_passes": 7,
+            "current_passes": 10,
+            "mean_delta": -0.15,
+            "n_pairs": 20
+          }
+        },
+        "mean_delta": 0.175,
+        "scenario": "masked_group_loss",
+        "seed": 19,
+        "v2": {
+          "action": "accept_new_best",
+          "bootstrap_action": "accept",
+          "lower_confidence_bound": 0.011875000000000259,
+          "mean_improvement": 0.175,
+          "upper_confidence_bound": 0.325
+        },
+        "v3": {
+          "action": "cam_re_evaluate",
+          "bootstrap_action": "accept",
+          "group_guard": {
+            "enabled": true,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "reason": "sheet_level_current_mean_regression_exceeds_tolerance",
+            "status": "blocked"
+          },
+          "lower_confidence_bound": 0.011875000000000259,
+          "mean_improvement": 0.175,
+          "noninferiority_passed": null,
+          "upper_confidence_bound": 0.325
+        }
+      }
+    ]
+  },
+  "interpretation_limit": "No SpreadsheetBench accuracy, calibration, or generalization claim is supported.",
+  "label": "binary synthetic mechanism verification only",
+  "metadata": {
+    "code_sha256": {
+      "scripts\\validate_cam_v3_binary.py": "38b7bb4a73a20b7f5967934161b8cee60a2086d21492d233ab4a3782e39718a4",
+      "skillopt\\cam\\bootstrap_gate.py": "7b532902b290a9bd0c713f539277ff08ce0b28d41121724eee3f55dcd20125ed",
+      "skillopt\\cam\\selection_guard.py": "d130d4805a9b49f85a40fe9cb924102b57d79e382901bb4a7d12f635f5f4cf2e"
+    },
+    "completed_utc": "2026-10-18T11:54:14.534616+00:00",
+    "environment_files_read": false,
+    "model_api_imports": "none",
+    "offline_guards": [
+      "socket.socket.connect/connect_ex",
+      "socket.create_connection",
+      "subprocess.Popen/run/call/check_call/check_output",
+      "os.system/popen"
+    ],
+    "protocol_sha256": "bb3307d4e42bf2cf23f53855ca94c32e95e5593c4a869a454308ae7501747546",
+    "runtime": {
+      "implementation": "CPython",
+      "platform": "Windows-11-10.0.26200-SP0",
+      "python": "3.12.15 | packaged by Anaconda, Inc. | (main, Oct  1 2026, 20:14:50) [MSC v.1942 64 bit (AMD64)]"
+    }
+  },
+  "prespecified_hypotheses": {
+    "clear_improvement": "both arms accept",
+    "clear_loss": "both arms reject",
+    "masked_group_loss": "v3 group guard blocks subgroup regression hidden by aggregate gain",
+    "noisy_exchange": "v2 and v3 should treat wide uncertainty as inconclusive",
+    "sparse_loss": "tests v3 noninferiority hold on a sparse negative change",
+    "unchanged": "v2 soft-accepts; v3 may soft-accept under noninferiority"
+  }
+}

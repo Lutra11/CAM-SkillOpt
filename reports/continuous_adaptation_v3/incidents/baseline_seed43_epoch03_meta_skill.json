@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "severity": "nonfatal_warning",
+  "status": "contained_nonfatal",
+  "cell_id": "baseline_seed43",
+  "epoch": 3,
+  "observed_at_utc": "2026-10-18T19:20:38.698528+00:00",
+  "cell_status_at_capture": "running",
+  "queue_status_at_capture": "running",
+  "provider_backend": "azure_openai",
+  "optimizer_model": "glm",
+  "target_model": "qwen",
+  "reasoning": "off",
+  "configured_attempts": 3,
+  "sanitized_exception_signature": "NoneType object not subscriptable",
+  "cause": "unconfirmed; the saved artifact contains no provider response or inner exception payload",
+  "request_id_saved": false,
+  "response_status_saved": false,
+  "response_headers_or_body_saved": false,
+  "trajectory_replayed": false,
+  "no_content_contract": "The trainer records action=no_content and continues; this auxiliary generation produced no content.",
+  "incident_id": "baseline_seed43_epoch03_meta_skill",
+  "stage": "meta_skill",
+  "result_path": "outputs/continuous_adaptation_v3/spreadsheetbench/qwen/baseline_seed43/meta_skill/epoch_03/meta_skill_result.json",
+  "action": "no_content",
+  "time_s": 29.2,
+  "saved_result_keys": [
+    "time_s",
+    "action"
+  ],
+  "saved_meta_skill_chars": 0,
+  "prior_epoch_result": {
+    "action": "no_content",
+    "meta_skill_chars": 0
+  },
+  "memory_fallback_assessment": {
+    "prior_successful_meta_content_before_epoch3": "none; epoch 1 used skip_first_epoch and epoch 2 returned no_content",
+    "current_event_effect": "No earlier successful meta content was available to lose at epoch 3.",
+    "future_behavior_note": "Loader remains bounded to the immediately previous epoch result; it does not walk back to an older successful result if a later no_content follows one."
+  },
+  "impact": "No epoch-3 optimizer-side meta memory was written; the epoch-4 meta update later wrote new content.",
+  "log_exception_line": 494,
+  "later_auxiliary_meta_update": {
+    "action": "write_meta_skill",
+    "time_s": 89.5,
+    "meta_skill_chars": 3766
+  }
+}

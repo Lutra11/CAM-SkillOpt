@@ -1,0 +1,215 @@
+..........................................................................................................................
+----------------------------------------------------------------------
+Ran 122 tests in 9.258s
+
+OK
+
+=== scripts/verify_config.py --config configs/experiments/cam_v3_mechanisms.yaml ===
+config : configs/experiments/cam_v3_mechanisms.yaml
+keys   : 115 resolved
+
+── 模型 / 后端 ─────────────────────────────────────────────────────
+  optimizer_model              = 'glm'
+  target_model                 = 'qwen'
+  optimizer_backend            = 'openai_chat'
+  target_backend               = 'openai_chat'
+  reasoning_effort             = ''
+  num_epochs                   = 4
+  train_size                   = 80
+  batch_size                   = 40
+  seed                         = 42
+  minibatch_size               = 8
+  merge_batch_size             = 8
+  analyst_workers              = 8
+  max_analyst_rounds           = 3
+  edit_budget                  = 4
+  min_edit_budget              = 2
+  lr_scheduler                 = 'cosine'
+  use_gate                     = True
+  sel_env_num                  = 40
+  test_env_num                 = 280
+  eval_test                    = False
+  env                          = 'spreadsheetbench'
+  mode                         = 'single'
+  workers                      = 8
+  exec_timeout                 = 1200
+  limit                        = 0
+  split_dir                    = 'data/spreadsheetbench_split'
+  data_root                    = 'data/spreadsheetbench_verified_400'
+  out_root                     = ''
+  skill_init                   = 'skillopt/envs/spreadsheetbench/skills/initial.md'
+  use_slow_update              = True
+  use_meta_skill               = True
+  skill_update_mode            = 'patch'
+  max_completion_tokens        = 16384
+  max_turns                    = 30
+
+── CAM 机制 ──────────────────────────────────────────────────────
+  cam_enabled                  = True
+  cam_bootstrap_gate           = True
+  cam_confidence_level         = 0.95
+  cam_meaningful_improvement   = 0.0
+  cam_bootstrap_samples        = 10000
+  cam_seed                     = 42
+  cam_adaptive_budget          = True
+  cam_min_budget               = 2
+  cam_max_budget               = 4
+  cam_memory_enabled           = True
+  cam_memory_top_k             = 3
+  cam_soft_accept              = True
+  cam_drift_patience           = 2
+  cam_drift_tolerance          = 0.0
+  cam_memory_inconclusive      = True
+
+── 覆盖校验 ────────────────────────────────────────────────
+
+PASS: config resolves and every override took effect.
+
+=== Final combined unittest run ===
+..F..........................................................................................................................
+======================================================================
+FAIL: test_evidence_v3_memory_requires_paired_gate_before_any_rollout (tests.test_cam_v3_trainer.CAMV3TrainerTests.test_evidence_v3_memory_requires_paired_gate_before_any_rollout)
+----------------------------------------------------------------------
+ValueError: Evidence-v3 memory requires aligned strict CAM validation evidence; No-Bootstrap with evidence-v3 memory is not supported
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "E:\Programs\CAM\CAM-SkillOpt\tests\test_cam_v3_trainer.py", line 177, in test_evidence_v3_memory_requires_paired_gate_before_any_rollout
+    with self.assertRaisesRegex(ValueError, "paired|bootstrap|evidence_v3"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "paired|bootstrap|evidence_v3" does not match "Evidence-v3 memory requires aligned strict CAM validation evidence; No-Bootstrap with evidence-v3 memory is not supported"
+
+----------------------------------------------------------------------
+Ran 125 tests in 9.384s
+
+FAILED (failures=1)
+
+=== Final scripts/verify_config.py --config configs/experiments/cam_v3_mechanisms.yaml ===
+config : configs/experiments/cam_v3_mechanisms.yaml
+keys   : 115 resolved
+
+── 模型 / 后端 ─────────────────────────────────────────────────────
+  optimizer_model              = 'glm'
+  target_model                 = 'qwen'
+  optimizer_backend            = 'openai_chat'
+  target_backend               = 'openai_chat'
+  reasoning_effort             = ''
+  num_epochs                   = 4
+  train_size                   = 80
+  batch_size                   = 40
+  seed                         = 42
+  minibatch_size               = 8
+  merge_batch_size             = 8
+  analyst_workers              = 8
+  max_analyst_rounds           = 3
+  edit_budget                  = 4
+  min_edit_budget              = 2
+  lr_scheduler                 = 'cosine'
+  use_gate                     = True
+  sel_env_num                  = 40
+  test_env_num                 = 280
+  eval_test                    = False
+  env                          = 'spreadsheetbench'
+  mode                         = 'single'
+  workers                      = 8
+  exec_timeout                 = 1200
+  limit                        = 0
+  split_dir                    = 'data/spreadsheetbench_split'
+  data_root                    = 'data/spreadsheetbench_verified_400'
+  out_root                     = ''
+  skill_init                   = 'skillopt/envs/spreadsheetbench/skills/initial.md'
+  use_slow_update              = True
+  use_meta_skill               = True
+  skill_update_mode            = 'patch'
+  max_completion_tokens        = 16384
+  max_turns                    = 30
+
+── CAM 机制 ──────────────────────────────────────────────────────
+  cam_enabled                  = True
+  cam_bootstrap_gate           = True
+  cam_confidence_level         = 0.95
+  cam_meaningful_improvement   = 0.0
+  cam_bootstrap_samples        = 10000
+  cam_seed                     = 42
+  cam_adaptive_budget          = True
+  cam_min_budget               = 2
+  cam_max_budget               = 4
+  cam_memory_enabled           = True
+  cam_memory_top_k             = 3
+  cam_soft_accept              = True
+  cam_drift_patience           = 2
+  cam_drift_tolerance          = 0.0
+  cam_memory_inconclusive      = True
+
+── 覆盖校验 ────────────────────────────────────────────────
+
+PASS: config resolves and every override took effect.
+
+=== Final combined unittest rerun after assertion wording correction ===
+.............................................................................................................................
+----------------------------------------------------------------------
+Ran 125 tests in 9.207s
+
+OK
+
+=== Final scripts/verify_config.py --config configs/experiments/cam_v3_mechanisms.yaml ===
+config : configs/experiments/cam_v3_mechanisms.yaml
+keys   : 115 resolved
+
+── 模型 / 后端 ─────────────────────────────────────────────────────
+  optimizer_model              = 'glm'
+  target_model                 = 'qwen'
+  optimizer_backend            = 'openai_chat'
+  target_backend               = 'openai_chat'
+  reasoning_effort             = ''
+  num_epochs                   = 4
+  train_size                   = 80
+  batch_size                   = 40
+  seed                         = 42
+  minibatch_size               = 8
+  merge_batch_size             = 8
+  analyst_workers              = 8
+  max_analyst_rounds           = 3
+  edit_budget                  = 4
+  min_edit_budget              = 2
+  lr_scheduler                 = 'cosine'
+  use_gate                     = True
+  sel_env_num                  = 40
+  test_env_num                 = 280
+  eval_test                    = False
+  env                          = 'spreadsheetbench'
+  mode                         = 'single'
+  workers                      = 8
+  exec_timeout                 = 1200
+  limit                        = 0
+  split_dir                    = 'data/spreadsheetbench_split'
+  data_root                    = 'data/spreadsheetbench_verified_400'
+  out_root                     = ''
+  skill_init                   = 'skillopt/envs/spreadsheetbench/skills/initial.md'
+  use_slow_update              = True
+  use_meta_skill               = True
+  skill_update_mode            = 'patch'
+  max_completion_tokens        = 16384
+  max_turns                    = 30
+
+── CAM 机制 ──────────────────────────────────────────────────────
+  cam_enabled                  = True
+  cam_bootstrap_gate           = True
+  cam_confidence_level         = 0.95
+  cam_meaningful_improvement   = 0.0
+  cam_bootstrap_samples        = 10000
+  cam_seed                     = 42
+  cam_adaptive_budget          = True
+  cam_min_budget               = 2
+  cam_max_budget               = 4
+  cam_memory_enabled           = True
+  cam_memory_top_k             = 3
+  cam_soft_accept              = True
+  cam_drift_patience           = 2
+  cam_drift_tolerance          = 0.0
+  cam_memory_inconclusive      = True
+
+── 覆盖校验 ────────────────────────────────────────────────
+
+PASS: config resolves and every override took effect.

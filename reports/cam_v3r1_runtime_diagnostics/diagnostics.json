@@ -1,0 +1,361 @@
+{
+  "revision": "cam_v3r1_runtime_diagnostics",
+  "source_study": "continuous_adaptation_v3",
+  "scope": "Training and validation mechanism behavior, not a new accuracy experiment",
+  "model_api_calls": 0,
+  "heldout_predictions_read": false,
+  "cam_cells": [
+    {
+      "cell_id": "cam_v3_seed42",
+      "seed": 42,
+      "steps": [
+        {
+          "step": 1,
+          "task_type": "Cell-Level Manipulation",
+          "recurring_task_type": false,
+          "action": "accept_new_best",
+          "candidate_validation_score": 0.65,
+          "best_validation_score": 0.65,
+          "budget": 2,
+          "budget_reason": "provenance_unknown_minimum_fallback",
+          "unknown_provenance": true,
+          "supported_training_ids": 0,
+          "memory_retrieval_calls": 2,
+          "memory_injected_items": 0,
+          "memory_records_added": 1,
+          "gate_lower_bound": 0.125,
+          "gate_upper_bound": 0.475,
+          "promotion_authorized": true,
+          "group_guard": {
+            "enabled": true,
+            "status": "passed",
+            "reason": null,
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee"
+          },
+          "noninferiority_passed": null
+        },
+        {
+          "step": 2,
+          "task_type": "Sheet-Level Manipulation",
+          "recurring_task_type": false,
+          "action": "reject",
+          "candidate_validation_score": 0.475,
+          "best_validation_score": 0.65,
+          "budget": 2,
+          "budget_reason": "provenance_unknown_minimum_fallback",
+          "unknown_provenance": true,
+          "supported_training_ids": 0,
+          "memory_retrieval_calls": 2,
+          "memory_injected_items": 0,
+          "memory_records_added": 1,
+          "gate_lower_bound": -0.325,
+          "gate_upper_bound": -0.05,
+          "promotion_authorized": false,
+          "group_guard": {
+            "enabled": true,
+            "status": "blocked",
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee"
+          },
+          "noninferiority_passed": null
+        },
+        {
+          "step": 3,
+          "task_type": "Cell-Level Manipulation",
+          "recurring_task_type": true,
+          "action": "reject",
+          "candidate_validation_score": 0.475,
+          "best_validation_score": 0.65,
+          "budget": 1,
+          "budget_reason": "provenance_unknown_minimum_fallback; recent_harmful_change_shrink",
+          "unknown_provenance": true,
+          "supported_training_ids": 0,
+          "memory_retrieval_calls": 1,
+          "memory_injected_items": 1,
+          "memory_records_added": 1,
+          "gate_lower_bound": -0.325,
+          "gate_upper_bound": -0.05,
+          "promotion_authorized": false,
+          "group_guard": {
+            "enabled": true,
+            "status": "blocked",
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee"
+          },
+          "noninferiority_passed": null
+        },
+        {
+          "step": 4,
+          "task_type": "Sheet-Level Manipulation",
+          "recurring_task_type": true,
+          "action": "cam_re_evaluate",
+          "candidate_validation_score": 0.65,
+          "best_validation_score": 0.65,
+          "budget": 1,
+          "budget_reason": "provenance_unknown_minimum_fallback; recent_harmful_change_shrink",
+          "unknown_provenance": true,
+          "supported_training_ids": 0,
+          "memory_retrieval_calls": 2,
+          "memory_injected_items": 0,
+          "memory_records_added": 1,
+          "gate_lower_bound": -0.1,
+          "gate_upper_bound": 0.1,
+          "promotion_authorized": false,
+          "group_guard": {
+            "enabled": true,
+            "status": "passed",
+            "reason": null,
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee"
+          },
+          "noninferiority_passed": false
+        }
+      ],
+      "final_current_validation_score": 0.65,
+      "final_best_validation_score": 0.65,
+      "best_origin": "step_0001",
+      "current_origin": "step_0001",
+      "best_skill_sha256": "fa7dd62454ecc3c68bd1673bca639c41278ffdda003aca736afd596c7a8495f1",
+      "same_current_and_best": true
+    },
+    {
+      "cell_id": "cam_v3_seed43",
+      "seed": 43,
+      "steps": [
+        {
+          "step": 1,
+          "task_type": "Cell-Level Manipulation",
+          "recurring_task_type": false,
+          "action": "accept_new_best",
+          "candidate_validation_score": 0.55,
+          "best_validation_score": 0.55,
+          "budget": 2,
+          "budget_reason": "provenance_unknown_minimum_fallback",
+          "unknown_provenance": true,
+          "supported_training_ids": 0,
+          "memory_retrieval_calls": 2,
+          "memory_injected_items": 0,
+          "memory_records_added": 1,
+          "gate_lower_bound": 0.075,
+          "gate_upper_bound": 0.4,
+          "promotion_authorized": true,
+          "group_guard": {
+            "enabled": true,
+            "status": "passed",
+            "reason": null,
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee"
+          },
+          "noninferiority_passed": null
+        },
+        {
+          "step": 2,
+          "task_type": "Sheet-Level Manipulation",
+          "recurring_task_type": false,
+          "action": "cam_re_evaluate",
+          "candidate_validation_score": 0.55,
+          "best_validation_score": 0.55,
+          "budget": 2,
+          "budget_reason": "provenance_unknown_minimum_fallback",
+          "unknown_provenance": true,
+          "supported_training_ids": 0,
+          "memory_retrieval_calls": 2,
+          "memory_injected_items": 0,
+          "memory_records_added": 1,
+          "gate_lower_bound": -0.15,
+          "gate_upper_bound": 0.15,
+          "promotion_authorized": false,
+          "group_guard": {
+            "enabled": true,
+            "status": "passed",
+            "reason": null,
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee"
+          },
+          "noninferiority_passed": false
+        },
+        {
+          "step": 3,
+          "task_type": "Cell-Level Manipulation",
+          "recurring_task_type": true,
+          "action": "soft_accept",
+          "candidate_validation_score": 0.675,
+          "best_validation_score": 0.55,
+          "budget": 2,
+          "budget_reason": "provenance_unknown_minimum_fallback",
+          "unknown_provenance": true,
+          "supported_training_ids": 0,
+          "memory_retrieval_calls": 2,
+          "memory_injected_items": 2,
+          "memory_records_added": 1,
+          "gate_lower_bound": -0.025,
+          "gate_upper_bound": 0.275,
+          "promotion_authorized": false,
+          "group_guard": {
+            "enabled": true,
+            "status": "passed",
+            "reason": null,
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee"
+          },
+          "noninferiority_passed": true
+        },
+        {
+          "step": 4,
+          "task_type": "Sheet-Level Manipulation",
+          "recurring_task_type": true,
+          "action": "reject",
+          "candidate_validation_score": 0.525,
+          "best_validation_score": 0.55,
+          "budget": 2,
+          "budget_reason": "provenance_unknown_minimum_fallback",
+          "unknown_provenance": true,
+          "supported_training_ids": 0,
+          "memory_retrieval_calls": 2,
+          "memory_injected_items": 1,
+          "memory_records_added": 1,
+          "gate_lower_bound": -0.275,
+          "gate_upper_bound": -0.025,
+          "promotion_authorized": false,
+          "group_guard": {
+            "enabled": true,
+            "status": "blocked",
+            "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+            "max_regression": 0.1,
+            "min_pairs": 5,
+            "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee"
+          },
+          "noninferiority_passed": null
+        }
+      ],
+      "final_current_validation_score": 0.675,
+      "final_best_validation_score": 0.55,
+      "best_origin": "step_0001",
+      "current_origin": "step_0003",
+      "best_skill_sha256": "f577666327638e483c610f9499ae43bfee3a9af185e3c72a681c5664dfa00d08",
+      "same_current_and_best": false
+    }
+  ],
+  "totals": {
+    "training_steps": 8,
+    "budget_unknown_provenance_steps": 8,
+    "budget_reasons": {
+      "provenance_unknown_minimum_fallback": 6,
+      "provenance_unknown_minimum_fallback; recent_harmful_change_shrink": 2
+    },
+    "memory_injected_steps": 3,
+    "memory_injected_items": 4,
+    "recurrence_opportunities": 4,
+    "recurrence_steps_with_memory": 3,
+    "main_gate_actions": {
+      "accept_new_best": 2,
+      "reject": 3,
+      "cam_re_evaluate": 2,
+      "soft_accept": 1
+    },
+    "legacy_auxiliary_no_content": 7,
+    "auxiliary_no_content_by_family": {
+      "slow_update": 5,
+      "meta_skill": 2
+    }
+  },
+  "legacy_auxiliary_outcomes": [
+    {
+      "cell_id": "cam_v3_seed42",
+      "family": "slow_update",
+      "epoch": "epoch_03",
+      "time_s": 455.6,
+      "legacy_action": "no_content",
+      "path": "outputs/continuous_adaptation_v3/spreadsheetbench/qwen/cam_v3_seed42/slow_update/epoch_03/slow_result.json"
+    },
+    {
+      "cell_id": "cam_v3_seed43",
+      "family": "slow_update",
+      "epoch": "epoch_02",
+      "time_s": 428.1,
+      "legacy_action": "no_content",
+      "path": "outputs/continuous_adaptation_v3/spreadsheetbench/qwen/cam_v3_seed43/slow_update/epoch_02/slow_result.json"
+    },
+    {
+      "cell_id": "cam_v3_seed43",
+      "family": "slow_update",
+      "epoch": "epoch_03",
+      "time_s": 507.4,
+      "legacy_action": "no_content",
+      "path": "outputs/continuous_adaptation_v3/spreadsheetbench/qwen/cam_v3_seed43/slow_update/epoch_03/slow_result.json"
+    },
+    {
+      "cell_id": "baseline_seed43",
+      "family": "slow_update",
+      "epoch": "epoch_02",
+      "time_s": 370.7,
+      "legacy_action": "no_content",
+      "path": "outputs/continuous_adaptation_v3/spreadsheetbench/qwen/baseline_seed43/slow_update/epoch_02/slow_result.json"
+    },
+    {
+      "cell_id": "baseline_seed43",
+      "family": "slow_update",
+      "epoch": "epoch_03",
+      "time_s": 382.8,
+      "legacy_action": "no_content",
+      "path": "outputs/continuous_adaptation_v3/spreadsheetbench/qwen/baseline_seed43/slow_update/epoch_03/slow_result.json"
+    },
+    {
+      "cell_id": "baseline_seed43",
+      "family": "meta_skill",
+      "epoch": "epoch_02",
+      "time_s": 22.4,
+      "legacy_action": "no_content",
+      "path": "outputs/continuous_adaptation_v3/spreadsheetbench/qwen/baseline_seed43/meta_skill/epoch_02/meta_skill_result.json"
+    },
+    {
+      "cell_id": "baseline_seed43",
+      "family": "meta_skill",
+      "epoch": "epoch_03",
+      "time_s": 29.2,
+      "legacy_action": "no_content",
+      "path": "outputs/continuous_adaptation_v3/spreadsheetbench/qwen/baseline_seed43/meta_skill/epoch_03/meta_skill_result.json"
+    }
+  ],
+  "interpretation_limits": [
+    "Unknown-provenance fallback is not evidence that task-support adaptation helped.",
+    "Memory warm-up steps must not be counted as missed recurrence retrieval opportunities.",
+    "A higher current validation score does not establish a better held-out checkpoint.",
+    "Cached gate decisions cannot establish counterfactual training trajectories or accuracy.",
+    "Legacy no_content conflates outcomes; known failure attribution uses the preserved incident evidence.",
+    "No gate threshold, budget, retrieval policy, model, or test subset is tuned by this diagnosis."
+  ],
+  "observed_at_utc": "2026-10-19T07:47:07.265578+00:00",
+  "old_evidence_preservation": [
+    {
+      "path": "outputs/studies/continuous_adaptation_v3/freeze.json",
+      "unchanged": true
+    },
+    {
+      "path": "outputs/studies/continuous_adaptation_v3/queue_state.json",
+      "unchanged": true
+    },
+    {
+      "path": "reports/continuous_adaptation_v3/results.json",
+      "unchanged": true
+    },
+    {
+      "path": "reports/continuous_adaptation_v3/FINAL_ACCEPTANCE.json",
+      "unchanged": true
+    },
+    {
+      "path": "reports/continuous_adaptation_v3/FINAL_SUMMARY.md",
+      "unchanged": true
+    }
+  ]
+}

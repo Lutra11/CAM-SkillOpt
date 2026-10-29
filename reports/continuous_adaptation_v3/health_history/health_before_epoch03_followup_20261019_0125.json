@@ -1,0 +1,171 @@
+{
+  "created_at_utc": "2026-10-18T17:20:39.258592+00:00",
+  "study_id": "continuous_adaptation_v3",
+  "audit_scope": "compact offline validation only; no API/model calls, no test score analysis, no queue/source/frozen input changes",
+  "freeze": {
+    "sha256": "3e36613b9d9db411f806cca95a6644a6a66612924c925add240d44ffcd0bb597",
+    "source_fingerprints": 1378,
+    "verify_freeze_passed": true,
+    "verify_freeze_passed_after_reporter": true
+  },
+  "queue": {
+    "sha256_at_audit_start": "0ed0ab3c1ae5621012511547aaecbc664f5e77ce6bd79fa6581a2f51800b2544",
+    "sha256_after_reporter": "0ed0ab3c1ae5621012511547aaecbc664f5e77ce6bd79fa6581a2f51800b2544",
+    "cell_statuses": {
+      "baseline_seed42": "accepted",
+      "cam_v3_seed42": "accepted",
+      "cam_v3_seed43": "running",
+      "baseline_seed43": "pending"
+    },
+    "unchanged_during_audit": true
+  },
+  "cam_v3_seed43": {
+    "queue_status": "running",
+    "completed_main_steps": 3,
+    "last_completed_step": 3,
+    "current_score": 0.675,
+    "current_origin": "step_0003",
+    "best_score": 0.55,
+    "best_step": 1,
+    "best_origin": "step_0001",
+    "best_skill_still_step1": true,
+    "main_steps": [
+      {
+        "step": 1,
+        "rollout_rows": 20,
+        "ids_exact_unique": true,
+        "types_exact": true,
+        "task_type": "Cell-Level Manipulation",
+        "action": "accept_new_best",
+        "history_action": "accept_new_best",
+        "record_action": "accept_new_best",
+        "event_consistent": true,
+        "reason": null,
+        "lower_confidence_bound": 0.075,
+        "margin": null,
+        "soft_accept_policy": null,
+        "promotion_authorized": true,
+        "group_guard_enabled": true,
+        "group_guard_status": "passed",
+        "group_guard_reason": null,
+        "group_sizes": {
+          "cell_level": 29,
+          "sheet_level": 11
+        }
+      },
+      {
+        "step": 2,
+        "rollout_rows": 20,
+        "ids_exact_unique": true,
+        "types_exact": true,
+        "task_type": "Sheet-Level Manipulation",
+        "action": "cam_re_evaluate",
+        "history_action": "cam_re_evaluate",
+        "record_action": "cam_re_evaluate",
+        "event_consistent": true,
+        "reason": "noninferiority_lcb_below_negative_margin",
+        "lower_confidence_bound": -0.15,
+        "margin": 0.05,
+        "soft_accept_policy": "noninferiority",
+        "promotion_authorized": false,
+        "group_guard_enabled": true,
+        "group_guard_status": "passed",
+        "group_guard_reason": null,
+        "group_sizes": {
+          "cell_level": 29,
+          "sheet_level": 11
+        }
+      },
+      {
+        "step": 3,
+        "rollout_rows": 20,
+        "ids_exact_unique": true,
+        "types_exact": true,
+        "task_type": "Cell-Level Manipulation",
+        "action": "soft_accept",
+        "history_action": "soft_accept",
+        "record_action": "soft_accept",
+        "event_consistent": true,
+        "reason": null,
+        "lower_confidence_bound": -0.025,
+        "margin": 0.05,
+        "soft_accept_policy": "noninferiority",
+        "promotion_authorized": false,
+        "group_guard_enabled": true,
+        "group_guard_status": "passed",
+        "group_guard_reason": null,
+        "group_sizes": {
+          "cell_level": 29,
+          "sheet_level": 11
+        }
+      }
+    ],
+    "config": {
+      "eval_test": false,
+      "final_selection": true,
+      "cam_enabled": true,
+      "cam_soft_accept_policy": "noninferiority",
+      "cam_noninferiority_margin": 0.05,
+      "cam_group_guard": true,
+      "cam_group_max_regression": 0.1,
+      "cam_group_min_pairs": 5
+    },
+    "test_eval_started": false,
+    "latest_slow_update_epoch3": {
+      "artifact_exists": false,
+      "action": null,
+      "call_pending_at_audit_start": true,
+      "new_traceback_or_fault_observed": false
+    },
+    "slow_update_epochs_2_3": {
+      "stages": [
+        {
+          "epoch": 2,
+          "artifact_exists": false,
+          "action": "pending_or_not_written",
+          "recorded_time_s": null,
+          "has_guidance": false
+        },
+        {
+          "epoch": 3,
+          "artifact_exists": false,
+          "action": "pending_or_not_written",
+          "recorded_time_s": null,
+          "has_guidance": false
+        }
+      ],
+      "log_incident_lines": [
+        {
+          "line": 318,
+          "snippet": "RuntimeError: LLM call failed after 3 retries: 'NoneType' object is not subscriptable"
+        }
+      ],
+      "epoch2_failure_disclosed": false,
+      "epoch3_current_stage": "training rollouts complete; guidance call pending at heartbeat; no new traceback observed during audit",
+      "interpretation": "Missing auxiliary guidance at either epoch is an execution deviation; preserve both disclosures. Do not infer clean completion or invalidate/replay the main cell solely from the auxiliary no_content events under the existing runner contract."
+    },
+    "slow_update_epoch2": {
+      "artifact_exists": true,
+      "action": "no_content",
+      "time_s": 428.1
+    },
+    "slow_update_epoch3": {
+      "artifact_exists": false,
+      "action": "pending",
+      "time_s": null
+    },
+    "auxiliary_update_incident_note": "Epoch 2 ended no_content after three retries and a NoneType subscript failure (log line 318; 428.1 s). Epoch 3 was still pending at this audit; no new traceback observed. Both missing auxiliary guidance outcomes must be disclosed if they persist; do not describe this run as cleanly completing every configured slow update."
+  },
+  "known_seed42_incident": "Epoch 3 auxiliary slow update produced no_content after a three-retry RuntimeError; disclosed and preserved.",
+  "validity": {
+    "all_completed_rollouts_exact": true,
+    "all_completed_gate_records_consistent": true,
+    "step3_soft_accept_noninferiority_authorized_without_best_promotion": true,
+    "critical_blocker": null
+  },
+  "no_quality_claim": true,
+  "reporter_refresh": {
+    "status": "awaiting_complete_seed_pairs",
+    "complete_seed_pair_count": 1
+  }
+}

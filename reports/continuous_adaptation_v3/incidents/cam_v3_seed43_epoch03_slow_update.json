@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "incident_id": "cam_v3_seed43_epoch03_slow_update",
+  "observed_at_utc": "2026-10-18T17:24:04.886676+00:00",
+  "severity": "nonfatal_warning",
+  "status": "contained_nonfatal",
+  "cell": "cam_v3_seed43",
+  "epoch": 3,
+  "time_s": 507.4,
+  "action": "no_content",
+  "result_modified_utc": "2026-10-18T17:20:47.657668+00:00",
+  "comparison_json_bytes": 20363,
+  "formatted_comparison_chars": 166081,
+  "trajectory_chars_in_comparison": 147790,
+  "non_success_pairs": 16,
+  "category_counts": {
+    "stable_success": 4,
+    "persistent_fail": 13,
+    "regressed": 1,
+    "improved": 2
+  },
+  "confirmed_saved_action": "no_content",
+  "confirmed_saved_time_s": 507.4,
+  "confirmed_saved_keys": [
+    "action",
+    "time_s"
+  ],
+  "provider_backend": "azure_openai",
+  "optimizer_model": "glm",
+  "target_model": "qwen",
+  "reasoning": "off",
+  "configured_attempts": 3,
+  "exception_signature": "NoneType object not subscriptable",
+  "exception_cause": "unconfirmed; inner traceback and provider response payload not saved",
+  "request_id_saved": false,
+  "response_status_saved": false,
+  "response_headers_or_body_saved": false,
+  "saved_result_has_guidance": false,
+  "trainer_action": "no_content",
+  "trajectory_replayed": false,
+  "prompt_source": {
+    "path": "skillopt/prompts/slow_update.md",
+    "bytes": 2998,
+    "sha256": "7f6f97d2283a370ad072a91ad61e152551f4f4eb4f519c9a1c5c60679b4782f2",
+    "frozen_copy_matches": false,
+    "frozen_prompt_snapshot_present": false,
+    "freeze_manifest_includes_prompt": false,
+    "current_file_sha256": "7f6f97d2283a370ad072a91ad61e152551f4f4eb4f519c9a1c5c60679b4782f2"
+  },
+  "comparison_schema": [
+    "category",
+    "curr",
+    "id",
+    "prev",
+    "task"
+  ],
+  "comparison_pairs": 20,
+  "source_behavior": {
+    "client": "_chat_impl uses resp.choices[0].message.content; exceptions retry and final RuntimeError keeps only last_err text",
+    "slow_update": "catches generic non-infrastructure RuntimeError, logs traceback, returns None",
+    "trainer": "saves no_content and continues with existing current skill"
+  },
+  "assessment": "Same response-processing failure signature recurs in CAM arm; exact cause cannot be identified. Null/empty choices is one possible parser edge, not proven. Input-size association is mixed: CAM43 epoch2 comparison segment is within successful-run range; CAM43 epoch3 is larger than observed successful examples. Larger context may contribute to epoch3 only, but cannot explain both failures. No definite provider outage or parser defect is established.",
+  "cell_status_at_report": "running",
+  "current_latest_stage_for_cam_v3_seed43": {
+    "path": "outputs\\continuous_adaptation_v3\\spreadsheetbench\\qwen\\cam_v3_seed43\\steps\\step_0004\\rollout\\stage_stats.json",
+    "stage": "rollout",
+    "status": "running",
+    "n_expected": 20,
+    "n_recorded": 6,
+    "modified_utc": "2026-10-18T17:23:09.763448+00:00"
+  },
+  "known_trajectory_effect": "Missing one slow-update guidance block; the model continues with current skill per existing no_content path. This event was not replayed.",
+  "input_size_comparison": {
+    "input_measure": "reconstructed formatted comparison section characters only; excludes system prompt, skill documents, and prior guidance",
+    "failed_cam43_epoch02": 107983,
+    "failed_cam43_epoch03": 166081,
+    "successful_examples": {
+      "baseline_seed42_epoch02": 125545,
+      "baseline_seed42_epoch03": 117699,
+      "baseline_seed42_epoch04": 124647,
+      "cam_v3_seed42_epoch02": 116799
+    },
+    "assessment": "Epoch 2 failed below successful examples, so size alone does not explain recurrence. Epoch 3 comparison section is roughly 32% above the largest listed successful example and may increase context pressure, but no request token count/limit response was saved; this is association, not cause."
+  },
+  "request_response_metadata_assessment": "Cached slow_result contains only action/time. Cell logs have no saved request ID, HTTP status field, response headers, or provider body. This prevents distinguishing empty choices/parser failure from transient provider response behavior."
+}

@@ -1,0 +1,269 @@
+{
+  "results": [
+    {
+      "model": "glm-5.3",
+      "ok": false,
+      "status": 404,
+      "elapsed_s": 0.07,
+      "served_model": null,
+      "error": {
+        "code": "model_not_found",
+        "message": "No available channel for model glm-5.3 under group oc (distributor) (request id: 202610160915504275174498268d9d6One1ON0E)",
+        "param": "model",
+        "type": "invalid_request_error"
+      }
+    },
+    {
+      "model": "glm-5.3-private-19428658",
+      "ok": false,
+      "status": 404,
+      "elapsed_s": 0.08,
+      "served_model": null,
+      "error": {
+        "code": "model_not_found",
+        "message": "No available channel for model glm-5.3-private-19428658 under group oc (distributor) (request id: 202610160915504372386878268d9d6CQjoOLaO)",
+        "param": "model",
+        "type": "invalid_request_error"
+      }
+    },
+    {
+      "model": "glm-4.6",
+      "ok": false,
+      "status": 404,
+      "elapsed_s": 0.07,
+      "served_model": null,
+      "error": {
+        "code": "model_not_found",
+        "message": "No available channel for model glm-4.6 under group oc (distributor) (request id: 202610160915504263198508268d9d6OIMxlH24)",
+        "param": "model",
+        "type": "invalid_request_error"
+      }
+    },
+    {
+      "model": "glm-4.5",
+      "ok": false,
+      "status": 404,
+      "elapsed_s": 0.15,
+      "served_model": null,
+      "error": {
+        "code": "model_not_found",
+        "message": "No available channel for model glm-4.5 under group oc (distributor) (request id: 202610160915505083862188268d9d6nZ0FJ8xT)",
+        "param": "model",
+        "type": "invalid_request_error"
+      }
+    },
+    {
+      "model": "glm-5",
+      "ok": false,
+      "status": 404,
+      "elapsed_s": 0.17,
+      "served_model": null,
+      "error": {
+        "code": "model_not_found",
+        "message": "No available channel for model glm-5 under group oc (distributor) (request id: 202610160915505213860348268d9d6aPuSstnv)",
+        "param": "model",
+        "type": "invalid_request_error"
+      }
+    },
+    {
+      "model": "zai/glm-5.3",
+      "ok": false,
+      "status": 404,
+      "elapsed_s": 0.09,
+      "served_model": null,
+      "error": {
+        "code": "model_not_found",
+        "message": "No available channel for model zai/glm-5.3 under group oc (distributor) (request id: 202610160915504416569108268d9d65z6uglcA)",
+        "param": "model",
+        "type": "invalid_request_error"
+      }
+    },
+    {
+      "model": "Qwen3.6-35B-A3B",
+      "ok": false,
+      "status": 404,
+      "elapsed_s": 0.07,
+      "served_model": null,
+      "error": {
+        "code": "model_not_found",
+        "message": "No available channel for model Qwen3.6-35B-A3B under group oc (distributor) (request id: 202610160915504966227308268d9d63k7vlZdV)",
+        "param": "model",
+        "type": "invalid_request_error"
+      }
+    },
+    {
+      "model": "qwen3.6-35b-a3b",
+      "ok": false,
+      "status": 404,
+      "elapsed_s": 0.07,
+      "served_model": null,
+      "error": {
+        "code": "model_not_found",
+        "message": "No available channel for model qwen3.6-35b-a3b under group oc (distributor) (request id: 202610160915504995689178268d9d6uK6p7abt)",
+        "param": "model",
+        "type": "invalid_request_error"
+      }
+    },
+    {
+      "model": "qwen3-max",
+      "ok": false,
+      "status": 404,
+      "elapsed_s": 0.08,
+      "served_model": null,
+      "error": {
+        "code": "model_not_found",
+        "message": "No available channel for model qwen3-max under group oc (distributor) (request id: 202610160915505163841688268d9d6E5DDfy3X)",
+        "param": "model",
+        "type": "invalid_request_error"
+      }
+    },
+    {
+      "model": "qwen-max",
+      "ok": false,
+      "status": 404,
+      "elapsed_s": 0.09,
+      "served_model": null,
+      "error": {
+        "code": "model_not_found",
+        "message": "No available channel for model qwen-max under group oc (distributor) (request id: 202610160915505317684778268d9d6QxMXOtU8)",
+        "param": "model",
+        "type": "invalid_request_error"
+      }
+    },
+    {
+      "model": "qwen3.5-Plus",
+      "ok": false,
+      "status": 404,
+      "elapsed_s": 0.09,
+      "served_model": null,
+      "error": {
+        "code": "model_not_found",
+        "message": "No available channel for model qwen3.5-Plus under group oc (distributor) (request id: 202610160915505893961258268d9d64U0zXrFu)",
+        "param": "model",
+        "type": "invalid_request_error"
+      }
+    },
+    {
+      "model": "minimax-m2",
+      "ok": false,
+      "status": 404,
+      "elapsed_s": 0.09,
+      "served_model": null,
+      "error": {
+        "code": "model_not_found",
+        "message": "No available channel for model minimax-m2 under group oc (distributor) (request id: 202610160915505903177938268d9d6w6KjOzBf)",
+        "param": "model",
+        "type": "invalid_request_error"
+      }
+    },
+    {
+      "model": "MiniMax-M2.7",
+      "ok": false,
+      "status": 404,
+      "elapsed_s": 0.08,
+      "served_model": null,
+      "error": {
+        "code": "model_not_found",
+        "message": "No available channel for model MiniMax-M2.7 under group oc (distributor) (request id: 202610160915505863427008268d9d6I8bLUWYk)",
+        "param": "model",
+        "type": "invalid_request_error"
+      }
+    },
+    {
+      "model": "minimax-m2.7",
+      "ok": false,
+      "status": 404,
+      "elapsed_s": 0.09,
+      "served_model": null,
+      "error": {
+        "code": "model_not_found",
+        "message": "No available channel for model minimax-m2.7 under group oc (distributor) (request id: 202610160915506034302218268d9d6XLps4iRF)",
+        "param": "model",
+        "type": "invalid_request_error"
+      }
+    },
+    {
+      "model": "deepseek-chat",
+      "ok": false,
+      "status": 404,
+      "elapsed_s": 0.08,
+      "served_model": null,
+      "error": {
+        "code": "model_not_found",
+        "message": "No available channel for model deepseek-chat under group oc (distributor) (request id: 202610160915505994040398268d9d6rkG9B2IY)",
+        "param": "model",
+        "type": "invalid_request_error"
+      }
+    },
+    {
+      "model": "deepseek-v3.2",
+      "ok": false,
+      "status": 404,
+      "elapsed_s": 0.09,
+      "served_model": null,
+      "error": {
+        "code": "model_not_found",
+        "message": "No available channel for model deepseek-v3.2 under group oc (distributor) (request id: 202610160915506212522598268d9d6WKHNMUtS)",
+        "param": "model",
+        "type": "invalid_request_error"
+      }
+    },
+    {
+      "model": "kimi-k2",
+      "ok": false,
+      "status": 404,
+      "elapsed_s": 0.08,
+      "served_model": null,
+      "error": {
+        "code": "model_not_found",
+        "message": "No available channel for model kimi-k2 under group oc (distributor) (request id: 202610160915506675555778268d9d69etiQP7t)",
+        "param": "model",
+        "type": "invalid_request_error"
+      }
+    },
+    {
+      "model": "kimi-k2-thinking",
+      "ok": false,
+      "status": 404,
+      "elapsed_s": 0.1,
+      "served_model": null,
+      "error": {
+        "code": "model_not_found",
+        "message": "No available channel for model kimi-k2-thinking under group oc (distributor) (request id: 202610160915506792116768268d9d6SjH9GOPs)",
+        "param": "model",
+        "type": "invalid_request_error"
+      }
+    },
+    {
+      "model": "moonshot-v1-128k",
+      "ok": false,
+      "status": 404,
+      "elapsed_s": 0.1,
+      "served_model": null,
+      "error": {
+        "code": "model_not_found",
+        "message": "No available channel for model moonshot-v1-128k under group oc (distributor) (request id: 202610160915506873524068268d9d6N4AjIrff)",
+        "param": "model",
+        "type": "invalid_request_error"
+      }
+    },
+    {
+      "model": "gemma4:26b",
+      "ok": true,
+      "status": 200,
+      "elapsed_s": 6.14,
+      "served_model": null,
+      "reported_model": "gemma4:26b",
+      "usage": {
+        "completion_tokens": 200,
+        "prompt_tokens": 40,
+        "total_tokens": 240,
+        "prompt_tokens_details": {
+          "cached_tokens": 35
+        }
+      },
+      "content": "",
+      "has_reasoning_content": true
+    }
+  ]
+}

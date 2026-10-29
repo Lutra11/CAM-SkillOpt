@@ -56,20 +56,33 @@ class OptimizerInfraPropagationTests(unittest.TestCase):
         for module, call in self.cases():
             with self.subTest(module=module.__name__, case=call):
                 chat = Mock(return_value=('A task answer may refer to HTTP 401.', {}))
-                self.invoke(module, call, chat)
+                if module in (meta_skill, slow_update):
+                    with self.assertRaises(InfraError) as captured:
+                        self.invoke(module, call, chat)
+                    self.assertEqual(captured.exception.failure_type, "provider_error")
+                    self.assertNotEqual(captured.exception.failure_type, "auth_error")
+                else:
+                    self.invoke(module, call, chat)
                 self.assertEqual(chat.call_count, 1)
 
-    def test_parse_error_with_401_keeps_existing_fallback(self):
+    def test_aux_parse_errors_fail_closed_without_changing_other_optimizer_fallbacks(self):
         for module, call in self.cases():
-            if module is skill_aware:
+            if module is meta_skill:
+                parser_path = "skillopt.optimizer.slow_update.extract_json"
+            elif module is skill_aware:
                 parser_path = "skillopt.utils.extract_json"
             else:
                 parser_path = module.__name__ + ".extract_json"
             with self.subTest(module=module.__name__, case=call):
                 chat = Mock(return_value=("malformed response", {}))
                 with patch(parser_path, side_effect=ValueError("parse error at character 401")):
-                    with contextlib.redirect_stderr(io.StringIO()):
-                        self.invoke(module, call, chat)
+                    if module in (meta_skill, slow_update):
+                        with self.assertRaises(InfraError) as captured:
+                            self.invoke(module, call, chat)
+                        self.assertEqual(captured.exception.failure_type, "provider_error")
+                    else:
+                        with contextlib.redirect_stderr(io.StringIO()):
+                            self.invoke(module, call, chat)
                 self.assertEqual(chat.call_count, 1)
 
 

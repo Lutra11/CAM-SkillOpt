@@ -1,8 +1,0 @@
-{
-  "ids": [
-    "47766"
-  ],
-  "split": "train",
-  "seed": 42,
-  "batch_seed": 1043
-}

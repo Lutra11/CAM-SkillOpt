@@ -1,0 +1,104 @@
+{
+  "study_id": "cam_v2r1_qwen",
+  "started_at": "2026-10-18T18:32:19.577031+08:00",
+  "updated_at": "2026-10-18T10:39:25.5274651Z",
+  "lanes": 2,
+  "status": "superseded_interrupted",
+  "cells": [
+    {
+      "cell_id": "qwen_baseline_42",
+      "method": "baseline",
+      "target": "qwen",
+      "seed": 42,
+      "block": "paired_seed42",
+      "out_root": "outputs/matrix_v2r1/spreadsheetbench/qwen/baseline_seed42",
+      "status": "skipped_done",
+      "finished_at": "2026-10-18T18:32:20.758074+08:00",
+      "acceptance": "complete; steps, actions, test IDs and scores verified"
+    },
+    {
+      "cell_id": "qwen_cam_full_42",
+      "method": "cam_full",
+      "target": "qwen",
+      "seed": 42,
+      "block": "paired_seed42",
+      "out_root": "outputs/matrix_v2r1/spreadsheetbench/qwen/cam_full_seed42",
+      "status": "skipped_done",
+      "finished_at": "2026-10-18T18:32:20.735074+08:00",
+      "acceptance": "complete; steps, actions, test IDs and scores verified"
+    },
+    {
+      "cell_id": "qwen_cam_full_43",
+      "method": "cam_full",
+      "target": "qwen",
+      "seed": 43,
+      "block": "paired_seed43",
+      "out_root": "outputs/matrix_v2r1/spreadsheetbench/qwen/cam_full_seed43",
+      "status": "operator_interrupted",
+      "started_at": "2026-10-18T18:32:57.660877+08:00",
+      "log": "reports\\v2r1\\logs\\qwen_cam_full_43.log",
+      "pid": 32604,
+      "finished_at": "2026-10-18T10:39:35.8698080Z",
+      "acceptance": "incomplete; artifacts preserved; not accepted"
+    },
+    {
+      "cell_id": "qwen_baseline_43",
+      "method": "baseline",
+      "target": "qwen",
+      "seed": 43,
+      "block": "paired_seed43",
+      "out_root": "outputs/matrix_v2r1/spreadsheetbench/qwen/baseline_seed43",
+      "status": "operator_interrupted",
+      "started_at": "2026-10-18T18:32:57.660877+08:00",
+      "log": "reports\\v2r1\\logs\\qwen_baseline_43.log",
+      "pid": 33908,
+      "finished_at": "2026-10-18T10:39:35.8742008Z",
+      "acceptance": "incomplete; artifacts preserved; not accepted"
+    },
+    {
+      "cell_id": "qwen_baseline_44",
+      "method": "baseline",
+      "target": "qwen",
+      "seed": 44,
+      "block": "paired_seed44",
+      "out_root": "outputs/matrix_v2r1/spreadsheetbench/qwen/baseline_seed44",
+      "status": "superseded"
+    },
+    {
+      "cell_id": "qwen_cam_full_44",
+      "method": "cam_full",
+      "target": "qwen",
+      "seed": 44,
+      "block": "paired_seed44",
+      "out_root": "outputs/matrix_v2r1/spreadsheetbench/qwen/cam_full_seed44",
+      "status": "superseded"
+    },
+    {
+      "cell_id": "qwen_cam_no_bootstrap_42",
+      "method": "cam_no_bootstrap",
+      "target": "qwen",
+      "seed": 42,
+      "block": "ablations",
+      "out_root": "outputs/matrix_v2r1/spreadsheetbench/qwen/cam_no_bootstrap_seed42",
+      "status": "superseded"
+    },
+    {
+      "cell_id": "qwen_cam_no_memory_42",
+      "method": "cam_no_memory",
+      "target": "qwen",
+      "seed": 42,
+      "block": "ablations",
+      "out_root": "outputs/matrix_v2r1/spreadsheetbench/qwen/cam_no_memory_seed42",
+      "status": "superseded"
+    },
+    {
+      "cell_id": "qwen_cam_no_adaptive_budget_42",
+      "method": "cam_no_adaptive_budget",
+      "target": "qwen",
+      "seed": 42,
+      "block": "ablations",
+      "out_root": "outputs/matrix_v2r1/spreadsheetbench/qwen/cam_no_adaptive_budget_seed42",
+      "status": "superseded"
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "created_at_utc": "2026-10-19T07:57:15.765248+00:00",
+  "study_id": "cam_v3r1_runtime_diagnostics",
+  "protocol_revision": 1,
+  "status": "offline freeze prepared twice and verified; no runtime queue or model execution authorized",
+  "freeze": {
+    "path": "outputs/studies/cam_v3r1_runtime_diagnostics/freeze.json",
+    "sha256": "c1d435957f1132f6e897515a6a2c9b249463b3651d7ca84838b673740dc35319",
+    "file_entries": 1445,
+    "snapshot_file_entries": 1445,
+    "prompt_markdown_files": 21,
+    "protocol_document": "docs/experiments/CAM_V3R1_RUNTIME_DIAGNOSTICS.md",
+    "prepare_invocations": 2,
+    "verify_succeeded": true,
+    "runtime_queue_created": false,
+    "auth_preflight_created": false
+  },
+  "offline_regression": {
+    "unittest_unique_ids_passed": 140,
+    "duplicate_test_ids_skipped": 20,
+    "unittest_discovered_instances": 160,
+    "types_assert_methods_passed": 24,
+    "types_runner_note": "test_types.py could not import pytest in the requested environment; no dependency was installed and source was unchanged. Its ordinary assert methods passed in-memory after removing only the unused pytest import.",
+    "logs": [
+      "reports/cam_v3r1_runtime_diagnostics/combined_tests.log",
+      "reports/cam_v3r1_runtime_diagnostics/combined_tests_initial.log",
+      "reports/cam_v3r1_runtime_diagnostics/types_compat.log"
+    ]
+  },
+  "preservation": {
+    "old_snapshot_entries": 1378,
+    "old_snapshot_hashes_matching": 1378,
+    "registered_prechange_backup_entries": 225,
+    "prechange_backup_hashes_matching": 225,
+    "prechange_prompts_matching_old_observation": 21,
+    "live_prompt_changes_vs_observation": [
+      "skillopt/prompts/meta_skill.md",
+      "skillopt/prompts/slow_update.md"
+    ],
+    "cam20_status": "PAUSED",
+    "old_evidence_guards_all_match": true
+  },
+  "mechanism_diagnostics": {
+    "training_steps": 8,
+    "unknown_budget_provenance_steps": 8,
+    "memory_injected_items": 4,
+    "recurrence_opportunities": 4,
+    "recurrence_with_memory": 3,
+    "legacy_auxiliary_no_content": 7,
+    "model_api_calls": 0,
+    "heldout_predictions_read": false
+  },
+  "checks": {
+    "prepare_succeeded_twice": true,
+    "second_prepare_was_idempotent": true,
+    "verify_succeeded": true,
+    "freeze_has_1445_files": true,
+    "freeze_has_all_21_recursive_prompts": true,
+    "protocol_doc_frozen": true,
+    "combined_unique_unittest_suites_passed": true,
+    "types_compat_assertion_methods_passed": true,
+    "no_runtime_queue": true,
+    "no_auth_preflight": true,
+    "old_snapshot_1378_all_match": true,
+    "prechange_backup_225_all_match": true,
+    "old_prompt_evidence_and_cam20_preserved": true,
+    "diagnostic_zero_api_and_no_heldout": true,
+    "freeze_sha_record_matches_current": true
+  },
+  "all_checks_pass": true,
+  "logs": [
+    "reports/cam_v3r1_runtime_diagnostics/freeze_prepare.log",
+    "reports/cam_v3r1_runtime_diagnostics/freeze_prepare_second.log",
+    "reports/cam_v3r1_runtime_diagnostics/freeze_verify.log",
+    "reports/cam_v3r1_runtime_diagnostics/preservation_audit.json",
+    "reports/cam_v3r1_runtime_diagnostics/prechange_backup_audit.json",
+    "reports/cam_v3r1_runtime_diagnostics/freeze_idempotence.json"
+  ]
+}

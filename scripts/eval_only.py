@@ -24,6 +24,40 @@ _PROJECT_ROOT = os.path.dirname(_SCRIPT_DIR)
 if _PROJECT_ROOT not in sys.path:
     sys.path.insert(0, _PROJECT_ROOT)
 
+
+def _load_project_dotenv() -> None:
+    """Load project-local .env, mirroring ``scripts/train.py``.
+
+    Without this, ``eval_only`` runs with whatever happens to be in the process
+    environment. An empty API key is passed through as the literal ``"dummy"``
+    by ``_make_client``, which surfaces as a 401 from the provider and looks
+    like a server problem rather than a missing-credential problem.
+
+    Existing process environment variables win over .env values.
+    """
+    if os.environ.get("SKILLOPT_LOAD_DOTENV", "1").strip().lower() in {"0", "false", "no"}:
+        return
+    env_path = os.path.join(_PROJECT_ROOT, ".env")
+    if not os.path.exists(env_path):
+        return
+    with open(env_path, encoding="utf-8") as f:
+        for raw_line in f:
+            line = raw_line.strip()
+            if not line or line.startswith("#"):
+                continue
+            if line.startswith("export "):
+                line = line[len("export "):].strip()
+            if "=" not in line:
+                continue
+            key, value = line.split("=", 1)
+            key = key.strip()
+            value = value.strip().strip('"').strip("'")
+            if key and key not in os.environ:
+                os.environ[key] = value
+
+
+_load_project_dotenv()
+
 from skillopt.model import (
     configure_azure_openai,
     configure_claude_code_exec,

@@ -1,0 +1,34 @@
+Source: tests/test_types.py
+Mode: in-memory AST execution; removed only unused `import pytest`; ordinary Python assert methods wrapped as unittest.TestCase methods; no pytest runner or dependency installed.
+Collected methods: 24
+Unique test IDs: 24
+
+test_TestEditCreation_test_delete_op (__main__.TypesCompatibilityTests.test_TestEditCreation_test_delete_op) ... ok
+test_TestEditCreation_test_full_edit (__main__.TypesCompatibilityTests.test_TestEditCreation_test_full_edit) ... ok
+test_TestEditCreation_test_insert_after_op (__main__.TypesCompatibilityTests.test_TestEditCreation_test_insert_after_op) ... ok
+test_TestEditCreation_test_minimal_edit (__main__.TypesCompatibilityTests.test_TestEditCreation_test_minimal_edit) ... ok
+test_TestEditEdgeCases_test_empty_target_stays_empty (__main__.TypesCompatibilityTests.test_TestEditEdgeCases_test_empty_target_stays_empty) ... ok
+test_TestEditEdgeCases_test_merge_level_zero (__main__.TypesCompatibilityTests.test_TestEditEdgeCases_test_merge_level_zero) ... ok
+test_TestEditEdgeCases_test_support_count_zero (__main__.TypesCompatibilityTests.test_TestEditEdgeCases_test_support_count_zero) ... ok
+test_TestEditRoundTrip_test_from_dict_with_defaults (__main__.TypesCompatibilityTests.test_TestEditRoundTrip_test_from_dict_with_defaults) ... ok
+test_TestEditRoundTrip_test_from_dict_with_extra_keys (__main__.TypesCompatibilityTests.test_TestEditRoundTrip_test_from_dict_with_extra_keys) ... ok
+test_TestEditRoundTrip_test_optional_fields_omitted_when_default (__main__.TypesCompatibilityTests.test_TestEditRoundTrip_test_optional_fields_omitted_when_default) ... ok
+test_TestEditRoundTrip_test_round_trip_delete_without_content (__main__.TypesCompatibilityTests.test_TestEditRoundTrip_test_round_trip_delete_without_content) ... ok
+test_TestEditRoundTrip_test_round_trip_full (__main__.TypesCompatibilityTests.test_TestEditRoundTrip_test_round_trip_full) ... ok
+test_TestEditRoundTrip_test_round_trip_minimal (__main__.TypesCompatibilityTests.test_TestEditRoundTrip_test_round_trip_minimal) ... ok
+test_TestPatchCreation_test_empty_patch (__main__.TypesCompatibilityTests.test_TestPatchCreation_test_empty_patch) ... ok
+test_TestPatchCreation_test_patch_with_edits (__main__.TypesCompatibilityTests.test_TestPatchCreation_test_patch_with_edits) ... ok
+test_TestPatchCreation_test_patch_with_ranking_details (__main__.TypesCompatibilityTests.test_TestPatchCreation_test_patch_with_ranking_details) ... ok
+test_TestPatchEdgeCases_test_nested_edit_from_dict_handles_dicts (__main__.TypesCompatibilityTests.test_TestPatchEdgeCases_test_nested_edit_from_dict_handles_dicts) ... ok
+test_TestPatchEdgeCases_test_reasoning_empty_string (__main__.TypesCompatibilityTests.test_TestPatchEdgeCases_test_reasoning_empty_string) ... ok
+test_TestPatchEdgeCases_test_zero_edits (__main__.TypesCompatibilityTests.test_TestPatchEdgeCases_test_zero_edits) ... ok
+test_TestPatchRoundTrip_test_from_dict_preserves_edit_order (__main__.TypesCompatibilityTests.test_TestPatchRoundTrip_test_from_dict_preserves_edit_order) ... ok
+test_TestPatchRoundTrip_test_round_trip_empty (__main__.TypesCompatibilityTests.test_TestPatchRoundTrip_test_round_trip_empty) ... ok
+test_TestPatchRoundTrip_test_round_trip_with_edits (__main__.TypesCompatibilityTests.test_TestPatchRoundTrip_test_round_trip_with_edits) ... ok
+test_TestPatchRoundTrip_test_round_trip_with_ranking_details (__main__.TypesCompatibilityTests.test_TestPatchRoundTrip_test_round_trip_with_ranking_details) ... ok
+test_TestPatchRoundTrip_test_to_dict_contains_reasoning_and_edits (__main__.TypesCompatibilityTests.test_TestPatchRoundTrip_test_to_dict_contains_reasoning_and_edits) ... ok
+
+----------------------------------------------------------------------
+Ran 24 tests in 0.001s
+
+OK

@@ -1,0 +1,225 @@
+{
+  "created_at_utc": "2026-10-18T16:21:37.091163+00:00",
+  "study_id": "continuous_adaptation_v3",
+  "audit_scope": "read-only offline runtime validity audit; no model/API calls; no test-score aggregation or quality decision",
+  "freeze": {
+    "sha256": "3e36613b9d9db411f806cca95a6644a6a66612924c925add240d44ffcd0bb597",
+    "source_fingerprints": 1378,
+    "all_fingerprints_valid": true,
+    "verify_freeze_passed": true,
+    "all_fingerprints_valid_after_reporter": true
+  },
+  "queue": {
+    "status": "running",
+    "cell_statuses": {
+      "baseline_seed42": "accepted",
+      "cam_v3_seed42": "running",
+      "cam_v3_seed43": "pending",
+      "baseline_seed43": "pending"
+    },
+    "sha256_at_audit_start": "ac854ada152f1937d1f905eeafe94014601397f3895d6e5d30717efaa91ad2d8",
+    "sha256_unchanged_by_audit": true,
+    "sha256_after_reporter": "ac854ada152f1937d1f905eeafe94014601397f3895d6e5d30717efaa91ad2d8",
+    "cell_statuses_after_reporter": {
+      "baseline_seed42": "accepted",
+      "cam_v3_seed42": "running",
+      "cam_v3_seed43": "pending",
+      "baseline_seed43": "pending"
+    },
+    "unchanged_during_offline_audit": true
+  },
+  "cam_v3_seed42": {
+    "queue_status": "running",
+    "completed_main_history_steps": 4,
+    "last_completed_step": 4,
+    "actions": {
+      "accept_new_best": 1,
+      "cam_re_evaluate": 1,
+      "reject": 2
+    },
+    "main_steps": [
+      {
+        "step": 1,
+        "task_type": "Cell-Level Manipulation",
+        "rollout_rows": 20,
+        "ids_exact_unique": true,
+        "task_types_exact": true,
+        "train_test_overlap": [],
+        "gate_action": "accept_new_best",
+        "gate_event_consistent": true,
+        "gate_reason": null,
+        "promotion_authorized": true,
+        "pending_additional_paired_evidence": false,
+        "group_guard": {
+          "enabled": true,
+          "status": "passed",
+          "reason": null,
+          "max_regression": 0.1,
+          "min_pairs": 5,
+          "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee"
+        },
+        "pair_n": 40,
+        "memory_write": {
+          "stage": "update_bundle",
+          "source_split": "train",
+          "task_type": "cell_level",
+          "items_added": 1,
+          "paired_evidence_available": true,
+          "supporting_task_id_count": 16
+        },
+        "evidence_budget": {
+          "budget": 2,
+          "unknown_provenance": true,
+          "reason": "provenance_unknown_minimum_fallback"
+        }
+      },
+      {
+        "step": 2,
+        "task_type": "Sheet-Level Manipulation",
+        "rollout_rows": 20,
+        "ids_exact_unique": true,
+        "task_types_exact": true,
+        "train_test_overlap": [],
+        "gate_action": "reject",
+        "gate_event_consistent": true,
+        "gate_reason": null,
+        "promotion_authorized": false,
+        "pending_additional_paired_evidence": false,
+        "group_guard": {
+          "enabled": true,
+          "status": "blocked",
+          "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+          "max_regression": 0.1,
+          "min_pairs": 5,
+          "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee"
+        },
+        "pair_n": 40,
+        "memory_write": {
+          "stage": "update_bundle",
+          "source_split": "train",
+          "task_type": "sheet_level",
+          "items_added": 1,
+          "paired_evidence_available": true,
+          "supporting_task_id_count": 9
+        },
+        "evidence_budget": {
+          "budget": 2,
+          "unknown_provenance": true,
+          "reason": "provenance_unknown_minimum_fallback"
+        }
+      },
+      {
+        "step": 3,
+        "task_type": "Cell-Level Manipulation",
+        "rollout_rows": 20,
+        "ids_exact_unique": true,
+        "task_types_exact": true,
+        "train_test_overlap": [],
+        "gate_action": "reject",
+        "gate_event_consistent": true,
+        "gate_reason": null,
+        "promotion_authorized": false,
+        "pending_additional_paired_evidence": false,
+        "group_guard": {
+          "enabled": true,
+          "status": "blocked",
+          "reason": "cell_level_current_mean_regression_exceeds_tolerance",
+          "max_regression": 0.1,
+          "min_pairs": 5,
+          "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee"
+        },
+        "pair_n": 40,
+        "memory_write": {
+          "stage": "update_bundle",
+          "source_split": "train",
+          "task_type": "cell_level",
+          "items_added": 1,
+          "paired_evidence_available": true,
+          "supporting_task_id_count": 9
+        },
+        "evidence_budget": {
+          "budget": 1,
+          "unknown_provenance": true,
+          "reason": "provenance_unknown_minimum_fallback; recent_harmful_change_shrink"
+        }
+      },
+      {
+        "step": 4,
+        "task_type": "Sheet-Level Manipulation",
+        "rollout_rows": 20,
+        "ids_exact_unique": true,
+        "task_types_exact": true,
+        "train_test_overlap": [],
+        "gate_action": "cam_re_evaluate",
+        "gate_event_consistent": true,
+        "gate_reason": "noninferiority_lcb_below_negative_margin",
+        "promotion_authorized": false,
+        "pending_additional_paired_evidence": true,
+        "group_guard": {
+          "enabled": true,
+          "status": "passed",
+          "reason": null,
+          "max_regression": 0.1,
+          "min_pairs": 5,
+          "interpretation": "descriptive_mean_tolerance_not_a_confidence_guarantee"
+        },
+        "pair_n": 40,
+        "memory_write": {
+          "stage": "update_bundle",
+          "source_split": "train",
+          "task_type": "sheet_level",
+          "items_added": 1,
+          "paired_evidence_available": true,
+          "supporting_task_id_count": 4
+        },
+        "evidence_budget": {
+          "budget": 1,
+          "unknown_provenance": true,
+          "reason": "provenance_unknown_minimum_fallback; recent_harmful_change_shrink"
+        }
+      }
+    ],
+    "runtime_selection": {
+      "current_score": 0.65,
+      "current_origin": "step_0001",
+      "best_score": 0.65,
+      "best_step": 1,
+      "best_origin": "step_0001",
+      "best_skill_matches_step1_candidate": true
+    },
+    "epoch3_slow_update": {
+      "artifact_action": "no_content",
+      "failure_summary": "RuntimeError after three retries: NoneType is not subscriptable",
+      "warning_preserved": true
+    },
+    "test_evaluation": {
+      "partial_rows": 73,
+      "unique_ids": true,
+      "all_ids_in_fixed_test_subset": true,
+      "task_type_counts": {
+        "cell_level": 50,
+        "sheet_level": 23
+      },
+      "valid_partial_subset": true,
+      "aggregate_test_score_published": false,
+      "interpretation": "partial rows only; no aggregate score or performance inference"
+    }
+  },
+  "validity_assessment": {
+    "all_main_rollouts_exact_frozen_ids_and_types": true,
+    "no_train_test_overlap": true,
+    "all_gate_events_consistent": true,
+    "step4_action": "cam_re_evaluate",
+    "step4_promotion_authorized": false,
+    "runtime_best_skill_consistent": true,
+    "partial_test_ids_valid": true,
+    "needs_revision_for_main_gate_validity": false,
+    "critical_blocker": null
+  },
+  "token_accounting_caveat": "Legacy returned token totals may be partial and do not establish complete HTTP billing.",
+  "reporter_refresh": {
+    "status": "awaiting_complete_seed_pairs",
+    "complete_seed_pair_count": 0,
+    "interpretation": "No performance conclusion is reported until both seed pairs contain validated accepted cells."
+  }
+}
